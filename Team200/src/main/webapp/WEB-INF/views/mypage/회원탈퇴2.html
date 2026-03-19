@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOG.GG - 본인 확인</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            /* LOG.GG 전용 팔레트 */
+            --primary-navy: #475569;
+            --bg-white: #FFFFFF;
+            --bg-sub: #e0e0e0;
+            --text-dark: #212529;
+            --text-sub: #64748b;
+            --point-red: #ff5454;
+            --border-color: #dee2e6;
+            --transition: all 0.2s ease-in-out;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-sub);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        /* 둥근 카드 스타일 유지 */
+        .auth-card {
+            background: var(--bg-white);
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 45px 40px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .auth-header h2 {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary-navy);
+            margin: 0 0 12px 0;
+        }
+
+        .auth-header p {
+            font-size: 14px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        /* 입력 폼 스타일 최적화 */
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 800; /* 라벨 강조 */
+            color: var(--primary-navy);
+            margin-bottom: 10px;
+            padding-left: 4px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 15px;
+            box-sizing: border-box;
+            background-color: #f8f9fa; /* 입력창 배경 살짝 어둡게 */
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-group input:focus {
+            background-color: white;
+            border-color: var(--primary-navy);
+            box-shadow: 0 0 0 4px rgba(71, 85, 105, 0.1);
+        }
+
+        /* 이메일 인증 영역 */
+        .email-auth-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-verify {
+            white-space: nowrap;
+            padding: 0 18px;
+            background: var(--primary-navy);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-verify:hover {
+            filter: brightness(1.2);
+        }
+
+        /* 하단 메인 버튼 */
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: var(--point-red); /* 탈퇴 최종 단계이므로 포인트 레드 사용 */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 84, 84, 0.3);
+        }
+
+        .btn-back {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 25px;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .btn-back:hover {
+            color: var(--primary-navy);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>본인 확인</h2>
+                <p>안전한 탈퇴를 위해<br>가입 정보를 다시 한번 입력해 주세요.</p>
+            </div>
+
+            <form id="withdrawalAuthForm">
+                <div class="form-group">
+                    <label>아이디</label>
+                    <input type="text" placeholder="아이디를 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label>비밀번호</label>
+                    <input type="password" placeholder="비밀번호를 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label>이름</label>
+                    <input type="text" placeholder="성함을 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label>이메일 인증</label>
+                    <div class="email-auth-row">
+                        <input type="email" placeholder="email@example.com" required>
+                        <button type="button" class="btn-verify" onclick="sendCode()">인증 요청</button>
+                    </div>
+                    <input type="text" placeholder="인증번호 6자리 입력" required>
+                </div>
+
+                <button type="submit" class="btn-submit">인증 및 탈퇴 완료</button>
+                <button type="button" class="btn-back" onclick="history.back()">이전 단계로 돌아가기</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function sendCode() {
+            alert('입력하신 이메일로 인증번호가 발송되었습니다.');
+        }
+
+        document.getElementById('withdrawalAuthForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (confirm('모든 정보가 확인되었습니다. 정말로 탈퇴하시겠습니까?')) {
+                alert('탈퇴 처리가 완료되었습니다. 그동안 이용해주셔서 감사합니다.');
+                window.location.href = 'main.html'; 
+            }
+        });
+    </script>
+
+</body>
+</html>

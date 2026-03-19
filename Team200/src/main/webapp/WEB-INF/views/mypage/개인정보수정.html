@@ -1,0 +1,126 @@
+ <!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOG.GG - 개인정보 수정</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --bg-soft: #f8fafc;
+            --form-bg: #e2e2e2; /* 이미지의 연회색 카드 배경 */
+            --accent-blue: #3b82f6;
+        }
+
+        body {
+            margin: 0; padding: 0; font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-soft);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; /* 화면 중앙 정렬 */
+        }
+
+        /* 개인정보 수정 카드 (이미지 디자인 완벽 재현) */
+        .profile-container {
+            background: var(--form-bg);
+            width: 500px;
+            border-radius: 35px;
+            padding: 50px 60px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .profile-container h1 { font-size: 32px; font-weight: 900; margin: 0 0 5px 0; color: #334155; }
+        .profile-container h2 { font-size: 18px; font-weight: 700; margin-bottom: 40px; color: #475569; }
+
+        .form-group { margin-bottom: 20px; text-align: left; }
+        
+        .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .label { font-size: 13px; font-weight: 700; color: #64748b; }
+        
+        /* 입력창 우측 작은 버튼 */
+        .inner-btn {
+            background: #d1d5db; border: none; padding: 4px 10px; 
+            border-radius: 6px; font-size: 11px; font-weight: 800; 
+            color: #4b5563; cursor: pointer; transition: 0.2s;
+        }
+        .inner-btn:hover { background: #bcbfc4; }
+
+        input {
+            width: 100%; padding: 14px 18px; border: 1px solid #d1d5db;
+            border-radius: 12px; background: white; font-family: inherit;
+            font-size: 14px; color: #334155; box-sizing: border-box;
+        }
+        input:focus { outline: none; border-color: var(--accent-blue); }
+        input::placeholder { color: #cbd5e1; }
+        
+        input[readonly] { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+
+        .notice { font-size: 11px; color: #ef4444; margin-top: 6px; font-weight: 600; }
+
+        /* 정보 수정 완료 버튼 */
+        .btn-submit {
+            width: 100%; padding: 16px; background: #475569; 
+            border: none; border-radius: 12px; color: white;
+            font-size: 16px; font-weight: 800; margin-top: 20px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-submit:hover { background: #334155; }
+
+        .withdraw-link {
+            display: inline-block; margin-top: 25px; font-size: 12px;
+            color: #94a3b8; text-decoration: underline; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h1>LOG.GG</h1>
+        <h2>개인정보 수정</h2>
+        
+        <form action="#" method="POST">
+            <div class="form-group">
+                <div class="label-row"><span class="label">아이디</span></div>
+                <input type="text" value="user_id_sample" readonly>
+                <div class="notice">* 아이디는 변경할 수 없습니다.</div>
+            </div>
+
+            <div class="form-group">
+                <div class="label-row">
+                    <span class="label">현재 비밀번호 확인</span>
+                    <button type="button" class="inner-btn">확인</button>
+                </div>
+                <input type="password" placeholder="정보 수정을 위해 현재 비번 입력">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row">
+                    <span class="label">닉네임 변경</span>
+                    <button type="button" class="inner-btn">중복확인</button>
+                </div>
+                <input type="text" placeholder="새로운 닉네임 입력">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row">
+                    <span class="label">인증 이메일 변경</span>
+                    <button type="button" class="inner-btn">인증</button>
+                </div>
+                <input type="email" value="old_email@log.gg">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row"><span class="label">새 비밀번호 (변경 시에만 입력)</span></div>
+                <input type="password" placeholder="영문, 숫자 포함 8자 이상">
+            </div>
+
+            <button type="submit" class="btn-submit">정보 수정 완료</button>
+        </form>
+        
+        <div class="withdraw-link">회원 탈퇴하기</div>
+    </div>
+
+</body>
+</html>

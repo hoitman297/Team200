@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1440">
+    <title>LOG.GG - 게시글 보기</title>
+    <style>
+        /* [1. 공통 스타일: 기존 디자인 시스템 및 1440x1024 규격 설정] */
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        :root {
+            --primary-navy: #475569;
+            --bg-light: #f1f5f9;
+            --accent-blue: #3b82f6;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --transition: all 0.3s ease;
+            --container-width: 1440px;
+            --container-height: 1024px;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-light);
+            width: var(--container-width);
+            min-height: var(--container-height);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* [2. 헤더 스타일: 기존 유지] */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--primary-navy);
+            padding: 0 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            height: 60px; color: #ecf0f5; font-size: 14px;
+        }
+        .header-left { cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+
+        /* [3. 메인 레이아웃: 비율 최적화] */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 30px; 
+            padding: 40px;
+            flex: 1; /* 남은 높이 채우기 */
+        }
+
+        /* [4. 게시글 상세 카드: 여백 및 크기 조정] */
+        .content-card {
+            background: white; border-radius: 24px;
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.05);
+            padding: 40px; display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .post-header { border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; }
+        .post-category { font-size: 14px; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px; }
+        .post-title { font-size: 28px; font-weight: 900; color: var(--text-main); margin: 0 0 15px 0; }
+        .post-info { display: flex; gap: 25px; font-size: 14px; color: var(--text-sub); }
+        .post-info span b { color: var(--text-main); }
+
+        .post-body {
+            font-size: 16px; line-height: 1.8; color: #334155;
+            min-height: 350px; padding: 10px 0;
+        }
+
+        .post-action {
+            display: flex; justify-content: center; gap: 15px;
+            padding: 30px 0; border-bottom: 1px solid #f1f5f9;
+        }
+        .btn-action {
+            padding: 12px 28px; border-radius: 12px; border: 1px solid var(--border-color);
+            background: white; cursor: pointer; font-weight: 600; transition: var(--transition);
+        }
+        .btn-action.like { color: var(--accent-blue); border-color: var(--accent-blue); }
+        .btn-action.report { color: #ef4444; border-color: #fca5a5; }
+        .btn-action:hover { background: #f8fafc; transform: translateY(-2px); }
+
+        /* [5. 댓글 영역: 디자인 유지] */
+        .comment-section { margin-top: 20px; }
+        .comment-count { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 25px; }
+
+        .comment-form {
+            background: #f8fafc; border: 1px solid var(--border-color); border-radius: 15px;
+            padding: 20px; margin-bottom: 30px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .comment-form textarea {
+            width: 100%; height: 90px; border: none; background: transparent;
+            resize: none; outline: none; font-size: 15px;
+        }
+        .comment-submit {
+            align-self: flex-end; padding: 10px 24px; border-radius: 8px;
+            border: none; background: var(--primary-navy); color: white;
+            font-weight: 600; cursor: pointer;
+        }
+
+        .comment-list { display: flex; flex-direction: column; gap: 12px; }
+        .comment-item {
+            background: #f1f5f9; padding: 20px; border-radius: 12px;
+            display: grid; grid-template-columns: 140px 1fr 180px; align-items: center;
+        }
+        .comment-author { font-weight: 800; color: var(--text-main); }
+        .comment-text { color: #334155; font-size: 15px; }
+        .comment-utils { display: flex; gap: 10px; justify-content: flex-end; font-size: 13px; color: var(--text-sub); }
+        .comment-utils span { cursor: pointer; }
+        .comment-utils span:hover { text-decoration: underline; }
+
+        .comment-item.reply { margin-left: 40px; background: #e2e8f0; }
+
+        /* 사이드바 보조 스타일 */
+        aside .side-box {
+            background: white; padding: 25px; border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
+        }
+        .side-title { font-weight: 800; color: var(--accent-blue); margin-bottom: 15px; }
+        .side-menu { list-style: none; padding: 0; line-height: 2.5; font-size: 15px; color: var(--text-sub); }
+        .side-menu li { cursor: pointer; transition: var(--transition); }
+        .side-menu li:hover { color: var(--accent-blue); }
+        .side-menu li.active { color: var(--text-main); font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left" onclick="location.href='main.html'">☰ 배틀그라운드 ▾</div>
+        <div style="font-weight: 800; font-size: 18px;">LOG.GG 커뮤니티</div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span>마이페이지</span>
+            <span><b>USER01</b> 님</span>
+            <span style="cursor: pointer; opacity: 0.8;">로그아웃</span>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <aside>
+            <div class="side-box">
+                <div class="side-title">| 게시판</div>
+                <ul class="side-menu">
+                    <li class="active">자유 게시판</li>
+                    <li>공략 게시판</li>
+                    <li>질문/답변</li>
+                    <li>미디어 갤러리</li>
+                </ul>
+            </div>
+        </aside>
+
+        <main>
+            <article class="content-card">
+                <div class="post-header">
+                    <div class="post-category">자유 게시판</div>
+                    <h1 class="post-title">오늘 배그 점검 시간 아시는 분 계신가요?</h1>
+                    <div class="post-info">
+                        <span>글쓴이: <b>배그왕01</b></span>
+                        <span>날짜: <b>2025-03-09</b></span>
+                        <span>조회수: <b>1,240</b></span>
+                    </div>
+                </div>
+
+                <div class="post-body">
+                    안녕하세요. 오늘 친구들이랑 배그 한판 하려고 하는데<br>
+                    혹시 오늘 정기 점검 시간이 몇 시부터 몇 시까지인지 아시는 분 계신가요?<br><br>
+                    공홈 가봐도 공지가 잘 안 보여서 여쭤봅니다! 아시는 분 댓글 부탁드려요.
+                </div>
+
+                <div class="post-action">
+                    <button class="btn-action like">👍 공감 150</button>
+                    <button class="btn-action" onclick="history.back()">목록으로</button>
+                    <button class="btn-action report">🚨 신고</button>
+                </div>
+
+                <section class="comment-section">
+                    <div class="comment-count">댓글 2</div>
+                    
+                    <div class="comment-form">
+                        <textarea placeholder="댓글을 남겨보세요."></textarea>
+                        <button class="comment-submit">등록</button>
+                    </div>
+
+                    <div class="comment-list">
+                        <div class="comment-item">
+                            <div class="comment-author">배그초보</div>
+                            <div class="comment-text">보통 수요일 오전 9시부터 오후 1시까지 하더라고요!</div>
+                            <div class="comment-utils">
+                                <span>답글</span> | <span>신고</span> | <span>공감</span>
+                            </div>
+                        </div>
+
+                        <div class="comment-item reply">
+                            <div class="comment-author">ㄴ 글쓴이</div>
+                            <div class="comment-text">아하 그렇군요! 답변 감사합니다 :)</div>
+                            <div class="comment-utils">
+                                <span>답글</span> | <span>신고</span> | <span>공감</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </main>
+
+        <aside>
+            <div style="background: #cbd5e1; padding: 30px; border-radius: 24px; min-height: 200px;">
+                <div style="font-weight: 800; margin-bottom: 12px; font-size: 16px;">배틀그라운드 소식</div>
+                <p style="font-size: 14px; color: #475569; line-height: 1.6;">
+                    최신 패치노트와 공략을 확인하고 승률을 높여보세요! 현재 시즌 28 진행 중입니다.
+                </p>
+                <div style="margin-top: 20px; background: white; padding: 15px; border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer;">
+                    자세히 보기
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <footer style="padding: 30px 40px; background: #e2e8f0; text-align: center; font-size: 13px; color: #64748b;">
+        © 2026 LOG.GG 배틀그라운드 서비스. 모든 권리 보유.
+    </footer>
+
+</body>
+</html>
