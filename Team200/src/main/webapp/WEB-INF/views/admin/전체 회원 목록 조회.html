@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOG.GG - 관리자 회원 관리</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --admin-navy: #334155; /* 관리자 카드 배경색 */
+            --bg-light: #f1f5f9;   /* 전체 배경색 */
+            --card-bg: #ffffff;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --text-main: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+        }
+
+        /* 헤더 영역 */
+        .admin-header {
+            max-width: 1100px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--admin-navy);
+            margin: 0;
+        }
+
+        /* 회원 관리 컨테이너 (기존 카드 디자인 원용) */
+        .member-list-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        /* 검색 및 필터 */
+        .list-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 250px;
+            outline: none;
+        }
+
+        /* 테이블 스타일 (제공된 게시판 이미지 스타일 계승) */
+        .member-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .member-table thead {
+            border-bottom: 3px solid #000; /* 자유 게시판 이미지 스타일 */
+        }
+
+        .member-table th {
+            padding: 15px 10px;
+            font-weight: 700;
+            background: #f8fafc;
+        }
+
+        .member-table td {
+            padding: 18px 10px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        /* 상태 배지 */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-suspended { background: #fee2e2; color: #991b1b; }
+
+        /* 관리 버튼 */
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-delete {
+            color: var(--accent-red);
+        }
+
+        /* 페이지네이션 (자유 게시판 이미지 스타일 계승) */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .pagination span { cursor: pointer; }
+        .pagination .active { color: #000; font-weight: 800; }
+
+        .btn-back-home {
+            background: var(--admin-navy);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-header">
+        <h2>전체 회원 목록 조회</h2>
+        <button class="btn-back-home" onclick="history.back()">마이페이지로 돌아가기</button>
+    </div>
+
+    <div class="member-list-container">
+        <div class="list-controls">
+            <div class="search-box">
+                <input type="text" placeholder="아이디, 이름, 이메일 검색">
+                <button class="btn-action">검색</button>
+            </div>
+            <div class="filter-box">
+                <select class="btn-action">
+                    <option>가입일순</option>
+                    <option>최근접속순</option>
+                </select>
+            </div>
+        </div>
+
+        <table class="member-table">
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>아이디</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>상태</th>
+                    <th>가입일</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td><strong>user01</strong></td>
+                    <td>홍길동</td>
+                    <td>user01@naver.com</td>
+                    <td><span class="status-badge status-active">활성</span></td>
+                    <td>2026-01-24</td>
+                    <td>
+                        <button class="btn-action">정지</button>
+                        <button class="btn-action btn-delete">삭제</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td><strong>user02</strong></td>
+                    <td>강민서</td>
+                    <td>user02@log.gg</td>
+                    <td><span class="status-badge status-suspended">정지</span></td>
+                    <td>2026-02-01</td>
+                    <td>
+                        <button class="btn-action">해제</button>
+                        <button class="btn-action btn-delete">삭제</button>
+                    </td>
+                </tr>
+                </tbody>
+        </table>
+
+        <div class="pagination">
+            <span>&lt; 이전</span>
+            <span class="active">1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
+            <span>다음 &gt;</span>
+        </div>
+    </div>
+
+    <script>
+        // 간단한 버튼 액션 스크립트
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.onclick = () => confirm('해당 회원을 정말 삭제하시겠습니까?');
+        });
+    </script>
+</body>
+</html>

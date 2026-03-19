@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOG.GG - 갤러리 (세미 버전)</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        :root {
+            --bg-white: #FFFFFF;
+            --bg-sub: #e0e0e0;
+            --text-dark: #212529;
+            --point-1: #475569;
+            --text-on-point: #ecf0f5;
+            --point-green: #0f9456; /* 포인트 2: 초록 */
+            --point-red: #ff5454;   /* 포인트 2: 빨강 */
+            --border-color: #dee2e6;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-sub);
+            color: var(--text-dark);
+            display: flex; justify-content: center; padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%; max-width: 1200px;
+            background: var(--bg-white); border-radius: 20px;
+            padding: 40px; box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .gallery-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--point-1);
+        }
+
+        .gallery-header h2 { margin: 0; font-size: 28px; font-weight: 900; }
+
+        .btn-write {
+            background: var(--point-1); color: var(--text-on-point);
+            padding: 10px 24px; border-radius: 8px; text-decoration: none;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 25px; margin-bottom: 40px;
+        }
+
+        .gallery-item {
+            cursor: pointer; transition: transform 0.2s;
+            width: 100%; display: flex; flex-direction: column;
+        }
+
+        .gallery-item:hover { transform: translateY(-5px); }
+
+        /* 정사각형 상자 유지 */
+        .thumbnail-box {
+            width: 100%; position: relative; padding-bottom: 100%; 
+            background-color: #f8f9fa; border-radius: 12px;
+            overflow: hidden; border: 1px solid var(--border-color);
+        }
+
+        .thumbnail-content {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            color: #adb5bd; font-size: 12px; font-weight: 700;
+        }
+
+        /* [추가] 인기 게시물 뱃지: 상자 크기를 건드리지 않음 */
+        .badge-hot {
+            position: absolute; top: 12px; left: 12px;
+            background-color: var(--point-red); /* 포인트 2 빨강 */
+            color: white; padding: 4px 8px; border-radius: 6px;
+            font-size: 11px; font-weight: 800; z-index: 10;
+        }
+
+        /* [추가] 영상 아이콘 표시 */
+        .badge-video {
+            position: absolute; top: 12px; right: 12px;
+            background-color: rgba(0,0,0,0.5);
+            color: white; padding: 4px 6px; border-radius: 6px;
+            font-size: 11px; z-index: 10;
+        }
+
+        .item-title {
+            margin-top: 15px; font-size: 15px; font-weight: 700;
+            color: var(--text-dark); text-align: center;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            padding: 0 5px; height: 20px; line-height: 20px;
+        }
+
+        /* [추가] 하단 간단 메타 정보 (조회수/하트) */
+        .item-info {
+            display: flex; justify-content: center; gap: 10px;
+            margin-top: 6px; font-size: 12px; color: var(--point-1);
+        }
+        .info-heart { color: var(--point-red); }
+
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .page-link { padding: 8px 12px; border-radius: 6px; text-decoration: none; color: var(--point-1); font-weight: 600; }
+        .page-link.active { background-color: var(--point-1); color: var(--text-on-point); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="gallery-header">
+            <h2>갤러리</h2>
+            <a href="write.html" class="btn-write">글쓰기</a>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="thumbnail-box">
+                    <span class="badge-hot">HOT</span>
+                    <div class="thumbnail-content">IMAGE 01</div>
+                </div>
+                <div class="item-title">배틀그라운드 역대급 교전</div>
+                <div class="item-info">
+                    <span>조회 1.2k</span>
+                    <span class="info-heart">❤ 150</span>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="thumbnail-box">
+                    <span class="badge-video">▶ 0:30</span>
+                    <div class="thumbnail-content">VIDEO 01</div>
+                </div>
+                <div class="item-title">신규 패치 미리보기 영상</div>
+                <div class="item-info">
+                    <span>조회 850</span>
+                    <span class="info-heart">❤ 42</span>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="thumbnail-box">
+                    <div class="thumbnail-content">IMAGE 02</div>
+                </div>
+                <div class="item-title">오늘 찍은 풍경샷 공유합니다</div>
+                <div class="item-info">
+                    <span>조회 320</span>
+                    <span class="info-heart">❤ 12</span>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="thumbnail-box">
+                    <div class="thumbnail-content">IMAGE 03</div>
+                </div>
+                <div class="item-title">무기 스킨 어떤가요?</div>
+                <div class="item-info">
+                    <span>조회 150</span>
+                    <span class="info-heart">❤ 5</span>
+                </div>
+            </div>
+            
+            <div class="gallery-item"><div class="thumbnail-box"><div class="thumbnail-content">IMG</div></div><div class="item-title">게시글 5</div><div class="item-info"><span>조회 10</span> <span>❤ 0</span></div></div>
+            <div class="gallery-item"><div class="thumbnail-box"><div class="thumbnail-content">IMG</div></div><div class="item-title">게시글 6</div><div class="item-info"><span>조회 10</span> <span>❤ 0</span></div></div>
+            <div class="gallery-item"><div class="thumbnail-box"><div class="thumbnail-content">IMG</div></div><div class="item-title">게시글 7</div><div class="item-info"><span>조회 10</span> <span>❤ 0</span></div></div>
+            <div class="gallery-item"><div class="thumbnail-box"><div class="thumbnail-content">IMG</div></div><div class="item-title">게시글 8</div><div class="item-info"><span>조회 10</span> <span>❤ 0</span></div></div>
+        </div>
+
+        <div class="pagination">
+            <a href="#" class="page-link">&lt;</a>
+            <a href="#" class="page-link active">1</a>
+            <a href="#" class="page-link">2</a>
+            <a href="#" class="page-link">&gt;</a>
+        </div>
+    </div>
+
+</body>
+</html>

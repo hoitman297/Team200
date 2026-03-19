@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOG.GG - 회원가입</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --bg-soft: #f8fafc;
+            --form-bg: #e2e2e2;
+            --accent-blue: #3b82f6;
+            --input-border: #d1d5db;
+        }
+
+        body {
+            margin: 0; padding: 0; font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-soft);
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden; /* 스크롤 방지 */
+        }
+
+        /* 항목이 많아 세로 길이를 줄이기 위해 패딩과 간격 축소 */
+        .signup-container {
+            background: var(--form-bg);
+            width: 480px;
+            border-radius: 30px;
+            padding: 30px 50px; /* 기존 50px -> 30px로 축소 */
+            box-sizing: border-box;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .signup-container h1 { font-size: 28px; font-weight: 900; margin: 0 0 2px 0; color: #334155; }
+        .signup-container h2 { font-size: 15px; font-weight: 700; margin-bottom: 25px; color: #475569; }
+
+        .form-group { margin-bottom: 12px; text-align: left; } /* 간격 18px -> 12px로 축소 */
+        
+        .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .label { font-size: 12px; font-weight: 700; color: #64748b; }
+        
+        .inner-btn {
+            background: #d1d5db; border: none; padding: 3px 8px; 
+            border-radius: 5px; font-size: 10px; font-weight: 800; 
+            color: #4b5563; cursor: pointer;
+        }
+
+        input, select {
+            width: 100%; padding: 11px 15px; border: 1px solid var(--input-border);
+            border-radius: 10px; background: white; font-family: inherit;
+            font-size: 13px; color: #334155; box-sizing: border-box;
+        }
+        
+        input:focus, select:focus { outline: none; border-color: var(--accent-blue); }
+
+        /* 가입하기 버튼 */
+        .btn-submit {
+            width: 100%; padding: 14px; background: #475569; 
+            border: none; border-radius: 10px; color: white;
+            font-size: 15px; font-weight: 800; margin-top: 15px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-submit:hover { background: #334155; }
+
+        /* 데이트 피커 스타일 축소 */
+        input[type="date"] {
+            background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="%2364748b" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>') no-repeat right 12px center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="signup-container">
+        <h1>LOG.GG</h1>
+        <h2>회원정보를 입력해주세요</h2>
+        
+        <form action="#" method="POST">
+            <div class="form-group">
+                <div class="label-row"><span class="label">아이디 (중복체크)</span><button type="button" class="inner-btn">확인</button></div>
+                <input type="text" placeholder="아이디 입력">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row"><span class="label">비밀번호</span></div>
+                <input type="password" placeholder="영문, 숫자 포함 8자 이상">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row"><span class="label">비밀번호 확인</span></div>
+                <input type="password" placeholder="비밀번호 재입력">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row"><span class="label">인증 이메일</span><button type="button" class="inner-btn">인증하기</button></div>
+                <input type="email" placeholder="example@log.gg">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row"><span class="label">닉네임 (중복체크)</span><button type="button" class="inner-btn">확인</button></div>
+                <input type="text" placeholder="사용할 닉네임">
+            </div>
+
+
+            <button type="submit" class="btn-submit">가입하기</button>
+        </form>
+    </div>
+
+</body>
+</html>
