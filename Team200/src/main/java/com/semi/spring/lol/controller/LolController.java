@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
+import com.semi.spring.lol.model.service.LolDataService;
 import com.semi.spring.lol.model.service.LolService;
 import com.semi.spring.lol.model.vo.ChampionVO;
 
@@ -28,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class LolController {
-	private LolService lolService;
+	private final LolService lolService;
 	private final BoardService boardService;
 	private final ResourceLoader resourceLoader;
 	private final ServletContext application;
@@ -76,9 +79,13 @@ public class LolController {
         model.addAttribute("champList", champList);
         
         // 3. 롤 페이지(JSP) 리턴
-        return "lol/lol_main";
+        return "lol/lol_hero_main";
 	}
 	
+	@GetMapping("/hero_main/hero_info")
+	public String lol_hero_info() {
+		return "lol/lol_hero_info";
+	}
 	@GetMapping("/item")
 	public String lol_item() {
 		return "lol/lol_item_info";
@@ -93,5 +100,7 @@ public class LolController {
 	public String lol_box() {
 		return "lol/box";
 	}
+	
+
 	
 }

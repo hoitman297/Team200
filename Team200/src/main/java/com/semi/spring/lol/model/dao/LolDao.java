@@ -8,4 +8,6 @@ public interface LolDao {
 
 	List<ChampionVO> selectAllChampions();
 
+	int insertChampion(ChampionVO vo);
+
 }
