@@ -1,11 +1,6 @@
 package com.semi.spring.lol.controller;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +16,15 @@ import com.semi.spring.common.template.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.semi.spring.lol.model.service.LolService;
+import com.semi.spring.lol.model.vo.ChampionVO;
+
 @Controller
 @RequestMapping("/lol") 
 @Slf4j
 @RequiredArgsConstructor
 public class LolController {
-	
+	private LolService lolService;
 	private final BoardService boardService;
 	private final ResourceLoader resourceLoader;
 	private final ServletContext application;
@@ -66,8 +64,15 @@ public class LolController {
 	}
 	
 	@GetMapping("/hero")
-	public String lol_hero() {
-		return "lol/lol_hero_info";
+	public String lol_hero(Model model) {
+		// 1. DB에서 챔피언 리스트 가져오기
+        List<ChampionVO> champList = lolService.selectAllChampions();
+        
+        // 2. JSP로 데이터 전달
+        model.addAttribute("champList", champList);
+        
+        // 3. 롤 페이지(JSP) 리턴
+        return "lol/main";
 	}
 	
 	@GetMapping("/item")
