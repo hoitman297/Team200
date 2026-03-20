@@ -11,4 +11,8 @@ public interface MemberService {
 
 	Member loginMember(Member member);
 
+	int idCheck(String userId);
+
+	Member selectOne(String userId);
+
 }

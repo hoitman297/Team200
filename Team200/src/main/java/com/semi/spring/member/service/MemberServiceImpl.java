@@ -34,4 +34,14 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.loginMember(member);
 	}
 
+	@Override
+	public int idCheck(String userId) {
+		return memberDao.idCheck(userId);
+	}
+
+	@Override
+	public Member selectOne(String userId) {
+		return memberDao.selectOne(userId);
+	}
+
 }
