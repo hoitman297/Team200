@@ -67,7 +67,7 @@ public class LolController {
 		// 아직 수정중
 	}
 	
-	@GetMapping("/hero")
+	@RequestMapping("/hero_main")
 	public String lol_hero(Model model) {
 		// 1. DB에서 챔피언 리스트 가져오기
         List<ChampionVO> champList = lolService.selectAllChampions();
@@ -76,7 +76,7 @@ public class LolController {
         model.addAttribute("champList", champList);
         
         // 3. 롤 페이지(JSP) 리턴
-        return "lol/main";
+        return "lol/lol_main";
 	}
 	
 	@GetMapping("/item")
