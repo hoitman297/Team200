@@ -1,0 +1,151 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --admin-navy: #334155;
+            --bg-light: #f1f5f9;
+            --card-bg: #ffffff;
+            --status-waiting: #fee2e2;
+            --status-waiting-text: #ef4444;
+            --status-done: #dcfce7;
+            --status-done-text: #166534;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-light);
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-section h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--admin-navy);
+            margin: 0;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .select-box {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .admin-table thead {
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        .admin-table th {
+            padding: 15px;
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .admin-table td {
+            padding: 20px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-waiting { background: var(--status-waiting); color: var(--status-waiting-text); }
+        .status-done { background: var(--status-done); color: var(--status-done-text); }
+
+        /* 답변 및 내용 확인 영역 */
+        .reply-section {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        .inquiry-content {
+            background: #ffffff;
+            padding: 15px;
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .reply-section textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            resize: none;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .btn-submit {
+            background: var(--admin-navy);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .clickable-row:hover {
+            background: #f8fafc;
+        }
+
+        .secret-icon {
+            color: #94a3b8;
+            margin-right: 5px;
+            font-size: 12px;
+        }
