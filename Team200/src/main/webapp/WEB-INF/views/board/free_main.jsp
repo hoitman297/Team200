@@ -6,6 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/free_main/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/board/free_main/script.js"></script>
     
     <style>
         a, a:hover, a:visited, a:active {
@@ -14,20 +18,11 @@
         }
     </style>
     
-	<script src="${pageContext.request.contextPath}/resources/board/free_main/script.js"></script>
-    
     <title>LOG.GG - 게시판 검색</title>
 </head>
 <body>
-
-    <header>
-        <div class="header-left">☰ 배틀그라운드 ▾</div>
-        <div class="user-nav">
-            <span>마이페이지</span>
-            <span><b>USER01</b> 님</span>
-            <button class="btn-logout">로그아웃</button>
-        </div>
-    </header>
+    <c:set var="headerTitle" value="게시판" />
+	<%@ include file="../common/header.jsp" %>
 
     <div class="main-layout">
         <aside class="side-left">
@@ -49,7 +44,7 @@
 
         <main class="content-area">
             <div class="board-top-row">
-                <div class="logo">LOG.GG</div>
+                <a href="<c:url value = '/' />"><div class="logo">LOG.GG</div></a>
                 <div class="search-bar">
                     <input type="text" placeholder="게시판 내 글 검색">
                     <span style="cursor:pointer">🔍</span>

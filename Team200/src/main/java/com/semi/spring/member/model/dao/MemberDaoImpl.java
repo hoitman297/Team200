@@ -21,13 +21,13 @@ public class MemberDaoImpl implements MemberDao{
 	}
 
 	@Override
-	public int insertMember(Member m) {
-		return session.insert("member.insertMember",m);
+	public int insertMember(Member member) {
+		return session.insert("member.insertMember",member);
 	}
 
 	@Override
-	public void insertAuthority(Member m) {
-		session.insert("member.insertAuthority",m);
+	public void insertAuthority(Member member) {
+		session.insert("member.insertAuthority",member);
 	}
 
 	@Override
@@ -38,6 +38,16 @@ public class MemberDaoImpl implements MemberDao{
 	@Override
 	public Member loginMember(Member member) {
 		return session.selectOne("member.loginMember", member);
+	}
+
+	@Override
+	public int idCheck(String userId) {
+		return session.selectOne("member.idCheck",userId);
+	}
+
+	@Override
+	public Member selectOne(String userId) {
+		return session.selectOne("member.selectOne",userId);
 	}
 
 }
