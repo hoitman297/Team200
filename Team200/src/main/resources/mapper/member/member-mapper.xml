@@ -26,7 +26,8 @@
 		SET 
 		    USER_NAME = #{userName},
 			<if test="userPw != null and userPw != ''">
-			USER_PW = #{userPw}
+			USER_PW = #{userPw},
+			MODIFIED_DATE = SYSDATE
 			</if>
 		<!-- EMAIL = #{email} -->
 		WHERE USER_ID = #{userId}

@@ -157,16 +157,20 @@
 	<!-- 댓글 -->
 	<insert id="insertReply">
 		INSERT INTO REPLY (
-		REPLY_NO, USER_NO, BOARD_NO, USER_NAME, REPLY_CONTENT
+		REPLY_NO, USER_NO, BOARD_NO, REPLY_CONTENT,PARENT_REPLY_NO
 		) VALUES (
-		SEQ_REPLY_NO.NEXTVAL, #{userNo}, #{boardNo}, #{userName}, #{replyContent}
+		SEQ_REPLY_NO.NEXTVAL, #{userNo}, #{boardNo}, #{replyContent} ,#{parentReplyNo}
 		)
 	</insert>
 	
 	<select id="selectReplyList" resultType="reply">
-		SELECT * FROM REPLY
-		WHERE BOARD_NO = #{boardNo} AND STATUS = 'Y'
-		ORDER BY REPLY_DATE DESC
+		SELECT R.*,
+			   U.USER_NAME 
+		FROM REPLY R
+		JOIN LOG_GG_USER U ON R.USER_NO = U.USER_NO
+		WHERE BOARD_NO = #{boardNo} 
+		AND STATUS = 'Y'
+		ORDER BY NVL(PARENT_REPLY_NO, REPLY_NO) ASC, REPLY_DATE ASC
 	</select>
 	
 	<!-- 조회수 -->
