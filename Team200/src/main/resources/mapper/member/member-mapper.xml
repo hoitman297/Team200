@@ -4,9 +4,9 @@
 	
 	<insert id="insertMember">
 		INSERT INTO LOG_GG_USER (
-			USER_NO, USER_ID, USER_PW, USER_NAME, STATUS, WITHDRAW, ENROLL_DATE, USER_ROLE
+			USER_NO, USER_ID, USER_PW, USER_NAME, STATUS, WITHDRAW, ENROLL_DATE, MODIFIED_DATE
 		) VALUES (
-			SEQ_UNO.NEXTVAL,{userId}, #{userPw}, #{userName}, DEFAULT, DEFAULT, DEFAULT, DEFAULT
+			SEQ_USER_NO.NEXTVAL,#{userId}, #{userPw}, #{userName}, DEFAULT, DEFAULT, DEFAULT, NULL
 		)
 	</insert>
 	
@@ -37,7 +37,7 @@
 		UPDATE LOG_GG_USER
 		SET 
 			STATUS = 'N',      
-			WITHDRAW = '1'     
+			WITHDRAW = 'Y'     
 		WHERE USER_ID = #{userId}	
 	</update>	
 	

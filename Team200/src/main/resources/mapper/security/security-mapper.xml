@@ -14,10 +14,10 @@
 		FROM LOG_GG_USER
 		WHERE USER_ID = #{userName} 
 		  AND STATUS = 'Y' 
-		  AND WITHDRAW = '0'
+		  AND WITHDRAW = 'N'
 	</select>
 	
-	<resultMap id="userDetailResultMap" type="userExt">
+	<resultMap id="userDetailResultMap" type="memberExt">
 		<id column="USER_NO" property="userNo"/>
 		<result column="USER_ID" property="userId" />
 		<result column="USER_PWD" property="userPwd" />
