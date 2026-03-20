@@ -27,6 +27,49 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/board")
 public class BoardController {
 
+	// 게시글 확인 페이지
+    @GetMapping("/view")
+    public String board_view() {
+        return "board/board_view"; 
+    }
+
+    // 자유게시판 메인
+    @GetMapping("/free")
+    public String board_freeMain() {
+        return "board/free_main";
+    }
+    
+    // 자유게시판 작성
+    @GetMapping("/freewrite")
+    public String board_freeWrite() {
+        return "board/free_write";
+    }
+
+    // 공략게시판 메인
+    @GetMapping("/strategy")
+    public String board_strategy() {
+        return "board/strategy_main";
+    }
+    
+    // 공략게시판 작성
+    @GetMapping("/strategywrite")
+    public String board_strategyWrite() {
+        return "board/strategy_write";
+    }
+    
+    // 문의 메인
+    @GetMapping("/inquiry")
+    public String board_inquiry() {
+        return "board/user_inquiry";
+    }
+    
+    // 문의 작성
+    @GetMapping("/inquiryWrite")
+    public String board_inquiryWrite() {
+        return "board/user_inquiry_write";
+    }
+
+	
 	private final BoardService boardService;
 	private final ResourceLoader resourceLoader;
 	private final ServletContext application; // application scope

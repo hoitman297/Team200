@@ -34,7 +34,7 @@
 
             <div class="btn-group">
                 <button class="btn btn-cancel" onclick="history.back()">취소</button>
-                <button class="btn btn-submit"  id="submitBtn" onclick="location.href='../마이페이지/회원탈퇴2.html'">회원 탈퇴</button>
+                <a href="<c:url value = '/member/delete' />"><button class="btn btn-submit"  id="submitBtn">회원 탈퇴</button></a>
             </div>
         </div>
     </div>
