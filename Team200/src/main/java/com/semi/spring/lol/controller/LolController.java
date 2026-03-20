@@ -1,6 +1,11 @@
 package com.semi.spring.lol.controller;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +17,11 @@ import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
+import com.semi.spring.lol.model.service.LolService;
+import com.semi.spring.lol.model.vo.ChampionVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import com.semi.spring.lol.model.service.LolService;
-import com.semi.spring.lol.model.vo.ChampionVO;
 
 @Controller
 @RequestMapping("/lol") 
