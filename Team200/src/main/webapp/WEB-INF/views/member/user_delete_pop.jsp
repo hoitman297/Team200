@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mypage/user_delete_pop/style.css">
-	<script src="${pageContext.request.contextPath}/resources/mypage/user_delete_pop/script.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_delete_pop/style.css">
+	<script src="${pageContext.request.contextPath}/resources/member/user_delete_pop/script.js"></script>
 	
     <title>LOG.GG - 회원 탈퇴</title>
 </head>
