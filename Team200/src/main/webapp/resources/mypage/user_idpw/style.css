@@ -1,0 +1,124 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --primary-navy: #475569;
+            --bg-white: #FFFFFF;
+            --bg-sub: #e0e0e0;
+            --text-dark: #212529;
+            --text-sub: #64748b;
+            --border-color: #dee2e6;
+            --input-bg: #f8f9fa;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-sub);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        .find-card {
+            background: var(--bg-white);
+            width: 450px;
+            border-radius: 30px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary-navy);
+            margin-bottom: 40px;
+        }
+
+        /* 이미지와 동일한 탭 스타일 */
+        .tab-group {
+            display: flex;
+            margin-bottom: 35px;
+            border-bottom: 2px solid #f1f3f5;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #adb5bd;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tab.active {
+            color: var(--primary-navy);
+            border-bottom: 2px solid var(--primary-navy);
+        }
+
+        .info-text {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            font-size: 15px;
+            box-sizing: border-box;
+            background-color: var(--input-bg);
+            outline: none;
+        }
+
+        .form-group input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary-navy);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* 섹션 숨김 처리 */
+        .find-section { display: none; }
+        .find-section.active { display: block; }
+
+        .footer-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .footer-link a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }

@@ -9,27 +9,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LolController {
 	
 	@GetMapping("/main")
-	public String overwatch_main() {
+	public String lol_main() {
 		return "lol/lol_main";
 	}
 	
 	@GetMapping("/hero")
-	public String overwatch_hero() {
+	public String lol_hero() {
 		return "lol/lol_hero_info";
 	}
 	
 	@GetMapping("/item")
-	public String overwatch_item() {
+	public String lol_item() {
 		return "lol/lol_item_info";
 	}
 	
 	@GetMapping("/rune")
-	public String overwatch_rune() {
+	public String lol_rune() {
 		return "lol/lol_rune_info";
 	}
 	
 	@GetMapping("/box")
-	public String overwatch_box() {
+	public String lol_box() {
 		return "lol/box";
 	}
 	
