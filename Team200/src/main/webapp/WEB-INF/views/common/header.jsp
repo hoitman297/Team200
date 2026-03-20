@@ -26,7 +26,9 @@
 	</div>
 
 	<div class="user-nav">
-		<span>마이페이지</span> <span>개인정보 수정</span> <span><b>USER01</b> 님</span>
-		<button class="btn-logout">로그아웃</button>
+		<a href="<c:url value = '/member/mypage' />"><span>마이페이지</span></a> 
+		<a href="<c:url value = '/member/update' />"><span>개인정보 수정</span> </a>
+		<span><b>USER01</b> 님</span>
+		<a href="<c:url value = '/member/login' />"><button class="btn-logout">로그아웃</button></a>
 	</div>
 </header>

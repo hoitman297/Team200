@@ -5,8 +5,8 @@
 <head>
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mypage/login/style.css">
-	<script src="${pageContext.request.contextPath}/resources/mypage/login/script.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/login/style.css">
+	<script src="${pageContext.request.contextPath}/resources/member/login/script.js"></script>
 	
 	<title>로그인</title>
 </head>

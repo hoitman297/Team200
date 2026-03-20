@@ -16,4 +16,8 @@ public interface MemberDao {
 	int updateMember(MemberExt loginUser);
 
 	Member loginMember(Member member);
+	
+	int idCheck(String userId);
+
+	Member selectOne(String userId);
 }
