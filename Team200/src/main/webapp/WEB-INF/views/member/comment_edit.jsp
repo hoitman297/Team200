@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mypage/comment_edit/style.css">
-	<script src="${pageContext.request.contextPath}/resources/mypage/comment_edit/style.css"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/comment_edit/style.css">
+	<script src="${pageContext.request.contextPath}/resources/member/comment_edit/style.css"></script>
 	
     <title>LOG.GG - 댓글 수정 및 삭제 관리</title>
 </head>

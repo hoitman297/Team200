@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mypage/user_mypage/style.css">
-	<script src="${pageContext.request.contextPath}/resources/mypage/user_mypage/script.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_mypage/style.css">
+	<script src="${pageContext.request.contextPath}/resources/member/user_mypage/script.js"></script>
     
     <title>마이페이지 - Desktop Dashboard</title>
 </head>
@@ -30,7 +30,7 @@
                 <h2>⚙️ <span style="color: #475569;">계정 설정</span></h2>
                 <div class="menu-grid">
                     <div class="menu-item" onclick="msg('회원 정보 및 비밀번호 수정')">
-                        <strong>회원 정보 수정</strong>
+                        <a href="<c:url value = '/member/update' />"><strong>회원 정보 수정</strong></a>
                         <span>이메일, 연락처 및 비밀번호를 변경합니다.</span>
                     </div>
                 </div>
