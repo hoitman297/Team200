@@ -17,4 +17,6 @@ public class Reply {
     private String status;       
     
     private int parentReplyNo;    
+    
+    private String userName;
 }
