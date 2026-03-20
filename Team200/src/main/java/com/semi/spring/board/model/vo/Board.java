@@ -14,8 +14,20 @@ public class Board {
 	private String boardTitle;
 	private String boardContent;
 	private String boardCd;
-	private String boardWriter; // userId, userName
 	
-	private int count;
+//	private String boardWriter; // userId, userName
+	private String userId;
+	private String userName;
+	private int userNo; 
+	 
+	private int count; // READ_COUNT
 	private Date postDate;
+	
+	private String gameCode;     
+    private String categoryName; 
+    
+    private int categoryNo;
+    
+    
 }
+

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="board">
+
+	<sql id="searchCondition">
+		<if test="keyword != null and keyword != ''">
+			AND
+			<choose>
+				<when test="condition == 'title'">
+					BOARD_TITLE LIKE '%' || #{keyword} || '%'
+				</when>
+				<when test="condition == 'writer'">
+					USER_NAME LIKE '%' || #{keyword} || '%'
+				</when>
+				<when test="condition == 'content'">
+					BOARD_CONTENT LIKE '%' || #{keyword} || '%'
+				</when>
+				<otherwise>
+					(BOARD_TITLE LIKE '%' || #{keyword} || '%'
+					OR BOARD_CONTENT LIKE '%' || #{keyword} || '%')
+				</otherwise>
+			</choose>
+		</if>
+	</sql>
+	
+	<select id="getBoardTypeMap" resultType="boardtype">
+		SELECT
+			CATEGORY_NO,
+			CATEGORY_NAME,
+			GAME_CODE
+		FROM CATEGORY_TABLE
+		<if test="gameCode != null">
+			WHERE GAME_CODE = #{gameCode}
+		</if>
+		ORDER BY CATEGORY_NO ASC
+	</select>
+	
+	<resultMap type="boardExt" id="boardMap" autoMapping="true">
+		<id column="BOARD_NO" property="boardNo"/>
+
+		<result column="READ_COUNT" property="count" />
+		
+		<association property="party" javaType="partyRecruit" autoMapping="true">
+        <id column="BOARD_NO" property="boardNo"/>
+   	 	</association>
+   	 	
+		<collection property="fileList" 
+			javaType="List"
+			ofType="attachFile" 
+			select="selectBoardFileList" 
+			column="BOARD_NO" />
+	</resultMap>
+	
+	<select id="selectList" resultType="board">
+		SELECT *
+		FROM (
+			SELECT ROWNUM AS RNUM , T1.*
+			FROM (
+				SELECT
+					B.BOARD_NO,
+					B.BOARD_TITLE ,
+					U.USER_NAME ,
+					B.READ_COUNT AS count,
+					B.POST_DATE AS postDate,
+					C.GAME_CODE, C.CATEGORY_NAME
+				FROM BOARD B
+				LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+				JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+				WHERE BOARD_CD = 'Y'
+  				AND C.GAME_CODE = #{gameCode} 
+  				<if test="categoryNo != null and categoryNo != 0">
+      			AND B.CATEGORY_NO = #{categoryNo} </if>
+			<include refid="searchCondition"/>
+		ORDER BY B.BOARD_NO DESC) T1
+		)
+		WHERE RNUM BETWEEN #{offset} AND #{limit}
+	</select>
+	
+	<select id="selectListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARD B
+		LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+		WHERE BOARD_CD = 'Y'
+			AND B.GAME_CODE = #{gameCode}
+			<if test="categoryNo != null and categoryNo != 0">
+		 	 AND B.CATEGORY_NO = #{categoryNo} 
+			</if>
+		<include refid="searchCondition"/>
+	</select>
+	
+	<select id="selectBoard" resultMap="boardMap">
+		SELECT B.* , U.USER_NAME, P.*
+		FROM BOARD B
+		LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+		LEFT JOIN PARTY_RECRUIT P ON B.BOARD_NO = P.BOARD_NO
+		WHERE BOARD_NO = #{boardNo} AND  BOARD_CD = 'Y'
+
+	</select>
+
+	<select id="selectBoardFileList" resultType="attachfile">
+		SELECT *
+		FROM ATTACH_FILE
+		WHERE BOARD_NO = #{boardNo}
+	</select>
+
+	
+	<insert id="insertBoard">
+		<selectKey keyProperty="boardNo" resultType="int"
+			order="BEFORE">
+			SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO BOARD (
+			BOARD_NO,USER_NO,CATEGORY_NO, 
+			BOARD_CONTENT,BOARD_TITLE,
+			POST_DATE,BOARD_CD,READ_COUNT)
+		VALUES (
+		#{boardNo},#{userNo},#{categoryNo}, 
+		#{boardContent},#{boardTitle},
+		DEFAULT,DEFAULT,DEFAULT)
+	</insert>
+	
+	<insert id="insertPartyRecruit">
+		INSERT INTO PARTY_RECRUIT (
+			BOARD_NO, 
+			CAPACITY, 
+			TIER, 
+			CURRENT, 
+			PREFER_MAP
+		) VALUES (
+			#{boardNo}, #{capacity}, #{tier}, #{current}, #{preferMap}
+		)
+	</insert>
+	
+	<insert id="insertBoardFile">
+		INSERT INTO ATTACH_FILE (
+		FILE_NO, BOARD_NO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
+		) VALUES (
+		SEQ_FILE_NO.NEXTVAL, #{boardNo}, #{originName}, #{changeName}, 
+		#{filePath}, #{fileExt},#{fileSize}
+		)
+	</insert>
+	
+	<insert id="insertBoardFileList">
+		INSERT INTO ATTACH_FILE (
+		FILE_NO, BOARD_NO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
+		)
+		SELECT SEQ_FILE_NO.NEXTVAL, A.* FROM (
+		<foreach collection="list" item="f" separator="UNION ALL">
+			SELECT
+			#{f.boardNo}, #{f.originName}, #{f.changeName},
+			#{f.filePath}, #{f.fileExt}, #{f.fileSize}
+			FROM DUAL
+		</foreach>
+		) A
+	</insert>
+
+	<!-- 댓글 -->
+	<insert id="insertReply">
+		INSERT INTO REPLY (
+		REPLY_NO, USER_NO, BOARD_NO, USER_NAME, REPLY_CONTENT
+		) VALUES (
+		SEQ_REPLY_NO.NEXTVAL, #{userNo}, #{boardNo}, #{userName}, #{replyContent}
+		)
+	</insert>
+	
+	<select id="selectReplyList" resultType="reply">
+		SELECT * FROM REPLY
+		WHERE BOARD_NO = #{boardNo} AND STATUS = 'Y'
+		ORDER BY REPLY_DATE DESC
+	</select>
+	
+	<!-- 조회수 -->
+	<update id="increaseCount">
+		UPDATE BOARD
+		SET 
+			READ_COUNT = READ_COUNT + 1
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+
+	<update id="updateBoard">
+		UPDATE BOARD
+		SET 
+			BOARD_TITLE = #{boardTitle},
+			BOARD_CONTENT = #{boardContent}
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+
+	<update id="updateBoardFile">
+		UPDATE ATTACH_FILE
+		SET 
+			ORIGIN_NAME = #{originName},
+			CHANGE_NAME = #{changeName},
+			FILE_PATH = #{filePath}
+		WHERE FILE_NO = #{fileNo}
+	</update>
+
+	<update id="deleteBoard">
+		UPDATE BOARD 
+		SET 
+			BOARD_CD = 'N' 
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<update id="deleteReply">
+		UPDATE REPLY 
+		SET 
+			STATUS = 'N' 
+			WHERE REPLY_NO = #{replyNo}
+	</update>
+
+
+</mapper>

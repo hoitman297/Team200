@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="security">
+
+	<select id="loadUserByUsername" resultMap="userDetailResultMap">
+		SELECT 
+			USER_NO, 
+			USER_ID, 
+			USER_PW AS USER_PWD,  USER_NAME,
+			CASE 
+				WHEN USER_ROLE = 'A' THEN 'ROLE_ADMIN'
+				ELSE 'ROLE_USER'
+			END AS AUTHORITY
+		FROM LOG_GG_USER
+		WHERE USER_ID = #{userName} 
+		  AND STATUS = 'Y' 
+		  AND WITHDRAW = 'N'
+	</select>
+	
+	<resultMap id="userDetailResultMap" type="memberExt">
+		<id column="USER_NO" property="userNo"/>
+		<result column="USER_ID" property="userId" />
+		<result column="USER_PWD" property="userPwd" />
+		<result column="USER_NAME" property="userName" />
+		
+		<collection property="authorities"
+			javaType="java.util.ArrayList"
+			ofType="org.springframework.security.core.authority.SimpleGrantedAuthority">
+			<constructor>
+				<arg column="AUTHORITY" javaType="string" />
+			</constructor>
+		</collection>
+	</resultMap>
+
+</mapper>
