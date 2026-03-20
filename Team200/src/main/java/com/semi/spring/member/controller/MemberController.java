@@ -3,12 +3,14 @@ package com.semi.spring.member.controller;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
@@ -71,6 +73,15 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	// 회원가입 아이디 중복확인
+	@ResponseBody // 반환값을 jsp가 아닌, 반환해야할 값으로 처리하게하는 주석
+	@GetMapping("/idcheck")
+	public int idCheck(String userId) {
+		int result = memberService.idCheck(userId);
+		
+		return result;
+	}
+	
 	@GetMapping("/insert") 
 	public String enrollForm() {
 		return "member/memberEnrollForm";
@@ -88,5 +99,19 @@ public class MemberController {
 			return "common/errorPage";
 		}
 	}
-}
+	
+	@GetMapping("/selectOne")
+	public ResponseEntity<Member> selectOne(String userId){	
+		Member searchMember = memberService.selectOne(userId);
 
+		ResponseEntity<Member> res = null;
+		if(searchMember != null) {
+			// ok() : 응답상태 200
+			res = ResponseEntity.ok(searchMember);
+		}else{
+			// 응답상태 404
+			res = ResponseEntity.notFound().build();
+		}
+		return res;
+	}
+}

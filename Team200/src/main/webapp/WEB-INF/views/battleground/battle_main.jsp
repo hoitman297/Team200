@@ -9,11 +9,11 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/battleground/style.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/resources/battleground/script.js" defer></script>
+	<script src="${pageContext.request.contextPath}/resources/battleground/script.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    
     <title>배틀그라운드</title>
 </head>
-
 <body>
 <c:set var="headerTitle" value="배틀그라운드" />
 <%@ include file="../common/header.jsp" %>
