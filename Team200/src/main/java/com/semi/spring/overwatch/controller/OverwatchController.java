@@ -25,7 +25,7 @@ public class OverwatchController {
 	
 	@GetMapping("/box")
 	public String overwatch_box() {
-		return "overwatch/box";
+		return "overwatch/box"; 
 	}
 	
 }
