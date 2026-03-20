@@ -23,7 +23,7 @@
 		</if>
 	</sql>
 	
-	<select id="getBoardTypeMap" resultType="boardType">
+	<select id="getBoardTypeMap" resultType="boardtype">
 		SELECT
 			CATEGORY_NO,
 			CATEGORY_NAME,
@@ -35,11 +35,15 @@
 		ORDER BY CATEGORY_NO ASC
 	</select>
 	
-	<resultMap type="board" id="boardMap" autoMapping="true">
+	<resultMap type="boardExt" id="boardMap" autoMapping="true">
 		<id column="BOARD_NO" property="boardNo"/>
 
 		<result column="READ_COUNT" property="count" />
-
+		
+		<association property="party" javaType="partyRecruit" autoMapping="true">
+        <id column="BOARD_NO" property="boardNo"/>
+   	 	</association>
+   	 	
 		<collection property="fileList" 
 			javaType="List"
 			ofType="attachFile" 
@@ -103,7 +107,7 @@
 	<insert id="insertBoard">
 		<selectKey keyProperty="boardNo" resultType="int"
 			order="BEFORE">
-			SELECT SEQ_BNO.NEXTVAL FROM DUAL
+			SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
 		</selectKey>
 		INSERT INTO BOARD (
 			BOARD_NO,USER_NO,CATEGORY_NO, 
@@ -131,7 +135,7 @@
 		INSERT INTO ATTACH_FILE (
 		FILE_NO, BOARD_NO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
 		) VALUES (
-		SEQ_FNO.NEXTVAL, #{boardNo}, #{originName}, #{changeName}, 
+		SEQ_FILE_NO.NEXTVAL, #{boardNo}, #{originName}, #{changeName}, 
 		#{filePath}, #{fileExt},#{fileSize}
 		)
 	</insert>
@@ -140,7 +144,7 @@
 		INSERT INTO ATTACH_FILE (
 		FILE_NO, BOARD_NO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
 		)
-		SELECT SEQ_FNO.NEXTVAL, A.* FROM (
+		SELECT SEQ_FILE_NO.NEXTVAL, A.* FROM (
 		<foreach collection="list" item="f" separator="UNION ALL">
 			SELECT
 			#{f.boardNo}, #{f.originName}, #{f.changeName},
@@ -153,9 +157,9 @@
 	<!-- 댓글 -->
 	<insert id="insertReply">
 		INSERT INTO REPLY (
-		REPLY_NO, USER_ID, BOARD_NO, USER_NAME, REPLY_CONTENT
+		REPLY_NO, USER_NO, BOARD_NO, USER_NAME, REPLY_CONTENT
 		) VALUES (
-		SEQ_RNO.NEXTVAL, #{userId}, #{boardNo}, #{userName}, #{replyContent}
+		SEQ_REPLY_NO.NEXTVAL, #{userNo}, #{boardNo}, #{userName}, #{replyContent}
 		)
 	</insert>
 	
