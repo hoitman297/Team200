@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="member">
+	
+	<insert id="insertMember">
+		INSERT INTO LOG_GG_USER (
+			USER_NO, USER_ID, USER_PW, USER_NAME, STATUS, WITHDRAW, ENROLL_DATE, USER_ROLE
+		) VALUES (
+			SEQ_UNO.NEXTVAL,{userId}, #{userPw}, #{userName}, DEFAULT, DEFAULT, DEFAULT, DEFAULT
+		)
+	</insert>
+	
+	<select id="idCheck" resultType="int">
+		SELECT COUNT(*) 
+		FROM LOG_GG_USER 
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="selectOne" resultType="member">
+		SELECT * FROM LOG_GG_USER
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<update id="updateMember">
+		UPDATE LOG_GG_USER 
+		SET 
+		    USER_NAME = #{userName},
+			<if test="userPw != null and userPw != ''">
+			USER_PW = #{userPw}
+			</if>
+		<!-- EMAIL = #{email} -->
+		WHERE USER_ID = #{userId}
+		   AND STATUS = 'Y'
+	</update>	
+	
+	<update id="deleteMember">
+		UPDATE LOG_GG_USER
+		SET 
+			STATUS = 'N',      
+			WITHDRAW = '1'     
+		WHERE USER_ID = #{userId}	
+	</update>	
+	
+</mapper>
