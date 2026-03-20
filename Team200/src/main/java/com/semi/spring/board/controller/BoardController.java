@@ -27,23 +27,23 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/board")
 public class BoardController {
 
-//	private final BoardService boardService;
-//	private final ResourceLoader resourceLoader;
-//	private final ServletContext application; // application scope
-//	/*
-//	 * ResourceLoader
-//	 *  - 스프링에서 제공하는 자원 로딩 클래스
-//	 *  - classpath, file시스템, url등 다양한 경로상의 자원을 
-//	 *  "동일한" 인터페이스로 로드(입력)하는 메서드를 제공한다.
-//	 */
-//	
-//	// BoardType전역객체 설정
-//	// - 어플리케이션 전역에서 사용할 수 있는 BoardType 객체 추가
-//	// - 서버 가동중 1회만 수행되도록 설정
-//	
-//	
-//	
-//	
+	private final BoardService boardService;
+	private final ResourceLoader resourceLoader;
+	private final ServletContext application; // application scope
+	/*
+	 * ResourceLoader
+	 *  - 스프링에서 제공하는 자원 로딩 클래스
+	 *  - classpath, file시스템, url등 다양한 경로상의 자원을 
+	 *  "동일한" 인터페이스로 로드(입력)하는 메서드를 제공한다.
+	 */
+	
+	// BoardType전역객체 설정
+	// - 어플리케이션 전역에서 사용할 수 있는 BoardType 객체 추가
+	// - 서버 가동중 1회만 수행되도록 설정
+	
+	
+	
+	
 //	/*
 //	
 //	@GetMapping("/list/{boardCode}") 
@@ -55,7 +55,6 @@ public class BoardController {
 //			 *  - 선언한 동적 경로 변수는 @Pathvariable로 추출하여 사용할 수 있다
 //			 *  - @PathVariable로 추출한 자원은 자동으로 model영역에 추가된다
 //			 */
-//			,
 //			@RequestParam(value="page" , defaultValue = "1") int currentPage,
 //			// 현재 요청한 페이지 번호, 기본값을 1로 처리하여 값을 전달하지 않은 경우 항상 
 //			// 1페이지를 요청하도록 처리하였음

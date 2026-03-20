@@ -7,8 +7,7 @@
 		<setting name="jdbcTypeForNull" value="NULL"/>
 	</settings>
 
-<typeAliases>
-    <package name="com.semi.spring.member.model.vo"/>
-    <package name="com.semi.spring.board.model.vo"/> <package name="com.semi.spring.security.model.vo"/>
-</typeAliases>
+	<typeAliases>
+		<package name="com.semi.spring"/>
+	</typeAliases>
 </configuration>
