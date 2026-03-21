@@ -6,20 +6,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/board_view/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/board/board_view/script.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
     
     <title>LOG.GG - 게시글 보기</title>
 </head>
-<body>
-
-    <header>
-        <div class="header-left" onclick="location.href='main.html'">☰ 배틀그라운드 ▾</div>
-        <div class="user-nav">
-            <span>마이페이지</span>
-            <span><b>USER01</b> 님</span>
-            <button class="btn-logout">로그아웃</button>
-        </div>
-    </header>
+<body>	
+<c:set var="headerTitle" value="게시판" />
+<%@ include file="../common/header.jsp" %>
 
     <div class="main-layout">
         <aside class="side-left">

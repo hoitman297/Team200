@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/mypage/user_idpw/style.css">
-	<script src="${pageContext.request.contextPath}/resources/mypage/user_idpw/script.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_idpw/style.css">
+	<script src="${pageContext.request.contextPath}/resources/member/user_idpw/script.js"></script>
 
     <title>LOG.GG - 아이디/비밀번호 찾기</title>
 </head>
