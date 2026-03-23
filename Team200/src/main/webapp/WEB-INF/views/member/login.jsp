@@ -22,7 +22,11 @@
             <input type="password" placeholder="비밀번호를 입력하세요">
         </div>
         <button class="login-btn">로그인</button>
-        <div class="links">비밀번호 찾기 | 회원가입</div>
+        <div class="links">
+       	<a href="<c:url value = '/member/idpw' />">비밀번호 찾기</a>
+         | 
+        <a href="<c:url value = '/member/join' />">회원가입</a>
+         </div>
     </div>
 </body>
 </html>

@@ -19,7 +19,7 @@
         <form action="#" method="POST">
             <div class="form-group">
                 <div class="label-row"><span class="label">아이디</span></div>
-                <input type="text" value="user_id_sample" readonly>
+                <input type="text" value="^^" readonly>
                 <div class="notice">* 아이디는 변경할 수 없습니다.</div>
             </div>
 
@@ -28,7 +28,7 @@
                     <span class="label">현재 비밀번호 확인</span>
                     <button type="button" class="inner-btn">확인</button>
                 </div>
-                <input type="password" placeholder="정보 수정을 위해 현재 비번 입력">
+                <input type="password" placeholder="정보 수정을 위해 현재 비밀번호 입력">
             </div>
 
             <div class="form-group">
@@ -44,7 +44,7 @@
                     <span class="label">인증 이메일 변경</span>
                     <button type="button" class="inner-btn">인증</button>
                 </div>
-                <input type="email" value="old_email@log.gg">
+                <input type="email" value="email.naver.com">
             </div>
 
             <div class="form-group">
@@ -55,7 +55,7 @@
             <button type="submit" class="btn-submit">정보 수정 완료</button>
         </form>
         
-        <div class="withdraw-link">회원 탈퇴하기</div>
+        <a href="<c:url value = '/member/delete_p' />"><div class="withdraw-link">회원 탈퇴하기</div></a>
     </div>
 
 </body>

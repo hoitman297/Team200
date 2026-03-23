@@ -13,4 +13,5 @@
     <package name="com.semi.spring.security.model.vo"/>
     <package name="com.semi.spring.lol.model.vo"/>
 </typeAliases>
+
 </configuration>
