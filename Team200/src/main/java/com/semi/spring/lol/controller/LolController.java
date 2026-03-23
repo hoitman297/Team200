@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,13 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
-import com.semi.spring.lol.model.service.LolDataService;
 import com.semi.spring.lol.model.service.LolService;
 import com.semi.spring.lol.model.vo.ChampionVO;
 
@@ -83,7 +80,16 @@ public class LolController {
 	}
 	
 	@GetMapping("/hero_main/hero_info")
-	public String lol_hero_info() {
+	public String lol_hero_info(@RequestParam("champNo") int champNo, Model model) {
+	    // DB에서 챔피언 한 명의 정보를 가져오는 서비스 로직
+	    ChampionVO champ = lolService.getChampDeta(champNo); 
+	    
+	    if(champ == null) {
+	        return "redirect:/lol/main"; // 데이터 없으면 메인으로 튕기기
+	    }
+	    
+	    // 이 부분의 이름("champ")이 JSP의 ${champ}와 일치해야 함!
+	    model.addAttribute("champ", champ);
 		return "lol/lol_hero_info";
 	}
 	@GetMapping("/item")
