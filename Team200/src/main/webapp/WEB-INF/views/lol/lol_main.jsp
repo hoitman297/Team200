@@ -45,7 +45,7 @@
             <div class="board-card">
                 <div class="tab-menu">
                     <div class="tab-item">실시간 인기글</div>
-					<a href="<c:url value ='/lol/hero'/>">
+					<a href="<c:url value ='/lol/hero_main'/>">
 						<div class="tab-item">챔피언정보</div>
 					</a> <a href="<c:url value ='/lol/rune'/>">
 						<div class="tab-item">룬</div>
