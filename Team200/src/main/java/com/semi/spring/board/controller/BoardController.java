@@ -27,6 +27,68 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/board")
 public class BoardController {
 
+<<<<<<< HEAD
+	// 게시글 확인 페이지
+    @GetMapping("/view")
+    public String board_view() {
+        return "board/board_view"; 
+    }
+
+    // 자유게시판 메인
+    @GetMapping("/free")
+    public String board_freeMain() {
+        return "board/free_main";
+    }
+    
+    // 자유게시판 작성
+    @GetMapping("/freewrite")
+    public String board_freeWrite() {
+        return "board/free_write";
+    }
+
+    // 공략게시판 메인
+    @GetMapping("/strategy")
+    public String board_strategy() {
+        return "board/strategy_main";
+    }
+    
+    // 공략게시판 작성
+    @GetMapping("/strategywrite")
+    public String board_strategyWrite() {
+        return "board/strategy_write";
+    }
+    
+    // 문의 메인
+    @GetMapping("/inquiry")
+    public String board_inquiry() {
+        return "board/user_inquiry";
+    }
+    
+    // 문의 작성
+    @GetMapping("/inquiryWrite")
+    public String board_inquiryWrite() {
+        return "board/user_inquiry_write";
+    }
+
+	
+	private final BoardService boardService;
+	private final ResourceLoader resourceLoader;
+	private final ServletContext application; // application scope
+	/*
+	 * ResourceLoader
+	 *  - 스프링에서 제공하는 자원 로딩 클래스
+	 *  - classpath, file시스템, url등 다양한 경로상의 자원을
+	 *  "동일한" 인터페이스로 로드(입력)하는 메서드를 제공한다.
+	 */
+	
+	// BoardType전역객체 설정
+	// - 어플리케이션 전역에서 사용할 수 있는 BoardType 객체 추가
+	// - 서버 가동중 1회만 수행되도록 설정
+	
+	
+	
+	
+=======
 //	private final BoardService boardService;
 //	private final ResourceLoader resourceLoader;
 //	private final ServletContext application; // application scope
@@ -44,6 +106,7 @@ public class BoardController {
 //	
 //	
 //	
+>>>>>>> main
 //	/*
 //	
 //	@GetMapping("/list/{boardCode}") 

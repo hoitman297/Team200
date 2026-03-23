@@ -1,3 +1,14 @@
+.links a {
+    text-decoration: none; /* 밑줄 없애기 */
+    color: #aaa;           /* 기존 텍스트 색상과 통일 */
+}
+
+/* 마우스를 올렸을 때(hover) 색상을 살짝 어둡게 해서 클릭 가능함을 표시 */
+.links a:hover {
+    color: #888;
+    text-decoration: underline; /* 마우스 올렸을 때만 밑줄 표시 (선택 사항) */
+}
+
 body { background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
         .login-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 350px; text-align: center; }
         h1 { color: #1a2a3a; margin-bottom: 30px; font-size: 35px; letter-spacing: -1px;}
@@ -6,3 +17,5 @@ body { background-color: #f0f2f5; display: flex; justify-content: center; align-
         input { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; background-color: #fafafa; }
         .login-btn { width: 100%; padding: 12px; background-color: #2c3e50; border: none; border-radius: 8px; color: white; font-weight: bold; margin-top: 20px; cursor: pointer; }
         .links { margin-top: 15px; font-size: 12px; color: #aaa; }
+        
+        /* 링크의 기본 밑줄 제거 및 색상 유지 */

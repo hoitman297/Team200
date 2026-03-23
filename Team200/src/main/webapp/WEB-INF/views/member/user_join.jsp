@@ -16,15 +16,15 @@
         <h1>LOG.GG</h1>
         <h2>회원정보를 입력해주세요</h2>
         
-        <form action="#" method="POST">
+        <form action="<c:url value='/member/insert' />" method="POST">
             <div class="form-group">
                 <div class="label-row"><span class="label">아이디 (중복체크)</span><button type="button" class="inner-btn">확인</button></div>
-                <input type="text" placeholder="아이디 입력">
+                <input type="text" placeholder="아이디 입력" name="memberID">
             </div>
 
             <div class="form-group">
                 <div class="label-row"><span class="label">비밀번호</span></div>
-                <input type="password" placeholder="영문, 숫자 포함 8자 이상">
+                <input type="password" placeholder="영문, 숫자 포함 8자 이상" name="memberPwd">
             </div>
 
             <div class="form-group">
@@ -34,15 +34,15 @@
 
             <div class="form-group">
                 <div class="label-row"><span class="label">인증 이메일</span><button type="button" class="inner-btn">인증하기</button></div>
-                <input type="email" placeholder="example@log.gg">
+                <input type="email" placeholder="이메일 입력" name="email">
             </div>
 
             <div class="form-group">
                 <div class="label-row"><span class="label">닉네임 (중복체크)</span><button type="button" class="inner-btn">확인</button></div>
-                <input type="text" placeholder="사용할 닉네임">
+                <input type="text" placeholder="사용할 닉네임" name="nickname">
             </div>
 
-
+			
             <button type="submit" class="btn-submit">가입하기</button>
         </form>
     </div>
