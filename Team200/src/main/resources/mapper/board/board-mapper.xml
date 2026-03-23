@@ -112,10 +112,12 @@
 		</selectKey>
 		INSERT INTO BOARD (
 			BOARD_NO,USER_NO,CATEGORY_NO, 
+			GAME_CODE,
 			BOARD_CONTENT,BOARD_TITLE,
 			POST_DATE,BOARD_CD,READ_COUNT)
 		VALUES (
 		#{boardNo},#{userNo},#{categoryNo}, 
+		#{gameCode},
 		#{boardContent},#{boardTitle},
 		DEFAULT,DEFAULT,DEFAULT)
 	</insert>
@@ -220,11 +222,11 @@
     INSERT INTO REPORT (
         REPORT_NO, 
         USER_NO, BOARD_NO, REPLY_NO, 
-        CONTENT, REPORT_TYPE, STATUS
+        REPORT_CONTENT, REPORT_TYPE, STATUS
     ) VALUES (
         SEQ_REPORT_NO.NEXTVAL, 
         #{userNo}, #{boardNo},#{replyNo}, 
-        #{content}, #{reportType}, DEFAULT
+        #{reportContent}, #{reportType}, DEFAULT
     )
 	</insert>
 	
@@ -245,7 +247,7 @@
 	</update>
 
 	<!-- 공지사항 -->	
-	<select id="selectnotice" resultType="notice">
+	<select id="selectNotice" resultType="notice">
 		SELECT 
         	NOTICE_NO, 
         	TITLE, 
@@ -259,7 +261,7 @@
     	WHERE NOTICE_NO = #{noticeNo}
 	</select>
 	
-	<insert id="insertnotice">
+	<insert id="insertNotice">
 		INSERT INTO NOTICE (
 			NOTICE_NO,TITLE,
 			 NOTICE_CONTENT,POST_DATE
@@ -316,5 +318,80 @@
         PATCHNOTE_CONTENT = #{patchnoteContent}
     WHERE PATCHNOTE_NO = #{patchnoteNo}
 	</update>
+	
+	<!-- 1:1문의 -->
+	<select id="selectInquiry">
+	SELECT 
+        BOARD_NO, 
+        BOARD_TITLE, 
+        REASON, 
+        POST_DATE, 
+        ANSWER_STATUS
+    	FROM INQUIRY
+    WHERE USER_NO = #{userNo}
+    ORDER BY BOARD_NO DESC
+	</select>
+	
+	<select id="selectInquiryDetail">
+		SELECT * FROM INQUIRY
+		WHERE BOARD_NO = #{boardNo}		
+	</select>
+	
+	<select id="selectAdminInquiryList" resultType="inquiry">
+    SELECT * FROM INQUIRY
+    ORDER BY 
+        CASE WHEN ANSWER_STATUS = 'W' THEN 1 ELSE 2 END, 
+        POST_DATE ASC
+	</select>
+	
+	<insert id="insertInquiry">
+		<selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
+        SELECT SEQ_INQUIRY_NO.NEXTVAL FROM DUAL
+   		</selectKey>
+    INSERT INTO INQUIRY (
+        BOARD_NO, USER_NO, USER_NAME, 
+        BOARD_TITLE, BOARD_CONTENT, REASON, 
+        POST_DATE,ANSWER_STATUS, ANSWER
+    ) VALUES (
+        #{boardNo}, #{userNo}, #{userName}, 
+        #{boardTitle}, #{boardContent}, #{reason}, 
+        SYSDATE, DEFAULT, DEFAULT
+    )
+	</insert>
+	
+	<update id="updateInquiry">
+		UPDATE INQUIRY
+    SET 
+        ANSWER = #{answer},
+        ANSWER_STATUS = 'C'
+    WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<!-- 공감 -->
+	<insert id="insertBoardLike" parameterType="boardLike">
+    INSERT INTO BOARD_LIKES (USER_NO, BOARD_NO) 
+    VALUES (#{userNo}, #{boardNo})
+	</insert>
+	
+	<select id="checkBoardLike" parameterType="boardLike" resultType="int">
+    SELECT COUNT(*) FROM BOARD_LIKES 
+    WHERE USER_NO = #{userNo} AND BOARD_NO = #{boardNo}
+	</select>
+
+	<select id="selectBoardLikeCount" resultType="int">
+    SELECT COUNT(*) 
+    FROM BOARD_LIKES 
+    WHERE BOARD_NO = #{boardNo}
+	</select>
+	
+	<insert id="insertReplyLike" parameterType="replyLike">
+    INSERT INTO REPLY_LIKES (USER_NO, REPLY_NO) 
+    VALUES (#{userNo}, #{replyNo})
+	</insert>
+
+	<select id="checkReplyLike" parameterType="replyLike" resultType="int">
+    SELECT COUNT(*) FROM REPLY_LIKES 
+    WHERE USER_NO = #{userNo} AND REPLY_NO = #{replyNo}
+	</select>	
 	
 </mapper>
