@@ -13,7 +13,7 @@ public class Report {
 	    private int userNo;       
 	    private Integer boardNo;  
 	    private Integer replyNo; 
-	    private String content;
+	    private String reportContent;
 	    private String status;  
 	    private Date doneDate;
 	    private String reportType; 
