@@ -28,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label>이메일</label>
-                <input type="email" placeholder="이메일 입력">
+                <input type="email" placeholder="example@log.gg">
             </div>
             <button class="btn-main">아이디 찾기</button>
         </div>
@@ -45,14 +45,17 @@
             </div>
             <div class="form-group">
                 <label>가입 이메일</label>
-                <input type="email" placeholder="이메일 입력">
+                <input type="email" placeholder="example@log.gg">
             </div>
             <button class="btn-main">비밀번호 찾기</button>
         </div>
 
         <div class="footer-link">
-            <a href="<c:url value = '/member/login' />">로그인 화면으로 돌아가기</a>
+            <a href="login.html">로그인 화면으로 돌아가기</a>
         </div>
     </div>
+
+    <script src="/Front/JS/마이페이지/로그인관련/아이디비번찾기.js"></script>
+
 </body>
 </html>
