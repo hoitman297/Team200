@@ -28,6 +28,43 @@ public class MemberController {
 	@Autowired 
 	private MemberService memberService;
 	
+	// 마이페이지
+	@GetMapping("/mypage")
+	public String MemberMypage() {
+		return "member/user_mypage";
+	}
+	
+	// 회원정보 수정
+	@GetMapping("/update")
+	public String MemberUpdate() {
+		return "member/user_update";
+	}
+	
+	// 회원탈퇴 창
+	@GetMapping("/delete_p")
+	public String MemberDeletep() {
+		return "member/user_delete_pop";
+	}
+	
+	// 회원탈퇴
+	@GetMapping("/delete")
+	public String MemberDelete() {
+		return "member/user_delete";
+	}
+	
+	// 회원가입
+	@GetMapping("/join")
+	public String MemberJoin() {
+		return "member/user_join";
+	}
+	
+	// 아이디비밀번호 찾기
+	@GetMapping("/idpw")
+	public String memberIdpw() {
+		return "member/user_idpw";
+	}
+	
+	// 로그인
 	@GetMapping("/login")
 	public String loginMember() {
 		return "member/login";
