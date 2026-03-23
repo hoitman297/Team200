@@ -8,6 +8,4 @@ public interface LolService {
 
 	List<ChampionVO> selectAllChampions();
 
-	ChampionVO getChampDeta(int champNo);
-
 }

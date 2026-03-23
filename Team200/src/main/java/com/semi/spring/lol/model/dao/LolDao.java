@@ -10,6 +10,4 @@ public interface LolDao {
 
 	int insertChampion(ChampionVO vo);
 
-	ChampionVO getChampDeta(int champNo);
-
 }

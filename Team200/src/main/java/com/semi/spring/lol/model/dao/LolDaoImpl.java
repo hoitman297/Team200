@@ -40,10 +40,4 @@ public class LolDaoImpl implements LolDao {
 		return session.insert("lolMapper.insertChampion", vo);
 	}
 
-	@Override
-	public ChampionVO getChampDeta(int champNo) {
-		// TODO Auto-generated method stub
-		return session.selectOne("lolMapper.getChampDeta",champNo);
-	}
-
 }

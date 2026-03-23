@@ -3,53 +3,29 @@
 
 <mapper namespace="lolMapper">
 
-	<select id="selectAllChampions" resultType="championVO">
-		SELECT
-		CHAMP_NO AS
-		champNo, CHAMP_NAME AS champName,
-		CHAMP_POSITION AS champPosition,
-		CHAMP_ROLES AS champRoles,
-		CHAMP_IMG AS champImg
-		FROM CHAMP_INFO
-		ORDER BY
-		CHAMP_NAME ASC
-	</select>
+    <select id="selectAllChampions" resultType="com.semi.spring.lol.model.vo.ChampionVO">
+        SELECT
+            CHAMP_NAME AS champName,       CHAMP_POSITION AS champPosition,
+            CHAMP_ROLES AS champRoles,
+            CHAMP_IMG AS champImg
+        FROM CHAMP_INFO
+        ORDER BY CHAMP_NAME ASC
+    </select>
+    
+    <insert id="insertChampion" parameterType="com.semi.spring.lol.model.vo.ChampionVO">
+        INSERT INTO CHAMP_INFO (
+            CHAMP_NO,
+            CHAMP_NAME,
+            CHAMP_POSITION,
+            CHAMP_ROLES,
+            CHAMP_IMG
+        ) VALUES (
+            SEQ_CHAMP_NO.NEXTVAL, 
+            #{champName},
+            #{champPosition},
+            #{champRoles},
+            #{champImg}
+        )
+    </insert>
 
-	<insert id="insertChampion" parameterType="championVO">
-		INSERT INTO CHAMP_INFO
-		(
-		CHAMP_NO,
-		CHAMP_NAME,
-		CHAMP_POSITION,
-		CHAMP_ROLES,
-		CHAMP_IMG
-		) VALUES (
-		SEQ_CHAMP_NO.NEXTVAL,
-		#{champName},
-		#{champPosition},
-		#{champRoles},
-		#{champImg}
-		)
-	</insert>
-
-	<select id="getChampDeta" parameterType="int"
-		resultType="championVO">
-		SELECT
-		CHAMP_NO as champNo,
-		CHAMP_NAME as champName,
-		CHAMP_IMG as champImg,
-		CASE
-		WHEN LOWER(CHAMP_POSITION) LIKE '%assassin%' THEN '암살자'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%fighter%' THEN '전사'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%mage%' THEN '마법사'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%marksman%' THEN '원거리 딜러'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%support%' THEN '서포터'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%tank%' THEN '탱커'
-		ELSE CHAMP_POSITION
-		END as champPosition
-		FROM
-		CHAMP_INFO
-		WHERE
-		CHAMP_NO = #{champNo}
-	</select>
 </mapper>
