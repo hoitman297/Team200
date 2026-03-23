@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
-<<<<<<< HEAD
 	// 게시글 확인 페이지
     @GetMapping("/view")
     public String board_view() {
@@ -69,10 +68,6 @@ public class BoardController {
         return "board/user_inquiry_write";
     }
 
-	
-=======
-
->>>>>>> parent of bf55e09 (jsp 파일 수정 및 제이쿼리로 변환)
 	private final BoardService boardService;
 	private final ResourceLoader resourceLoader;
 	private final ServletContext application; // application scope

@@ -30,8 +30,7 @@
                         <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
                     </div>
                 </div>
-                
-                <div class="menu-item">고객지원</div>
+                <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
             </div>
         </aside>
 
