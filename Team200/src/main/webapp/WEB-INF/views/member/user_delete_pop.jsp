@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_delete_pop/style.css">
 	<script src="${pageContext.request.contextPath}/resources/member/user_delete_pop/script.js"></script>
-	
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_delete_pop/style.css?v=1.1">
+	<script src="${pageContext.request.contextPath}/resources/member/user_delete_pop/script.js?v=1.1"></script>
     <title>LOG.GG - 회원 탈퇴</title>
 </head>
 <body>
@@ -33,9 +34,13 @@
             </label>
 
             <div class="btn-group">
-                <button class="btn btn-cancel" onclick="history.back()">취소</button>
-                <a href="<c:url value = '/member/delete' />"><button class="btn btn-submit"  id="submitBtn">회원 탈퇴</button></a>
-            </div>
+    <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
+    <button type="button" 
+            class="btn btn-submit" 
+            id="submitBtn" 
+            disabled 
+            data-url="<c:url value='/member/delete' />">회원 탈퇴</button>
+			</div>
         </div>
     </div>
 </body>

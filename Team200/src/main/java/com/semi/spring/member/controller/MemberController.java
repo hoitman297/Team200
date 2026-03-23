@@ -40,6 +40,18 @@ public class MemberController {
 		return "member/user_update";
 	}
 	
+	// 게시글, 댓글 조회
+	@GetMapping("/activity")
+	public String MemberActivity() {
+		return "member/user_activity";
+	}
+	
+	// 삭제 및 수정
+	@GetMapping("/comment")
+	public String MemberComment() {
+		return "member/comment_edit";
+	}
+	
 	// 회원탈퇴 창
 	@GetMapping("/delete_p")
 	public String MemberDeletep() {
