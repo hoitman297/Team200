@@ -26,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
-
-<<<<<<< HEAD
 	// 게시글 확인 페이지
     @GetMapping("/view")
     public String board_view() {
@@ -76,9 +74,9 @@ public class BoardController {
 	private final ServletContext application; // application scope
 	/*
 	 * ResourceLoader
-	 *  - 스프링에서 제공하는 자원 로딩 클래스
-	 *  - classpath, file시스템, url등 다양한 경로상의 자원을
-	 *  "동일한" 인터페이스로 로드(입력)하는 메서드를 제공한다.
+	 * - 스프링에서 제공하는 자원 로딩 클래스
+	 * - classpath, file시스템, url등 다양한 경로상의 자원을
+	 * "동일한" 인터페이스로 로드(입력)하는 메서드를 제공한다.
 	 */
 	
 	// BoardType전역객체 설정
@@ -88,15 +86,14 @@ public class BoardController {
 	
 	
 	
-=======
 //	private final BoardService boardService;
 //	private final ResourceLoader resourceLoader;
 //	private final ServletContext application; // application scope
 //	/*
 //	 * ResourceLoader
-//	 *  - 스프링에서 제공하는 자원 로딩 클래스
-//	 *  - classpath, file시스템, url등 다양한 경로상의 자원을 
-//	 *  "동일한" 인터페이스로 로드(입력)하는 메서드를 제공한다.
+//	 * - 스프링에서 제공하는 자원 로딩 클래스
+//	 * - classpath, file시스템, url등 다양한 경로상의 자원을 
+//	 * "동일한" 인터페이스로 로드(입력)하는 메서드를 제공한다.
 //	 */
 //	
 //	// BoardType전역객체 설정
@@ -106,7 +103,6 @@ public class BoardController {
 //	
 //	
 //	
->>>>>>> main
 //	/*
 //	
 //	@GetMapping("/list/{boardCode}") 
@@ -114,9 +110,9 @@ public class BoardController {
 //			@PathVariable("boardCode") String boardCode
 //			/*
 //			 * @PathVariable
-//			 *  - lol , ow , bg로 바인딩
-//			 *  - 선언한 동적 경로 변수는 @Pathvariable로 추출하여 사용할 수 있다
-//			 *  - @PathVariable로 추출한 자원은 자동으로 model영역에 추가된다
+//			 * - lol , ow , bg로 바인딩
+//			 * - 선언한 동적 경로 변수는 @Pathvariable로 추출하여 사용할 수 있다
+//			 * - @PathVariable로 추출한 자원은 자동으로 model영역에 추가된다
 //			 */
 //			@RequestParam(value="page" , defaultValue = "1") int currentPage,
 //			// 현재 요청한 페이지 번호, 기본값을 1로 처리하여 값을 전달하지 않은 경우 항상
@@ -125,17 +121,17 @@ public class BoardController {
 //			@RequestParam Map<String, Object> paramMap
 //			/*
 //			 * @RequestParam Map<String, Object>
-//			 *  - 클라이언트가 전달한 파라미터의 key, value값을 Map형태로 만들어 바인딩
-//			 *  - 현재 메서드로 전달할 파라미터의 개수가 "정해지지 않은 경우" 혹은 일반적인
-//			 *  VO 클래스로 바인딩되지 않는 경우 사용한다. (검색파라미터)
-//			 *  - 반드시 @RequestParam을 추가해줘야 바인딩해준다
+//			 * - 클라이언트가 전달한 파라미터의 key, value값을 Map형태로 만들어 바인딩
+//			 * - 현재 메서드로 전달할 파라미터의 개수가 "정해지지 않은 경우" 혹은 일반적인
+//			 * VO 클래스로 바인딩되지 않는 경우 사용한다. (검색파라미터)
+//			 * - 반드시 @RequestParam을 추가해줘야 바인딩해준다
 //			 */
 //			) {
 //		/*
 //		 * 비지니스 로직
 //		 * 1. 페이징처리
 //		 *	 	1) 현재 요청한 게시판 코드와 검색정보와 일치하는 게시글의 "총 개수" 조회
-//		 * 		2) 게시글 갯수, 페이지 번호, 기본 파라미터들을 추출하여 페이징 정보를 가진 객체 생성
+//		 * 2) 게시글 갯수, 페이지 번호, 기본 파라미터들을 추출하여 페이징 정보를 가진 객체 생성
 //		 * 2. 현재 요청한 게시판 코드와 일치하면서, 현재 요청한 페이지에 맞는 게시글 정보를 조회
 //		 * 3. 게시글 정보, 페이징 정보, 검색 정보를 담아서 forward
 //		 */
