@@ -20,7 +20,7 @@
                 <p>일반 회원<br>email@naver.com</p>
             </div>
             
-            <button class="logout-btn" onclick="msg('로그아웃')">로그아웃</button>
+            <a href="<c:url value = '/member/login' />"><button class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
             
             <div class="logo-bottom">LOG.GG</div>
         </aside>
@@ -39,20 +39,26 @@
             <section class="card">
                 <h2>📝 <span style="color: #475569;">커뮤니티 활동</span></h2>
                 <div class="menu-grid">
+                	<a href="<c:url value = '/member/activity' />">
                     <div class="menu-item" onclick="msg('게시글 조회')">
                         <strong>작성한 게시글 / 댓글 조회</strong>
                         <span style="color: #ff5454; font-weight: bold;">내가 쓴 글 총 12개</span> 
                     </div>
+                    
+                    </a>
+                    <a href="<c:url value = '/member/comment' />">
                     <div class="menu-item" onclick="msg('삭제 관리')">
                         <strong>수정 및 삭제 관리</strong>
                         <span>일괄 삭제 기능을 제공합니다.</span>
                     </div>
+                    </a>
+                    
                 </div>
             </section>
 
             <section class="card">
                 <h2>⚠️ <span style="color: #475569;">기타 설정</span></h2>
-                <a href="../마이페이지/회원탈퇴1.html">
+                <a href="<c:url value = '/member/delete_p' />">
                 <div class="menu-grid">
                     <div class="menu-item withdraw-item" onclick="confirmWithdrawal()">
                         <strong>회원 탈퇴</strong>

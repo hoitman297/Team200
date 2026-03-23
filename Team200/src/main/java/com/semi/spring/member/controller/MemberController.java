@@ -28,6 +28,7 @@ public class MemberController {
 	@Autowired 
 	private MemberService memberService;
 	
+<<<<<<< HEAD
 	// 마이페이지
 	@GetMapping("/mypage")
 	public String MemberMypage() {
@@ -38,6 +39,18 @@ public class MemberController {
 	@GetMapping("/update")
 	public String MemberUpdate() {
 		return "member/user_update";
+	}
+	
+	// 게시글, 댓글 조회
+	@GetMapping("/activity")
+	public String MemberActivity() {
+		return "member/user_activity";
+	}
+	
+	// 삭제 및 수정
+	@GetMapping("/comment")
+	public String MemberComment() {
+		return "member/comment_edit";
 	}
 	
 	// 회원탈퇴 창
@@ -65,6 +78,8 @@ public class MemberController {
 	}
 	
 	// 로그인
+=======
+>>>>>>> parent of bf55e09 (jsp 파일 수정 및 제이쿼리로 변환)
 	@GetMapping("/login")
 	public String loginMember() {
 		return "member/login";
