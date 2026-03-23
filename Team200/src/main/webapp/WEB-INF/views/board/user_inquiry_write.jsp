@@ -30,8 +30,7 @@
                         <div class="sub-item" onclick="location.href='board-tip.html'">공략게시판</div>
                     </div>
                 </div>
-
-                <div class="menu-item" onclick="location.href='qna-list.html'">고객지원</div>
+                <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
             </div>
         </aside>
 

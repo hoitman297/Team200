@@ -28,7 +28,6 @@ public class MemberController {
 	@Autowired 
 	private MemberService memberService;
 	
-<<<<<<< HEAD
 	// 마이페이지
 	@GetMapping("/mypage")
 	public String MemberMypage() {
@@ -78,8 +77,6 @@ public class MemberController {
 	}
 	
 	// 로그인
-=======
->>>>>>> parent of bf55e09 (jsp 파일 수정 및 제이쿼리로 변환)
 	@GetMapping("/login")
 	public String loginMember() {
 		return "member/login";

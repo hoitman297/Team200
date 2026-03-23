@@ -20,7 +20,7 @@
 <title>${champ.champName}- 롤 상세</title>
 </head>
 <body>
-	<c:set var="headerTitle" value="롤" />
+	<c:set var="headerTitle" value="리그 오브 레전드" />
 	<%@ include file="../common/header.jsp"%>
 
 	<div class="main-layout">
