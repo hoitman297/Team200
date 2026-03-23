@@ -18,10 +18,4 @@ public class LolServiceImpl implements LolService {
 		return lolDao.selectAllChampions();
 	}
 
-	@Override
-	public ChampionVO getChampDeta(int champNo) {
-		// TODO Auto-generated method stub
-		return lolDao.getChampDeta(champNo);
-	}
-
 }
