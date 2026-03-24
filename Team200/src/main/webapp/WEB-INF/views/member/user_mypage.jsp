@@ -29,10 +29,12 @@
             <section class="card">
                 <h2>⚙️ <span style="color: #475569;">계정 설정</span></h2>
                 <div class="menu-grid">
+                	<a href="<c:url value = '/member/update' />">
                     <div class="menu-item" onclick="msg('회원 정보 및 비밀번호 수정')">
-                        <a href="<c:url value = '/member/update' />"><strong>회원 정보 수정</strong></a>
+                        <strong>회원 정보 수정</strong>
                         <span>이메일, 연락처 및 비밀번호를 변경합니다.</span>
                     </div>
+                    </a>
                 </div>
             </section>
 
