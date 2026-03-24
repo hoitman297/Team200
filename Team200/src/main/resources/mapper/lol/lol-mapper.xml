@@ -4,52 +4,144 @@
 <mapper namespace="lolMapper">
 
 	<select id="selectAllChampions" resultType="championVO">
-		SELECT
-		CHAMP_NO AS
+		SELECT CHAMP_NO AS
 		champNo, CHAMP_NAME AS champName,
 		CHAMP_POSITION AS champPosition,
 		CHAMP_ROLES AS champRoles,
-		CHAMP_IMG AS champImg
-		FROM CHAMP_INFO
-		ORDER BY
-		CHAMP_NAME ASC
+		CHAMP_IMG AS champImg, CHAMP_NAME AS id
+		FROM
+		CHAMP_INFO
+		ORDER BY CHAMP_NAME ASC
 	</select>
 
 	<insert id="insertChampion" parameterType="championVO">
-		INSERT INTO CHAMP_INFO
-		(
-		CHAMP_NO,
-		CHAMP_NAME,
-		CHAMP_POSITION,
-		CHAMP_ROLES,
-		CHAMP_IMG
+		<selectKey keyProperty="champNo" resultType="int"
+			order="BEFORE">
+			SELECT SEQ_CHAMP_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO CHAMP_INFO (
+		CHAMP_NO, CHAMP_NAME, CHAMP_POSITION,
+		CHAMP_ROLES, CHAMP_IMG
 		) VALUES (
-		SEQ_CHAMP_NO.NEXTVAL,
-		#{champName},
-		#{champPosition},
-		#{champRoles},
-		#{champImg}
+		#{champNo}, #{champName},
+		#{champPosition}, #{champRoles}, #{champImg}
 		)
 	</insert>
 
+	<insert id="insertChampionSkills" parameterType="skillVO">
+		INSERT INTO
+		CHAMP_SKILLS_INFO (
+		CHAMP_NO,
+		SKILL_P_NAME, SKILL_P_DESC, SKILL_P_IMG,
+		SKILL_Q_NAME, SKILL_Q_DESC, SKILL_Q_IMG,
+		SKILL_W_NAME, SKILL_W_DESC,
+		SKILL_W_IMG,
+		SKILL_E_NAME, SKILL_E_DESC, SKILL_E_IMG,
+		SKILL_R_NAME,
+		SKILL_R_DESC, SKILL_R_IMG
+		) VALUES (
+		#{champNo},
+		#{skillPName},
+		#{skillPDesc}, #{skillPImg},
+		#{skillQName}, #{skillQDesc},
+		#{skillQImg},
+		#{skillWName}, #{skillWDesc}, #{skillWImg},
+		#{skillEName}, #{skillEDesc}, #{skillEImg},
+		#{skillRName},
+		#{skillRDesc}, #{skillRImg}
+		)
+	</insert>
+
+	<insert id="insertChampionSkin" parameterType="skinVO">
+		INSERT INTO
+		CHAMP_SKIN_INFO (
+		CHAMP_SKIN_NO, CHAMP_NO, CHAMP_SKIN_NAME,
+		CHAMP_SKIN_IMG
+		) VALUES (
+		SEQ_CHAMP_SKIN_NO.NEXTVAL, #{champNo},
+		#{champSkinName}, #{champSkinImg}
+		)
+	</insert>
+
+	<resultMap id="champDetailMap" type="championVO">
+		<id property="champNo" column="CHAMP_NO" />
+		<result property="champName" column="CHAMP_NAME" />
+		<result property="champPosition" column="CHAMP_POSITION" />
+		<result property="champImg" column="CHAMP_IMG" />
+
+		<association property="skills" javaType="skillVO">
+			<result property="skillPName" column="SKILL_P_NAME" />
+			<result property="skillPDesc" column="SKILL_P_DESC" />
+			<result property="skillPImg" column="SKILL_P_IMG" />
+			<result property="skillQName" column="SKILL_Q_NAME" />
+			<result property="skillQDesc" column="SKILL_Q_DESC" />
+			<result property="skillQImg" column="SKILL_Q_IMG" />
+			<result property="skillWName" column="SKILL_W_NAME" />
+			<result property="skillWDesc" column="SKILL_W_DESC" />
+			<result property="skillWImg" column="SKILL_W_IMG" />
+			<result property="skillEName" column="SKILL_E_NAME" />
+			<result property="skillEDesc" column="SKILL_E_DESC" />
+			<result property="skillEImg" column="SKILL_E_IMG" />
+			<result property="skillRName" column="SKILL_R_NAME" />
+			<result property="skillRDesc" column="SKILL_R_DESC" />
+			<result property="skillRImg" column="SKILL_R_IMG" />
+		</association>
+
+		<collection property="skins" ofType="skinVO">
+			<id property="champSkinNo" column="CHAMP_SKIN_NO" />
+			<result property="champSkinName" column="CHAMP_SKIN_NAME" />
+			<result property="champSkinImg" column="CHAMP_SKIN_IMG" />
+		</collection>
+	</resultMap>
+
 	<select id="getChampDeta" parameterType="int"
-		resultType="championVO">
+		resultMap="champDetailMap">
 		SELECT
-		CHAMP_NO as champNo,
-		CHAMP_NAME as champName,
-		CHAMP_IMG as champImg,
+		C.CHAMP_NO, C.CHAMP_NAME, C.CHAMP_IMG,
 		CASE
-		WHEN LOWER(CHAMP_POSITION) LIKE '%assassin%' THEN '암살자'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%fighter%' THEN '전사'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%mage%' THEN '마법사'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%marksman%' THEN '원거리 딜러'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%support%' THEN '서포터'
-		WHEN LOWER(CHAMP_POSITION) LIKE '%tank%' THEN '탱커'
-		ELSE CHAMP_POSITION
-		END as champPosition
-		FROM
-		CHAMP_INFO
-		WHERE
-		CHAMP_NO = #{champNo}
+		WHEN
+		LOWER(C.CHAMP_POSITION) LIKE '%assassin%' THEN '암살자'
+		WHEN
+		LOWER(C.CHAMP_POSITION) LIKE '%fighter%' THEN '전사'
+		WHEN
+		LOWER(C.CHAMP_POSITION) LIKE '%mage%' THEN '마법사'
+		WHEN
+		LOWER(C.CHAMP_POSITION) LIKE '%marksman%' THEN '원거리 딜러'
+		WHEN
+		LOWER(C.CHAMP_POSITION) LIKE '%support%' THEN '서포터'
+		WHEN
+		LOWER(C.CHAMP_POSITION) LIKE '%tank%' THEN '탱커'
+		ELSE C.CHAMP_POSITION
+		END as CHAMP_POSITION,
+		S.*,
+		K.CHAMP_SKIN_NO, K.CHAMP_SKIN_NAME,
+		K.CHAMP_SKIN_IMG
+		FROM CHAMP_INFO C
+		LEFT JOIN CHAMP_SKILLS_INFO S ON
+		C.CHAMP_NO = S.CHAMP_NO
+		LEFT JOIN CHAMP_SKIN_INFO K ON C.CHAMP_NO =
+		K.CHAMP_NO
+		WHERE C.CHAMP_NO = #{champNo}
 	</select>
+
+	<select id="selectAllItems"
+		resultType="com.semi.spring.lol.model.vo.LolItemVO">
+		SELECT
+		ITEM_NO AS itemNo,
+		ITEM_NAME AS itemName,
+		ITEM_PRICE AS itemPrice,
+		ITEM_INFO AS itemInfo,
+		ITEM_IMG AS itemImg,
+		ITEM_TAG AS itemTag FROM LOL_ITEM_INFO
+		ORDER BY ITEM_PRICE ASC, ITEM_NAME ASC
+	</select>
+
+	<insert id="insertItem"
+		parameterType="com.semi.spring.lol.model.vo.LolItemVO">
+		INSERT INTO LOL_ITEM_INFO (
+		ITEM_NO, ITEM_NAME, ITEM_PRICE, ITEM_INFO, ITEM_IMG, ITEM_TAG ) VALUES (
+		#{itemNo}, #{itemName}, #{itemPrice}, #{itemInfo}, #{itemImg},
+		#{itemTag} )
+	</insert>
+
 </mapper>
