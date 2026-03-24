@@ -4,18 +4,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 
-<head>
-<meta charset="UTF-8">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<head>	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/lol/style.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/lol/script.js" defer></script>
 	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-    
-    <title>롤</title>
-</head>
+	<title>롤</title>
+	</head>
+
 
 <body>
 <c:set var="headerTitle" value="리그 오브 레전드" />
@@ -25,14 +24,20 @@
         <aside class="side-left">
             <div class="side-card">
                 <h3>카테고리</h3>
-                <a href="<c:url value = '/member/main' />"><div class="menu-item">갤러리</div></a>
-                <div class="menu-item">게시판</div>
-                <a href="<c:url value = '/board/free' />"><div class="sub-item">자유게시판</div></a>
-                <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
+                <a href="<c:url value = '/gallery/list' />"><div class="menu-item">갤러리</div></a>
+                
+                <div class="menu-item-group">
+                    <div class="menu-item">게시판</div>
+                    <div class="sub-menu-container">
+                        <a href="<c:url value = '/board/free_lol' />"><div class="sub-item">자유게시판</div></a>
+                        <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
+                    </div>
+                </div>
+                
                 <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
             </div>
         </aside>
-
+	
         <main class="content-area">
             <div class="top-row">
                     <a href="<c:url value = '/' />"><div class="logo">LOG.GG</div></a>

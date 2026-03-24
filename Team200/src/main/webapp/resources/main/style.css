@@ -15,6 +15,10 @@
             color: inherit;
         }
 
+
+        
+        
+
         body {
             margin: 0;
             padding: 0;
@@ -133,30 +137,36 @@
         }
 
         /* 사이드바 공통 */
-        .side-card {
-            background: white;
-            padding: 24px;
-            border-radius: 20px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 25px;
+.side-card { background: white; padding: 24px; border-radius: 20px; box-shadow: var(--card-shadow); margin-bottom: 25px; }
+        .side-card h3 { font-size: 16px; font-weight: 800; margin: 0 0 18px 0; color: var(--primary-navy); display: flex; align-items: center; gap: 10px; }
+        .side-card h3::before { content: ''; width: 4px; height: 16px; background: var(--accent-blue); border-radius: 2px; }
+        .menu-item { font-weight: 700; color: var(--primary-navy); padding: 10px 0; cursor: pointer; }
+
+        /* [수정 및 추가된 스타일: 하위 메뉴 구현] */
+        .menu-item-group { position: relative; } /* 그룹화를 위한 설정 */
+        
+        .sub-menu-container { 
+            display: none; /* 평소에는 안 보이게 설정 */
+            flex-direction: column;
+            padding-left: 20px; /* 이미지처럼 들여쓰기 효과 */
         }
 
-        .side-card h3 {
-            font-size: 16px;
-            font-weight: 800;
-            margin: 0 0 18px 0;
-            color: var(--primary-navy);
+        /* '게시판' 그룹에 마우스가 올라가면(hover) 하위 메뉴를 보여줌 */
+        .menu-item-group:hover .sub-menu-container {
             display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .side-card h3::before {
-            content: '';
-            width: 4px;
-            height: 16px;
-            background: var(--accent-blue);
-            border-radius: 2px;
+        .sub-item { 
+            padding: 8px 0; 
+            font-size: 14px; 
+            color: #64748b; 
+            cursor: pointer; 
+            transition: var(--transition);
+        }
+        
+        .sub-item:hover { 
+            color: var(--accent-blue); 
+            font-weight: 700; 
         }
 
         .list-item {
@@ -191,24 +201,8 @@
             font-weight: 800;
         }
 
-        .menu-item {
-            font-weight: 700;
-            color: var(--primary-navy);
-            padding: 10px 0;
-            cursor: pointer;
-        }
 
-        .sub-item {
-            padding: 8px 0 8px 20px;
-            font-size: 14px;
-            color: #64748b;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .sub-item:hover {
-            color: var(--accent-blue);
-        }
+ 
         
         
 

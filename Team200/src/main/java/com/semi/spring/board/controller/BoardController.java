@@ -32,18 +32,42 @@ public class BoardController {
         return "board/board_view"; 
     }
 
-    // 자유게시판 메인
-    @GetMapping("/free")
-    public String board_freeMain() {
-        return "board/free_main";
+    
+    // 자유게시판 메인 배그
+    @GetMapping("/free_battle")
+    public String board_freeBattleground() {
+        return "board/free_main_battleground";
+    }
+    // 자유게시판 메인 롤
+    @GetMapping("/free_lol")
+    public String board_freeLol() {
+        return "board/free_main_lol";
+    }
+    // 자유게시판 메인 옵치
+    @GetMapping("/free_over")
+    public String board_overwatch() {
+        return "board/free_main_overwatch";
     }
     
-    // 자유게시판 작성
-    @GetMapping("/freewrite")
-    public String board_freeWrite() {
-        return "board/free_write";
+    
+    // 자유게시판 작성 배그
+    @GetMapping("/free_write_battleground")
+    public String board_freeWriteBattleground() {
+        return "board/free_write_battleground";
+    }
+    // 자유게시판 작성 롤
+    @GetMapping("/free_write_lol")
+    public String board_freeWriteLol() {
+        return "board/free_write_lol";
+    }
+    // 자유게시판 작성 옵치
+    @GetMapping("/free_write_overwatch")
+    public String board_freeWriteOverwatch() {
+        return "board/free_write_overwatch";
     }
 
+    
+    
     // 공략게시판 메인
     @GetMapping("/strategy")
     public String board_strategy() {

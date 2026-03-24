@@ -5,11 +5,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/strategy_main/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/board_main/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
 	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-	<script src="${pageContext.request.contextPath}/resources/board/strategy_main/script.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/board/board_main/script.js"></script>
 
     <title>LOG.GG - 공략 게시판 </title>
 </head>
@@ -21,7 +21,7 @@
         <aside class="side-left">
             <div class="side-card">
                 <h3>카테고리</h3>
-                <div class="menu-item">갤러리</div>
+                <a href="<c:url value = '/gallery/list' />"><div class="menu-item">갤러리</div></a>
                 
                 <div class="menu-item-group">
                     <div class="menu-item">게시판</div>
