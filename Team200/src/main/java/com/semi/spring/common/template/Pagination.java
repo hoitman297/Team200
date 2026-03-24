@@ -1,5 +1,7 @@
 package com.semi.spring.common.template;
 
+import java.util.Map;
+
 import com.semi.spring.common.model.vo.PageInfo;
 
 public class Pagination {
@@ -31,5 +33,10 @@ public class Pagination {
 		pi.setMaxPage(maxPage);
 		
 		return pi;
+	}
+
+	public static Map<String, Object> getPagination(int cp, int listCount, int i, int j) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
