@@ -18,13 +18,19 @@
 <c:set var="headerTitle" value="배틀그라운드" />
 <%@ include file="../common/header.jsp" %>
 	    <div class="main-layout">
-        <aside class="side-left">
+	<aside class="side-left">
             <div class="side-card">
                 <h3>카테고리</h3>
-                <a href="<c:url value = '/member/main' />"><div class="menu-item">갤러리</div></a>
-                <div class="menu-item">게시판</div>
-                <a href="<c:url value = '/board/free' />"><div class="sub-item">자유게시판</div></a>
-                <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
+                <a href="<c:url value = '/gallery/list' />"><div class="menu-item">갤러리</div></a>
+                
+                <div class="menu-item-group">
+                    <div class="menu-item">게시판</div>
+                    <div class="sub-menu-container">
+                        <a href="<c:url value = '/board/free_battle' />"><div class="sub-item">자유게시판</div></a>
+                        <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
+                    </div>
+                </div>
+                
                 <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
             </div>
         </aside>

@@ -22,17 +22,17 @@
         <aside class="side-left">
             <div class="side-card">
                 <h3>카테고리</h3>
-                <div class="menu-item active" onclick="location.href='gallery.html'">갤러리</div>
+                <a href="<c:url value = '/gallery/list' />"><div class="menu-item">갤러리</div></a>
                 
                 <div class="menu-item-group">
                     <div class="menu-item">게시판</div>
                     <div class="sub-menu-container">
-                        <div class="sub-item" onclick="location.href='board-free.html'">자유게시판</div>
-                        <div class="sub-item" onclick="location.href='board-tip.html'">공략게시판</div>
+                        <a href="<c:url value = '/board/free' />"><div class="sub-item">자유게시판</div></a>
+                        <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
                     </div>
                 </div>
                 
-                <div class="menu-item" onclick="location.href='qna-list.html'">고객지원</div>
+                <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
             </div>
         </aside>
 

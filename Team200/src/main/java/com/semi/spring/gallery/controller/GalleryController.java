@@ -14,13 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 public class GalleryController {
 
 	// 갤러리
-	@GetMapping("/list")
+	@RequestMapping("/list")
 	public String galleryList() {
         return "gallery/gallery_list"; 
     }
 	
 	// 갤러리 등록
-	@GetMapping("/write")
+	@RequestMapping("/write")
 	public String galleryWrite() {
         return "gallery/gallery_write"; 
     }
