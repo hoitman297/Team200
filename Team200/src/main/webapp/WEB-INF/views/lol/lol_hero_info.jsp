@@ -31,8 +31,7 @@
 				<div class="menu-item">게시판</div>
 				<div class="sub-item">자유게시판</div>
 				<div class="sub-item">공략게시판</div>
-				<div class="menu-item">미디어</div>
-				<div class="menu-item">1:1 문의</div>
+				<div class="menu-item">고객지원</div>
 			</div>
 		</aside>
 
