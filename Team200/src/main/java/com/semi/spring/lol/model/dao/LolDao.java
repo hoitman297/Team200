@@ -1,14 +1,13 @@
 package com.semi.spring.lol.model.dao;
 
 import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.session.RowBounds;
 
 import com.semi.spring.lol.model.vo.ChampionVO;
 import com.semi.spring.lol.model.vo.LolItemVO;
+import com.semi.spring.lol.model.vo.RuneVO;
 import com.semi.spring.lol.model.vo.SkillVO;
 import com.semi.spring.lol.model.vo.SkinVO;
+import com.semi.spring.lol.model.vo.TalentVO;
 
 public interface LolDao {
     List<ChampionVO> selectAllChampions();
@@ -20,4 +19,9 @@ public interface LolDao {
     int insertChampionSkin(SkinVO skin);
 	List<LolItemVO> selectAllItems();
 	int insertItem(LolItemVO itemVO);
+	
+	int insertRune(RuneVO rune);
+	int insertTalent(TalentVO talent);
+	List<RuneVO> selectAllRunes();
+	List<TalentVO> selectTalentsByRune(int runeNo);
 }

@@ -10,8 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import com.semi.spring.lol.model.vo.ChampionVO;
 import com.semi.spring.lol.model.vo.LolItemVO;
+import com.semi.spring.lol.model.vo.RuneVO;
 import com.semi.spring.lol.model.vo.SkillVO;
 import com.semi.spring.lol.model.vo.SkinVO;
+import com.semi.spring.lol.model.vo.TalentVO;
 
 @Repository
 public class LolDaoImpl implements LolDao {
@@ -74,5 +76,26 @@ public class LolDaoImpl implements LolDao {
 		
 	}
 
+	@Override
+	public int insertRune(RuneVO rune) {
+		// TODO Auto-generated method stub
+		return session.insert("lolMapper.insertRune",rune);
+	}
 
+	@Override
+	public int insertTalent(TalentVO talent) {
+		// TODO Auto-generated method stub
+		return session.insert("lolMapper.insertTalent",talent);
+	}
+
+	@Override
+	public List<RuneVO> selectAllRunes() {
+	    return session.selectList("lolMapper.selectAllRunes");
+	}
+
+	@Override
+	public List<TalentVO> selectTalentsByRune(int runeNo) {
+		// TODO Auto-generated method stub
+		return session.selectList("lolMapper.selectTalentsByRune",runeNo);
+	}
 }

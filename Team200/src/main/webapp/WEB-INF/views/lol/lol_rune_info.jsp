@@ -6,18 +6,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/lol/style.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/lol/script.js" defer></script>
-<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/lol/style.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/main/style.css">
+<script> const contextPath = "${pageContext.request.contextPath}"; </script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/lol/script.js"
+	defer></script>
+<script
+	src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
 
-<title>롤</title>
+<title>롤 룬 정보 - LOG.GG</title>
 </head>
 <body>
-	<c:set var="headerTitle" value="롤" />
+	<c:set var="headerTitle" value="리그 오브 레전드" />
 	<%@ include file="../common/header.jsp"%>
-
 
 	<div class="main-layout">
 		<aside class="side-left">
@@ -33,34 +38,24 @@
 		</aside>
 
 		<main>
-			<a href="<c:url value ='/lol/main'/>"><div class="logo">LOG.GG</div></a>
+			<a href="<c:url value='/lol/main'/>"><div class="logo">LOG.GG</div></a>
+
 			<div class="rune-container">
 				<div class="rune-visual-section">
+
 					<div class="path-selector" id="main-path-selector">
-						<img
-							src="https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7201_Precision.png"
-							class="path-icon active" data-path="Precision"> <img
-							src="https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7200_Domination.png"
-							class="path-icon" data-path="Domination"> <img
-							src="https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7202_Sorcery.png"
-							class="path-icon" data-path="Sorcery"> <img
-							src="https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7204_Resolve.png"
-							class="path-icon" data-path="Resolve"> <img
-							src="https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/7203_Whimsy.png"
-							class="path-icon" data-path="Inspiration">
+						<c:forEach var="rune" items="${runeList}">
+							<img src="${rune.runeImg}" class="path-icon"
+								onclick="loadTalents(${rune.runeNo}, '${rune.runeName}', this)"
+								title="${rune.runeName}">
+						</c:forEach>
 					</div>
 
 					<div class="rune-grid">
-						<div class="rune-col" id="primary-rune-col">
-							<h5 id="primary-path-name">핵심 빌드: 정밀</h5>
-							<div id="primary-slots-container"></div>
-						</div>
-
-						<div class="rune-col">
-							<div class="stat-shards">
-								<h5>능력치 파편</h5>
-								<div id="stat-shards-container"></div>
-							</div>
+						<div class="rune-col" id="primary-rune-col" style="width: 100%;">
+							<h5 id="primary-path-name" style="margin-bottom: 20px;">핵심빌드를 선택해주세요</h5>
+							
+							<div id="primary-slots-container" class="slots-layout"></div>
 						</div>
 					</div>
 				</div>
@@ -68,7 +63,8 @@
 				<div class="rune-desc-section">
 					<div id="desc-name">룬을 선택하세요</div>
 					<div class="desc-box">
-						<div id="desc-text">룬 아이콘을 클릭하면 상세한 효과와 능력치가 여기에 표시.</div>
+						<div id="desc-text">좌측에서 특성 아이콘을 클릭하면 상세한 효과와 능력치가 여기에
+							표시됩니다.</div>
 					</div>
 				</div>
 			</div>
@@ -78,13 +74,12 @@
 			<div class="side-card">
 				<h3>최근 업데이트</h3>
 				<div style="font-size: 13px; color: #475569; padding: 10px;">
-					룬 시스템 밸런스 패치 노트<br> 신규 룬 '전설: 가속' 추가
+					룬 시스템 밸런스 패치 노트<br> 신규 룬 업데이트 대기 중
 				</div>
 			</div>
 		</aside>
 	</div>
 
 	<%@ include file="../common/footer.jsp"%>
-
 </body>
 </html>

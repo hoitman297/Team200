@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
@@ -22,6 +23,8 @@ import com.semi.spring.lol.model.dao.LolDao;
 import com.semi.spring.lol.model.service.LolService;
 import com.semi.spring.lol.model.vo.ChampionVO;
 import com.semi.spring.lol.model.vo.LolItemVO;
+import com.semi.spring.lol.model.vo.RuneVO;
+import com.semi.spring.lol.model.vo.TalentVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -113,9 +116,30 @@ public class LolController {
 	}
 
 	@GetMapping("/rune")
-	public String lol_rune() {
-		return "lol/lol_rune_info";
-	}
+    public String lol_rune(Model model) {
+        log.info("=== 룬 페이지 요청 들어옴 ===");
+        
+        // 1. RUNE_INFO 테이블에서 '정밀', '지배' 등 5개 빌드 정보 가져오기
+        List<RuneVO> runeList = lolService.selectAllRunes();
+        
+        // 2. JSP로 데이터 전달
+        model.addAttribute("runeList", runeList);
+        
+        return "lol/lol_rune_info";
+    }
+
+    // [추가] 특정 룬 빌드를 클릭했을 때 해당 특성(TALENT_INFO) 목록을 반환 (AJAX 전용)
+    @ResponseBody
+    @GetMapping(value="/runes/talents", produces="application/json; charset=UTF-8")
+    public List<TalentVO> getTalentList(@RequestParam("runeNo") int runeNo) {
+        log.info("=== {}번 룬의 특성 목록 요청 ===", runeNo);
+        
+        // 해당 룬 번호(FK)를 가진 모든 특성(Talent) 조회
+        List<TalentVO> talentList = lolService.selectTalentsByRune(runeNo);
+        
+        // JSON 문자열로 변환하여 응답
+        return talentList;
+    }
 
 	@GetMapping("/box")
 	public String lol_box() {

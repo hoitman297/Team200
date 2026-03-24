@@ -11,6 +11,8 @@ import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.lol.model.dao.LolDao;
 import com.semi.spring.lol.model.vo.ChampionVO;
 import com.semi.spring.lol.model.vo.LolItemVO;
+import com.semi.spring.lol.model.vo.RuneVO;
+import com.semi.spring.lol.model.vo.TalentVO;
 
 @Service
 public class LolServiceImpl implements LolService {
@@ -27,6 +29,18 @@ public class LolServiceImpl implements LolService {
 		// TODO Auto-generated method stub
 		return lolDao.getChampDeta(champNo);
 	}
-	
 
+	@Override
+	public List<RuneVO> selectAllRunes() {
+		// TODO Auto-generated method stub
+		return lolDao.selectAllRunes();
+	}
+
+	@Override
+	public List<TalentVO> selectTalentsByRune(int runeNo) {
+		// TODO Auto-generated method stub
+		return lolDao.selectTalentsByRune(runeNo);
+	}
+	
+	
 }
