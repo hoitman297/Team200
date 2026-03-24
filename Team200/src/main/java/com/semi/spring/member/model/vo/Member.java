@@ -21,5 +21,7 @@ public class Member {
     private String status;
     private Date modifiedDate;
     
+    private String email;
+    
     // private String userRole; 유저 권한까지 넣어야 되나?
 }

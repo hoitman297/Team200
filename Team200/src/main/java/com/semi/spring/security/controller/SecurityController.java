@@ -53,12 +53,12 @@ public class SecurityController {
 		return "common/errorPage";
 	}
 	
-	@GetMapping("/insert")
+	@GetMapping("/join")
 	public String enroll(@ModelAttribute Member member) { // model영역에 커맨드객체 바인딩
-		return "member/memberEnrollForm";
+		return "member/user_join";
 	}
 
-	@PostMapping("/insert")
+	@PostMapping("/join")
 	public String register(
 		@Validated @ModelAttribute Member member,
 		BindingResult bindingResult, // 유효성검사결과.
@@ -66,13 +66,13 @@ public class SecurityController {
 	) {
 		// 유효성 검사 실패
 		if(bindingResult.hasErrors()) {
-			return "member/memberEnrollForm";
+			return "member/user_join";
 		}
 		
 		// 유효성 검사 성공시 비밀번호 암호화하여 회원가입 진행
 		String encryptedPassword
 			= passwordEncoder.encode(member.getUserPwd());
-		member.setUserPwd(encryptedPassword); // 원래는 Filter에서 처리
+		member.setUserPwd(encryptedPassword); 
 		
 		mService.insertMember(member);
 		return "redirect:/member/login";

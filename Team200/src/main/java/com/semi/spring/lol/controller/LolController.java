@@ -17,6 +17,8 @@ import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
+import com.semi.spring.lol.model.service.LolService;
+import com.semi.spring.lol.model.vo.ChampionVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class LolController {
-	
+	private final LolService lolService;
 	private final BoardService boardService;
 	private final ResourceLoader resourceLoader;
 	private final ServletContext application;
@@ -65,11 +67,31 @@ public class LolController {
 		// 아직 수정중
 	}
 	
-	@GetMapping("/hero")
-	public String lol_hero() {
-		return "lol/lol_hero_info";
+	@RequestMapping("/hero_main")
+	public String lol_hero(Model model) {
+		// 1. DB에서 챔피언 리스트 가져오기
+        List<ChampionVO> champList = lolService.selectAllChampions();
+        
+        // 2. JSP로 데이터 전달
+        model.addAttribute("champList", champList);
+        
+        // 3. 롤 페이지(JSP) 리턴
+        return "lol/lol_hero_main";
 	}
 	
+	@GetMapping("/hero_main/hero_info")
+	public String lol_hero_info(@RequestParam("champNo") int champNo, Model model) {
+	    // DB에서 챔피언 한 명의 정보를 가져오는 서비스 로직
+	    ChampionVO champ = lolService.getChampDeta(champNo); 
+	    
+	    if(champ == null) {
+	        return "redirect:/lol/main"; // 데이터 없으면 메인으로 튕기기
+	    }
+	    
+	    // 이 부분의 이름("champ")이 JSP의 ${champ}와 일치해야 함!
+	    model.addAttribute("champ", champ);
+		return "lol/lol_hero_info";
+	}
 	@GetMapping("/item")
 	public String lol_item() {
 		return "lol/lol_item_info";
@@ -84,5 +106,7 @@ public class LolController {
 	public String lol_box() {
 		return "lol/box";
 	}
+	
+
 	
 }

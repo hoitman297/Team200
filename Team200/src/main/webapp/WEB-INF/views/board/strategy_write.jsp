@@ -7,20 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/strategy_write/style.css">
 	<script src="${pageContext.request.contextPath}/resources/board/strategy_write/script.js"></script>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+
     <title>LOG.GG - 공략게시판 글쓰기</title>
 </head>
 <body>
-
-    <header>
-        <div class="header-left" onclick="location.href='main.html'">☰ 배틀그라운드 ▾</div>
-        <div class="user-nav">
-            <span>마이페이지</span>
-            <span><b>USER01</b> 님</span>
-            <button class="btn-logout">로그아웃</button>
-        </div>
-    </header>
-
+	<c:set var="headerTitle" value="게시판" />
+    <%@ include file="../common/header.jsp" %>
+    
     <div class="main-layout">
         <aside class="side-left">
             <div class="side-card">
@@ -30,17 +26,17 @@
                 <div class="menu-item-group">
                     <div class="menu-item">게시판</div>
                     <div class="sub-menu-container">
-                        <div class="sub-item" onclick="location.href='board-free.html'">자유게시판</div>
-                        <div class="sub-item" onclick="location.href='board-tip.html'">공략게시판</div>
+                        <a href="<c:url value = '/board/free' />"><div class="sub-item">자유게시판</div></a>
+                        <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
                     </div>
                 </div>
                 
-                <div class="menu-item" onclick="location.href='qna-list.html'">고객지원</div>
+                <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
             </div>
         </aside>
 
         <main class="content-area">
-            <div class="logo">LOG.GG</div>
+            <a href="<c:url value = '/' />"><div class="logo">LOG.GG</div></a>
 
             <div class="write-container">
                 <div class="category-fixed-bar">

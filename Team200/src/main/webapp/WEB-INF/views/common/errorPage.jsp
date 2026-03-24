@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>

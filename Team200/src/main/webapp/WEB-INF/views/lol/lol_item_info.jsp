@@ -6,20 +6,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/lol/style.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/main/style.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/lol/script.js"
-	defer></script>
-<script
-	src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/lol/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/lol/script.js" defer></script>
+<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+
 <title>롤</title>
 </head>
 <body>
-	<c:set var="headerTitle" value="롤" />
+	<c:set var="headerTitle" value="리그 오브 레전드" />
 	<%@ include file="../common/header.jsp"%>
 
 

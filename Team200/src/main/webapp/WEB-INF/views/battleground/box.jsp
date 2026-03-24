@@ -4,21 +4,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/batterground/style.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/main/style.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/box/style.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/batterground/script.js"
-	defer></script>
-<script
-	src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-<script src="${pageContext.request.contextPath}/resources/box/script.js"
-	defer></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/batterground/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/box/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/batterground/script.js" defer></script>
+<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+<script src="${pageContext.request.contextPath}/resources/box/script.js" defer></script>
+
 <title>오버워치</title>
 </head>
 <body>

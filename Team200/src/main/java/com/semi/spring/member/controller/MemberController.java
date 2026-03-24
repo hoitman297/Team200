@@ -28,6 +28,69 @@ public class MemberController {
 	@Autowired 
 	private MemberService memberService;
 	
+	// 마이페이지
+	@GetMapping("/mypage")
+	public String MemberMypage() {
+		return "member/user_mypage";
+	}
+	
+	// 회원정보 수정
+	@GetMapping("/update")
+	public String MemberUpdate() {
+		return "member/user_update";
+	}
+	
+	// 게시글, 댓글 조회
+	@GetMapping("/activity")
+	public String MemberActivity() {
+		return "member/user_activity";
+	}
+	
+	// 삭제 및 수정
+	@GetMapping("/comment")
+	public String MemberComment() {
+		return "member/comment_edit";
+	}
+	
+	// 회원탈퇴 창
+	@GetMapping("/delete_p")
+	public String MemberDeletep() {
+		return "member/user_delete_pop";
+	}
+	
+	// 회원탈퇴
+	@GetMapping("/delete")
+	public String MemberDelete() {
+		return "member/user_delete";
+	}
+	
+	// 회원가입
+	@GetMapping("/join")
+	public String MemberJoin(Model model) {
+		model.addAttribute("member", new Member());
+		return "member/user_join";
+	}
+	
+	@PostMapping("/join")
+	public String MemberJoinPost(Member m , Model model, RedirectAttributes ra) {
+		int result = memberService.insertMember(m);
+		
+		if(result > 0) {
+			ra.addFlashAttribute("alertMsg","회원가입 성공");
+			return "redirect:/member/join";
+		}else{
+			model.addAttribute("errorMsg","회원가입에 실패했습니다.");
+			return "common/errorPage";
+		}
+	}
+	
+	// 아이디비밀번호 찾기
+	@GetMapping("/idpw")
+	public String memberIdpw() {
+		return "member/user_idpw";
+	}
+	
+	// 로그인
 	@GetMapping("/login")
 	public String loginMember() {
 		return "member/login";
@@ -75,9 +138,18 @@ public class MemberController {
 	
 	// 회원가입 아이디 중복확인
 	@ResponseBody // 반환값을 jsp가 아닌, 반환해야할 값으로 처리하게하는 주석
-	@GetMapping("/idcheck")
+	@GetMapping("/idCheck")
 	public int idCheck(String userId) {
 		int result = memberService.idCheck(userId);
+		
+		return result;
+	}
+	
+	//회원가입 닉네임 중복확인
+	@ResponseBody // 반환값을 jsp가 아닌, 반환해야할 값으로 처리하게하는 주석
+	@GetMapping("/nameCheck")
+	public int nameCheck(String userName) {
+		int result = memberService.nameCheck(userName);
 		
 		return result;
 	}

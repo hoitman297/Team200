@@ -7,18 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/gallery/gallery_list/style.css">
 	<script src="${pageContext.request.contextPath}/resources/gallery/gallery.list/script.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
 	
     <title>LOG.GG - 갤러리</title>
 </head>
 <body>
-    <header>
-        <div class="header-left">☰ 배틀그라운드 ▾</div>
-        <div class="user-nav">
-            <span>마이페이지</span>
-            <span><b>USER01</b> 님</span>
-            <button class="btn-logout">로그아웃</button>
-        </div>
-    </header>
+    <c:set var="headerTitle" value="갤러리" />
+	<%@ include file="../common/header.jsp" %>
 
     <div class="main-layout">
         <aside class="side-left">

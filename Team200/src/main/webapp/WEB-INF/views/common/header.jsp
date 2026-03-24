@@ -15,7 +15,7 @@
 				<%-- 폴더명 사진 확인: batterground --%>
 				<a href="<c:url value = '/battleground/main' />">배틀그라운드</a>
 			</c:if>
-			<c:if test="${headerTitle ne '롤'}">
+			<c:if test="${headerTitle ne '리그 오브 레전드'}">
 				<a href="<c:url value = '/lol/main' />">리그 오브 레전드</a>
 			</c:if>
 			<c:if test="${headerTitle ne '오버워치'}">
@@ -26,7 +26,21 @@
 	</div>
 
 	<div class="user-nav">
-		<span>마이페이지</span> <span>개인정보 수정</span> <span><b>USER01</b> 님</span>
-		<button class="btn-logout">로그아웃</button>
+		<%-- JSTL을 활용한 로그인 상태 분기 처리 --%>
+		<c:choose>
+			<%-- 1. 로그인 상태일 때 (세션에 loginUser 정보가 있을 때) --%>
+			<c:when test="${not empty sessionScope.loginUser}">
+				<a href="<c:url value = '/member/mypage' />"><span>마이페이지</span></a>
+				<a href="<c:url value = '/member/update' />"><span>개인정보 수정</span></a>
+				<%-- 고정된 USER01 대신 세션에 담긴 유저의 아이디나 닉네임을 출력할 수 있어요 --%>
+				<span><b>${sessionScope.loginUser.userId}</b> 님</span>
+				<a href="<c:url value = '/member/logout' />"><button class="btn-logout">로그아웃</button></a>
+			</c:when>
+			
+			<%-- 2. 비로그인 상태일 때 (세션에 정보가 없을 때) --%>
+			<c:otherwise>
+				<a href="<c:url value = '/member/login' />"><button class="btn-login">로그인</button></a>
+			</c:otherwise>
+		</c:choose>
 	</div>
 </header>

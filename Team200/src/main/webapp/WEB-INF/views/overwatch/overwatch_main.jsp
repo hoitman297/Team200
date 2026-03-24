@@ -5,17 +5,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/overwatch/style.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/main/style.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/overwatch/script.js"
-	defer></script>
-<script
-	src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/overwatch/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/overwatch/script.js" defer></script>
+<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
 <title>오버워치</title>
 </head>
 
@@ -27,12 +21,11 @@
 		<aside class="side-left">
 			<div class="side-card">
 				<h3>카테고리</h3>
-				<div class="menu-item">갤러리</div>
-				<div class="menu-item">게시판</div>
-				<div class="sub-item">자유게시판</div>
-				<div class="sub-item">공략게시판</div>
-				<div class="menu-item">미디어</div>
-				<div class="menu-item">1:1 문의</div>
+				<a href="<c:url value = '/member/main' />"><div class="menu-item">갤러리</div></a>
+                <div class="menu-item">게시판</div>
+                <a href="<c:url value = '/board/free' />"><div class="sub-item">자유게시판</div></a>
+                <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
+                <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
 			</div>
 		</aside>
 
