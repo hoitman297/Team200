@@ -129,19 +129,68 @@
 		SELECT
 		ITEM_NO AS itemNo,
 		ITEM_NAME AS itemName,
-		ITEM_PRICE AS itemPrice,
+		ITEM_PRICE AS
+		itemPrice,
 		ITEM_INFO AS itemInfo,
 		ITEM_IMG AS itemImg,
-		ITEM_TAG AS itemTag FROM LOL_ITEM_INFO
+		ITEM_TAG AS
+		itemTag FROM LOL_ITEM_INFO
 		ORDER BY ITEM_PRICE ASC, ITEM_NAME ASC
 	</select>
 
 	<insert id="insertItem"
 		parameterType="com.semi.spring.lol.model.vo.LolItemVO">
 		INSERT INTO LOL_ITEM_INFO (
-		ITEM_NO, ITEM_NAME, ITEM_PRICE, ITEM_INFO, ITEM_IMG, ITEM_TAG ) VALUES (
-		#{itemNo}, #{itemName}, #{itemPrice}, #{itemInfo}, #{itemImg},
+		ITEM_NO, ITEM_NAME,
+		ITEM_PRICE, ITEM_INFO, ITEM_IMG, ITEM_TAG ) VALUES (
+		#{itemNo},
+		#{itemName}, #{itemPrice}, #{itemInfo}, #{itemImg},
 		#{itemTag} )
 	</insert>
+
+	<insert id="insertRune"
+		parameterType="com.semi.spring.lol.model.vo.RuneVO">
+		INSERT INTO RUNE_INFO (RUNE_NO, RUNE_NAME, RUNE_INFO, RUNE_IMG)
+		VALUES
+		(SEQ_RUNE_NO.NEXTVAL, #{runeName}, #{runeInfo}, #{runeImg})
+		<selectKey keyProperty="runeNo" resultType="int"
+			order="AFTER">
+			SELECT SEQ_RUNE_NO.CURRVAL FROM DUAL
+		</selectKey>
+	</insert>
+
+	<insert id="insertTalent"
+		parameterType="com.semi.spring.lol.model.vo.TalentVO">
+		INSERT INTO TALENT_INFO (TALENT_NO, RUNE_NO,
+		TALENT_NAME, TALENT_INFO,
+		TALENT_IMG)
+		VALUES (SEQ_TALENT_NO.NEXTVAL,
+		#{runeNo}, #{talentName}, #{talentInfo},
+		#{talentImg})
+	</insert>
+
+	<select id="selectAllRunes"
+		resultType="com.semi.spring.lol.model.vo.RuneVO">
+		SELECT
+		RUNE_NO as runeNo,
+		RUNE_NAME as runeName,
+		RUNE_INFO as runeInfo,
+		RUNE_IMG as runeImg
+		FROM RUNE_INFO
+		ORDER BY RUNE_NO ASC
+	</select>
+	<select id="selectTalentsByRune" parameterType="int"
+		resultType="com.semi.spring.lol.model.vo.TalentVO">
+		SELECT
+		TALENT_NO as talentNo,
+		RUNE_NO as runeNo,
+		TALENT_NAME as talentName,
+		TALENT_INFO as talentInfo,
+		TALENT_IMG as talentImg
+		FROM TALENT_INFO
+		WHERE RUNE_NO = #{runeNo}
+		ORDER BY
+		TALENT_NO ASC
+	</select>
 
 </mapper>

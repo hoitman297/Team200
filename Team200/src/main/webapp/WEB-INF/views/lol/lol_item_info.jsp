@@ -93,7 +93,7 @@
 									</td>
 									<td class="name-price" style="font-weight: bold;">${item.itemName}</td>
 									<td class="name-price" style="color: #eab308;">${item.itemPrice}
-										G</td>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>
