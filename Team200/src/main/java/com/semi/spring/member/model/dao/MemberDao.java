@@ -20,4 +20,6 @@ public interface MemberDao {
 	int idCheck(String userId);
 
 	Member selectOne(String userId);
+
+	int nameCheck(String userName);
 }

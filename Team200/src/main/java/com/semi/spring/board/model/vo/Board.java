@@ -20,7 +20,7 @@ public class Board {
 	private String userName;
 	private int userNo; 
 	 
-	private int count; // READ_COUNT
+	private int readCount; // READ_COUNT
 	private Date postDate;
 	
 	private String gameCode;     
@@ -28,6 +28,7 @@ public class Board {
     
     private int categoryNo;
     
-    
+    private int replyCount;
+    private int likeCount;
 }
 
