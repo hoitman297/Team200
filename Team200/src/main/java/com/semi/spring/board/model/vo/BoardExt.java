@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class BoardExt extends Board{
-	private String userName;
 	private List<AttachFile> fileList;
 	private PartyRecruit party;
+	private String thumbnail;
 }

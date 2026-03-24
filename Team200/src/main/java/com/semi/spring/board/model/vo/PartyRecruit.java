@@ -9,6 +9,6 @@ public class PartyRecruit {
 	private int boardNo;      
     private int capacity;     
     private String tier;      
-    private String current;   
+    private String partyCurrent;   
     private String preferMap;
 }

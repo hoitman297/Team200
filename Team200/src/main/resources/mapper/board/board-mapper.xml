@@ -39,7 +39,7 @@
 	<resultMap type="boardExt" id="boardMap" autoMapping="true">
 		<id column="BOARD_NO" property="boardNo"/>
 
-		<result column="READ_COUNT" property="count" />
+		<result column="READ_COUNT" property="readCount" />
 		
 		<association property="party" javaType="partyRecruit" autoMapping="true">
         <id column="BOARD_NO" property="boardNo"/>
@@ -52,28 +52,35 @@
 			column="BOARD_NO" />
 	</resultMap>
 	
-	<select id="selectList" resultType="board">
+	<select id="selectList" resultType="boardExt">
 		SELECT *
-		FROM (
-			SELECT ROWNUM AS RNUM , T1.*
 			FROM (
-				SELECT
-					B.BOARD_NO,
-					B.BOARD_TITLE ,
-					U.USER_NAME ,
-					B.READ_COUNT AS count,
-					B.POST_DATE AS postDate,
-					C.GAME_CODE, C.CATEGORY_NAME
-				FROM BOARD B
-				LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
-				JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
-				WHERE BOARD_CD = 'Y'
-  				AND C.GAME_CODE = #{gameCode} 
-  				<if test="categoryNo != null and categoryNo != 0">
-      			AND B.CATEGORY_NO = #{categoryNo} </if>
-			<include refid="searchCondition"/>
-		ORDER BY B.BOARD_NO DESC) T1
-		)
+				SELECT ROWNUM AS RNUM , T1.*
+				FROM (
+					SELECT
+						B.BOARD_NO,
+						B.BOARD_TITLE ,
+						U.USER_NAME ,
+						B.READ_COUNT AS readCount,
+						B.POST_DATE AS postDate,
+						C.GAME_CODE, 
+						C.CATEGORY_NAME,
+						(SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount,
+                		(SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
+						(SELECT FILE_PATH || CHANGE_NAME 
+		                 FROM ATTACH_FILE F 
+		                 WHERE F.BOARD_NO = B.BOARD_NO 
+		                   AND ROWNUM = 1) AS thumbnail
+					FROM BOARD B
+					LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+					JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+					WHERE BOARD_CD = 'Y'
+	  				AND C.GAME_CODE = #{gameCode} 
+	  				<if test="categoryNo != null and categoryNo != 0">
+	      			AND B.CATEGORY_NO = #{categoryNo} </if>
+				<include refid="searchCondition"/>
+			ORDER BY B.BOARD_NO DESC) T1
+			)
 		WHERE RNUM BETWEEN #{offset} AND #{limit}
 	</select>
 	
@@ -91,10 +98,11 @@
 	
 	<!-- 선택 -->
 	<select id="selectBoard" resultMap="boardMap">
-		SELECT B.* , U.USER_NAME, P.*
+		SELECT B.* , U.USER_NAME, P.* , C.CATEGORY_NAME
 		FROM BOARD B
 		LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
 		LEFT JOIN PARTY_RECRUIT P ON B.BOARD_NO = P.BOARD_NO
+		LEFT JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
 		WHERE BOARD_NO = #{boardNo} AND  BOARD_CD = 'Y'
 	</select>
 
@@ -127,30 +135,30 @@
 			BOARD_NO, 
 			CAPACITY, 
 			TIER, 
-			CURRENT, 
+			PARTY_CURRENT, 
 			PREFER_MAP
 		) VALUES (
-			#{boardNo}, #{capacity}, #{tier}, #{current}, #{preferMap}
+			#{boardNo}, #{capacity}, #{tier}, #{partyCurrent}, #{preferMap}
 		)
 	</insert>
 	
 	<insert id="insertBoardFile">
 		INSERT INTO ATTACH_FILE (
-		FILE_NO, BOARD_NO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
+		FILE_NO, BOARD_NO, GAME_CODE,ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
 		) VALUES (
-		SEQ_FILE_NO.NEXTVAL, #{boardNo}, #{originName}, #{changeName}, 
+		SEQ_FILE_NO.NEXTVAL, #{boardNo},#{gameCode}, #{originName}, #{changeName}, 
 		#{filePath}, #{fileExt},#{fileSize}
 		)
 	</insert>
 	
 	<insert id="insertBoardFileList">
 		INSERT INTO ATTACH_FILE (
-		FILE_NO, BOARD_NO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
+		FILE_NO, BOARD_NO, GAME_CODE, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
 		)
 		SELECT SEQ_FILE_NO.NEXTVAL, A.* FROM (
 		<foreach collection="list" item="f" separator="UNION ALL">
 			SELECT
-			#{f.boardNo}, #{f.originName}, #{f.changeName},
+			#{f.boardNo}, #{f.gameCode}, #{f.originName}, #{f.changeName},
 			#{f.filePath}, #{f.fileExt}, #{f.fileSize}
 			FROM DUAL
 		</foreach>
@@ -201,7 +209,14 @@
 			FILE_PATH = #{filePath}
 		WHERE FILE_NO = #{fileNo}
 	</update>
-
+	<update id="updateReply">
+    UPDATE REPLY
+    SET 
+        REPLY_CONTENT = #{replyContent},
+        REPLY_DATE = SYSDATE 
+    WHERE REPLY_NO = #{replyNo}
+      AND USER_NO = #{userNo}
+	</update>
 	<!-- 삭제 -->
 	<update id="deleteBoard">
 		UPDATE BOARD 
@@ -216,6 +231,10 @@
 			STATUS = 'N' 
 			WHERE REPLY_NO = #{replyNo}
 	</update>
+	<delete id="deleteSelectedFile">
+    DELETE FROM ATTACH_FILE
+    WHERE FILE_NO = #{fileNo}
+	</delete>
 	
 	<!-- 신고 -->
 	<insert id="insertReport">
@@ -320,7 +339,7 @@
 	</update>
 	
 	<!-- 1:1문의 -->
-	<select id="selectInquiry">
+	<select id="selectInquiry" resultType="inquiry">
 	SELECT 
         BOARD_NO, 
         BOARD_TITLE, 
@@ -332,7 +351,7 @@
     ORDER BY BOARD_NO DESC
 	</select>
 	
-	<select id="selectInquiryDetail">
+	<select id="selectInquiryDetail" resultType="inquiry">
 		SELECT * FROM INQUIRY
 		WHERE BOARD_NO = #{boardNo}		
 	</select>
@@ -394,4 +413,102 @@
     WHERE USER_NO = #{userNo} AND REPLY_NO = #{replyNo}
 	</select>	
 	
+	<!-- 내 글,댓글 조회 -->
+	<select id="selectMyBoards" resultType="board">
+	SELECT * FROM (
+		SELECT ROWNUM AS RNUM, T1.* FROM (	
+		    SELECT 
+		        B.BOARD_NO,
+		        B.BOARD_TITLE,
+		        B.POST_DATE,
+		        B.READ_COUNT as readCount,
+		        B.GAME_CODE,
+		        U.USER_NAME,
+		        C.CATEGORY_NAME,
+		        (SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
+		        (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount
+		    FROM BOARD B
+		    JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+		    JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+		    WHERE B.USER_NO = #{userNo}
+		    	AND B.BOARD_CD = 'Y'
+		    	<if test="gameCode != null and gameCode != ''">
+		     	AND B.GAME_CODE = #{gameCode}
+		    	</if>
+		    ORDER BY B.BOARD_NO DESC
+    	)T1
+    ) WHERE RNUM BETWEEN #{offset} AND #{limit}
+	</select>
+	
+	<select id="selectMyReplies" resultType="map">
+	SELECT * FROM (
+		SELECT ROWNUM AS RNUM , T1.* FROM(
+		    SELECT 
+		        R.REPLY_NO,
+		        R.REPLY_CONTENT,
+		        R.REPLY_DATE,
+		        B.BOARD_NO,
+		        B.BOARD_TITLE,
+		        U.USER_NAME,
+		        C.CATEGORY_NAME,
+		        B.GAME_CODE
+		    FROM REPLY R
+		    JOIN LOG_GG_USER U ON R.USER_NO = U.USER_NO
+		    JOIN BOARD B ON R.BOARD_NO = B.BOARD_NO 
+		    JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+		    WHERE R.USER_NO = #{userNo}
+		      AND R.STATUS = 'Y'
+		      AND B.BOARD_CD = 'Y'
+		      <if test="gameCode != null and gameCode != ''">
+		      AND B.GAME_CODE = #{gameCode}
+		      </if>
+		    ORDER BY R.REPLY_NO DESC
+			) T1
+		)WHERE RNUM BETWEEN #{offset} AND #{limit}
+	</select>
+	
+	<select id="selectMyBoardsCount" resultType="int">
+    SELECT COUNT(*)
+    FROM BOARD
+    WHERE USER_NO = #{userNo} 
+    AND BOARD_CD = 'Y'
+	    <if test="gameCode != null and gameCode != ''">
+	        AND GAME_CODE = #{gameCode}
+	    </if>
+	</select>
+
+	<select id="selectMyRepliesCount" resultType="int">
+    SELECT COUNT(*)
+    FROM REPLY R
+    JOIN BOARD B ON R.BOARD_NO = B.BOARD_NO
+    WHERE R.USER_NO = #{userNo} 
+    AND R.STATUS = 'Y' 
+    AND B.BOARD_CD = 'Y'
+	    <if test="gameCode != null and gameCode != ''">
+	        AND B.GAME_CODE = #{gameCode}
+	    </if>
+	</select>
+	
+	<!-- 인기게시글 -->
+	<select id="selectBestBoards" resultType="boardExt">
+    SELECT * FROM (
+        SELECT 
+            B.BOARD_NO,
+            B.BOARD_TITLE,
+            B.READ_COUNT AS readCount,
+            B.GAME_CODE,
+            U.USER_NAME,
+            C.CATEGORY_NAME,
+            (SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
+            (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount
+        FROM BOARD B
+        JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+        JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+        WHERE B.BOARD_CD = 'Y' 
+          AND B.POST_DATE >= SYSDATE - 7  
+          ORDER BY likeCount DESC, B.READ_COUNT DESC, B.BOARD_NO DESC
+    ) 
+    WHERE ROWNUM &lt;= 5 
+    </select>
+    	
 </mapper>
