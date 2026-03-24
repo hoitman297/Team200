@@ -6,18 +6,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/lol/style.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/lol/script.js" defer></script>
-<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/lol/style.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/main/style.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/lol/script.js"
+	defer></script>
+<script
+	src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
 
-<title>롤</title>
+<title>롤 아이템 정보</title>
 </head>
 <body>
 	<c:set var="headerTitle" value="리그 오브 레전드" />
 	<%@ include file="../common/header.jsp"%>
-
 
 	<div class="main-layout">
 		<aside class="side-left">
@@ -36,7 +40,7 @@
 			<div class="top-row">
 				<a href="<c:url value ='/lol/main'/>"><div class="logo">LOG.GG</div></a>
 				<div class="search-bar">
-					<input type="text" placeholder="아이템검색 검색"> <span>🔍</span>
+					<input type="text" placeholder="아이템 검색"> <span>🔍</span>
 				</div>
 			</div>
 
@@ -72,56 +76,28 @@
 					<table class="item-table">
 						<thead>
 							<tr>
-								<th class="icon">아이콘</th>
-								<th class="name-price">이름</th>
-								<th class="name-price">가격</th>
-								<th>설명</th>
+								<th class="icon" style="width: 80px;">아이콘</th>
+								<th class="name-price" style="width: 150px;">이름</th>
+								<th class="name-price" style="width: 100px;">가격</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td><div class="item-img-placeholder"></div></td>
-								<td>text</td>
-								<td>text</td>
-								<td>text</td>
-							</tr>
-							<tr>
-								<td><div class="item-img-placeholder"></div></td>
-								<td>text</td>
-								<td>text</td>
-								<td>text</td>
-							</tr>
-							<tr>
-								<td><div class="item-img-placeholder"></div></td>
-								<td>text</td>
-								<td>text</td>
-								<td>text</td>
-							</tr>
-							<tr>
-								<td><div class="item-img-placeholder"></div></td>
-								<td>text</td>
-								<td>text</td>
-								<td>text</td>
-							</tr>
-							<tr>
-								<td><div class="item-img-placeholder"></div></td>
-								<td>text</td>
-								<td>text</td>
-								<td>text</td>
-							</tr>
-							<tr>
-								<td><div class="item-img-placeholder"></div></td>
-								<td>text</td>
-								<td>text</td>
-								<td>text</td>
-							</tr>
+							<c:forEach var="item" items="${itemList}">
+								<tr class="item-row" data-tags="${item.itemTag}"
+									data-info="${item.itemInfo}">
+									<td>
+										<div class="item-img-placeholder" style="background: none;">
+											<img src="${item.itemImg}" alt="${item.itemName}"
+												style="width: 48px; height: 48px; border-radius: 5px;">
+										</div>
+									</td>
+									<td class="name-price" style="font-weight: bold;">${item.itemName}</td>
+									<td class="name-price" style="color: #eab308;">${item.itemPrice}
+									</td>
+								</tr>
+							</c:forEach>
 						</tbody>
 					</table>
-
-					<div class="pagination">
-						<button class="page-btn">← 이전</button>
-						<button class="page-btn">다음 →</button>
-					</div>
 				</div>
 			</div>
 		</main>
@@ -136,6 +112,8 @@
 	</div>
 
 	<%@ include file="../common/footer.jsp"%>
+
+	<div id="item-tooltip"></div>
 
 </body>
 </html>

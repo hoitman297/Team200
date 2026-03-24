@@ -79,31 +79,80 @@
 
 				<div class="info-section" id="skill">
 					<h4>스킬 정보</h4>
-					<div class="skill-list">
-						<div class="skill-item">
-							<input type="checkbox"> P (패시브) - 고유 능력
+					<div class="skill-list" style="display: flex; flex-direction: column; gap: 15px;">
+						
+						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillPImg}" alt="패시브" style="width: 50px; height: 50px; border-radius: 8px;">
+							<div>
+								<div style="font-weight: bold;">P (패시브) - ${champ.skills.skillPName}</div>
+								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillPDesc}
+								</div>
+							</div>
 						</div>
-						<div class="skill-item">
-							<input type="checkbox"> Q - 기본 스킬 1
+
+						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillQImg}" alt="Q" style="width: 50px; height: 50px; border-radius: 8px;">
+							<div>
+								<div style="font-weight: bold;">Q - ${champ.skills.skillQName}</div>
+								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillQDesc}
+								</div>
+							</div>
 						</div>
-						<div class="skill-item">
-							<input type="checkbox"> W - 기본 스킬 2
+
+						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillWImg}" alt="W" style="width: 50px; height: 50px; border-radius: 8px;">
+							<div>
+								<div style="font-weight: bold;">W - ${champ.skills.skillWName}</div>
+								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillWDesc}
+								</div>
+							</div>
 						</div>
-						<div class="skill-item">
-							<input type="checkbox"> E - 기본 스킬 3
+
+						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillEImg}" alt="E" style="width: 50px; height: 50px; border-radius: 8px;">
+							<div>
+								<div style="font-weight: bold;">E - ${champ.skills.skillEName}</div>
+								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillEDesc}
+								</div>
+							</div>
 						</div>
-						<div class="skill-item">
-							<input type="checkbox"> R (궁극기) - 필살기
+
+						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillRImg}" alt="R" style="width: 50px; height: 50px; border-radius: 8px;">
+							<div>
+								<div style="font-weight: bold;">R (궁극기) - ${champ.skills.skillRName}</div>
+								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillRDesc}
+								</div>
+							</div>
 						</div>
+
 					</div>
 				</div>
 
 				<div class="info-section" id="skin">
 					<h4>스킨 목록</h4>
-					<div class="skin-list">
-						<div class="skin-box"></div>
-						<div class="skin-box"></div>
-						<div class="skin-box"></div>
+					<div class="skin-list" style="display: flex; flex-wrap: wrap; gap: 20px;">
+						
+						<c:if test="${not empty champ.skins}">
+							<c:forEach var="skin" items="${champ.skins}">
+								<div class="skin-box" style="width: 250px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+									<img src="${skin.champSkinImg}" alt="${skin.champSkinName}" style="width: 100%; height: auto; display: block;">
+									<div style="padding: 10px; background: #f8fafc; text-align: center; font-weight: bold; font-size: 14px; color: #334155;">
+										<c:out value="${skin.champSkinName}" />
+									</div>
+								</div>
+							</c:forEach>
+						</c:if>
+						
+						<c:if test="${empty champ.skins}">
+							<div style="font-size: 14px; color: #94a3b8; width: 100%;">등록된 스킨 정보가 없습니다.</div>
+						</c:if>
+
 					</div>
 				</div>
 

@@ -7,12 +7,13 @@
     --transition: all 0.2s ease-in-out;
 }
 
-/* 2. 챔피언 목록 그리드 (메인 화면용) */
+/* =========================================================================
+   2. 챔피언 목록 그리드 (메인 화면용)
+   ========================================================================= */
 .champ-grid-container {
     display: grid !important;
-    /* 너비 100px 정도의 칸을 화면에 꽉 채우고 자동으로 다음 줄로 넘김 */
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 25px 15px; /* 상하 25px, 좌우 15px 간격 */
+    gap: 25px 15px;
     justify-items: center;
 }
 
@@ -53,7 +54,9 @@
     word-break: keep-all;
 }
 
-/* 3. 영웅 상세 카드 디자인 */
+/* =========================================================================
+   3. 영웅 상세 카드 디자인
+   ========================================================================= */
 .detail-card {
     background: white;
     border-radius: 24px;
@@ -95,7 +98,9 @@
     object-fit: cover;
 }
 
-/* 4. 탭 메뉴 스타일 */
+/* =========================================================================
+   4. 탭 메뉴 스타일
+   ========================================================================= */
 .detail-tabs {
     display: flex;
     border: 1px solid #cbd5e1;
@@ -121,7 +126,9 @@
     color: white;
 }
 
-/* 5. 아이템 정보 테이블 */
+/* =========================================================================
+   5. 아이템 정보 테이블 & 카테고리
+   ========================================================================= */
 .item-card {
     background: white;
     border-radius: 24px;
@@ -147,7 +154,77 @@
     text-align: center;
 }
 
-/* 6. 룬 정보 (다크 모드 스타일) */
+.item-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 160px;
+    margin-top: 15px;
+}
+
+.category-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    color: var(--primary-navy);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease-in-out;
+}
+
+.category-icon {
+    width: 8px;
+    height: 8px;
+    background-color: #cbd5e1;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.category-btn:hover .category-icon {
+    background-color: var(--accent-blue);
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background-color: #ffffff;
+    border-color: #3b82f6;
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    opacity: 1 !important;
+}
+
+.category-btn.active .category-icon {
+    background-color: #3b82f6;
+}
+
+/* 아이템 설명 툴팁 스타일 */
+#item-tooltip {
+    display: none;
+    position: absolute;
+    background-color: rgba(10, 20, 30, 0.95);
+    border: 2px solid #785a28;
+    border-radius: 4px;
+    color: #f0e6d2;
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 300px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    pointer-events: none;
+}
+
+
+/* =========================================================================
+   6. 룬 정보 (다크 모드 레이아웃 및 3열 뷰)
+   ========================================================================= */
 .rune-container {
     background: white;
     border-radius: 24px;
@@ -156,26 +233,153 @@
     gap: 40px;
 }
 
+/* 좌측 룬 선택 영역 */
 .rune-visual-section {
     flex: 1.3;
-    background: #0a0a0c;
+    background: #111111; /* 깊은 다크 컬러 */
     border-radius: 16px;
-    padding: 25px;
+    padding: 30px;
     color: white;
 }
 
-.slot {
-    width: 42px;
-    height: 42px;
-    border: 2px solid #444;
+/* 룬 아이콘 선택기 */
+.path-selector {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #333;
+}
+
+.path-icon {
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    filter: grayscale(100%);
+    transition: var(--transition);
+    opacity: 0.5;
+}
+
+.path-icon:hover, .path-icon.active {
+    filter: grayscale(0%);
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+/* 메인 룬과 서브 룬 전체 레이아웃 */
+.rune-grid {
+    display: flex;
+    gap: 40px;
+}
+
+.rune-col h5 {
+    color: #c8aa6e;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.slots-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 전체 가운데 정렬 */
+    gap: 30px;
+}
+
+/* 1. 핵심 룬(메인 룬) 묶음: 가로로 나열 */
+.keystone-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+}
+
+/* 2. 보조 룬(서브 룬) 묶음: 3열 그리드 */
+.subrune-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 완벽한 3열 정렬 */
+    gap: 20px;
+    justify-items: center;
+}
+
+/* 특성 슬롯 공통 스타일 */
+.talent-slot {
+    border: 2px solid transparent;
     border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    background-color: #1e2328;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s;
+    overflow: hidden;
+    filter: grayscale(80%); /* 선택 안 된 룬은 흑백 처리 */
+    opacity: 0.6;
 }
 
-.slot.active {
-    border-color: #d4af37;
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+.talent-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 핵심 룬(메인 룬) 크기 */
+.talent-slot.main-rune {
+    width: 65px;
+    height: 65px;
+}
+
+/* 보조 룬(서브 룬) 크기 */
+.talent-slot.sub-rune {
+    width: 45px;
+    height: 45px;
+}
+
+/* 마우스 호버 및 클릭(활성화) 시 스타일 */
+.talent-slot:hover, 
+.talent-slot.active {
+    filter: grayscale(0%);
+    opacity: 1;
+    border-color: #c8aa6e; /* 골드 색상 */
+    box-shadow: 0 0 15px rgba(200, 170, 110, 0.4);
+    transform: translateY(-3px);
+}
+
+/* 우측 상세 설명 영역 */
+.rune-desc-section {
+    flex: 1;
+    background: #ffffff; /* 하얀색 배경 */
+    border-radius: 16px;
+    padding: 35px 30px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* 부드러운 그림자 */
+    height: fit-content;
+}
+
+#desc-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 20px;
+}
+
+/* 설명창 룬 이미지 크기 */
+#desc-name img {
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50%;
+    background: #1e2328;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.desc-box {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #475569;
 }
