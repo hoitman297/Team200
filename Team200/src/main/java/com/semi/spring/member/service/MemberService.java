@@ -12,7 +12,11 @@ public interface MemberService {
 	Member loginMember(Member member);
 
 	int idCheck(String userId);
+	
+	int nameCheck(String userName);
 
 	Member selectOne(String userId);
+
+
 
 }

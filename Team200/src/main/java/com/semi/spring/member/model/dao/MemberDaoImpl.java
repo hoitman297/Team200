@@ -44,10 +44,17 @@ public class MemberDaoImpl implements MemberDao{
 	public int idCheck(String userId) {
 		return session.selectOne("member.idCheck",userId);
 	}
+	
+	@Override
+	public int nameCheck(String userName) {
+		return session.selectOne("member.nameCheck",userName);
+	}
 
 	@Override
 	public Member selectOne(String userId) {
 		return session.selectOne("member.selectOne",userId);
 	}
+
+	
 
 }

@@ -5,11 +5,9 @@
 	<!-- 회원가입 -->
 	<insert id="insertMember">
 		INSERT INTO LOG_GG_USER (
-		USER_NO, USER_ID, USER_PW,USER_NAME, 
-		STATUS, WITHDRAW, ENROLL_DATE,MODIFIED_DATE
+			USER_NO, USER_ID, USER_PW, USER_NAME, EMAIL, STATUS, WITHDRAW, ENROLL_DATE, MODIFIED_DATE, USER_ROLE
 		) VALUES (
-		SEQ_USER_NO.NEXTVAL,#{userId}, #{userPw}, #{userName}, 
-		DEFAULT,DEFAULT, DEFAULT, NULL
+			SEQ_USER_NO.NEXTVAL, #{userId}, #{userPwd}, #{userName}, #{email}, DEFAULT, DEFAULT, DEFAULT, NULL, DEFAULT
 		)
 	</insert>
 	
@@ -20,7 +18,12 @@
 		WHERE USER_ID = #{userId}
 	</select>
 	
-	<!--  -->
+	<select id="nameCheck" resultType="int">
+		SELECT COUNT(*) 
+		FROM LOG_GG_USER 
+		WHERE USER_NAME = #{userName}
+	</select>
+	
 	<select id="selectOne" resultType="member">
 		SELECT * FROM LOG_GG_USER
 		WHERE USER_ID = #{userId}
@@ -36,17 +39,17 @@
     
     <!-- 닉네임,PWD 수정 -->
 	<update id="updateMember">
-		UPDATE LOG_GG_USER
-		<set>
-			USER_NAME = #{userName},
-			MODIFIED_DATE = SYSDATE,
-			<if test="userPw != null and userPw != ''">
-				USER_PW = #{userPw}
+		UPDATE LOG_GG_USER 
+		SET 
+		    USER_NAME = #{userName},
+			<if test="userPwd != null and userPwd != ''">
+			USER_PW = #{userPwd},
+			MODIFIED_DATE = SYSDATE ,
 			</if>
-		</set>
-		WHERE USER_ID = #{userId}
-		AND STATUS = 'Y'
-	</update>
+		    EMAIL = #{email}
+			WHERE USER_ID = #{userId}
+		    AND STATUS = 'Y'
+	</update>	
 	
 	<!-- 삭제?탈퇴? -->
 	<update id="deleteMember">

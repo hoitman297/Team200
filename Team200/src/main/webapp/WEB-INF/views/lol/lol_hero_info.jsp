@@ -61,8 +61,10 @@
 					<div class="hero-desc-text">
 						<div>${champ.champName}의상세 정보입니다.</div>
 						<div style="color: #3b82f6;">
-							
+							주요 포지션:
+							<c:out value="${champ.champPosition}" />
 						</div>
+						<div>난이도: 데이터 준비 중 / 공격 타입: 데이터 준비 중</div>
 					</div>
 				</div>
 				<div class="detail-tabs">
