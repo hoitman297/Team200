@@ -49,7 +49,7 @@ public class LolDataService {
 		// 1. 챔피언 데이터 체크 
 		List<ChampionVO> list = lolDao.selectAllChampions();
 		if (list == null || list.isEmpty()) {
-			System.out.println("=== DB가 비어있어 API 데이터를 가져옵니다 ===");
+			System.out.println("=== 챔피언 DB가 비어있어 API 데이터를 가져옵니다 ===");
 
 			new Thread(() -> updateChampionData()).start();
 
