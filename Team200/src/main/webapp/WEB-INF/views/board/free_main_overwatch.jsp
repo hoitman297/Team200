@@ -14,4 +14,3 @@
 <%-- 2. 공통 뼈대(다른 폴더에 있는 common_board.jsp) 불러오기 --%>
 <%-- common 폴더에 있다면 아래 경로가 맞습니다 --%>
 <%@ include file="../common/board_free.jsp" %>
-

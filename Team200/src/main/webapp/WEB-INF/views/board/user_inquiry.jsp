@@ -1,37 +1,40 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%-- 1. 변수 설정: 주소창의 game 값을 읽어옴 (기본값 all) --%>
+<c:set var="currentGame" value="${empty param.game ? 'all' : param.game}" />
+
+<%-- 2. 헤더/푸터용 게임 이름 매칭 --%>
+<c:set var="displayGameName">
+    <c:choose>
+        <c:when test="${currentGame == 'battleground'}">배틀그라운드</c:when>
+        <c:when test="${currentGame == 'lol'}">리그 오브 레전드</c:when>
+        <c:when test="${currentGame == 'overwatch'}">오버워치</c:when>
+        <c:otherwise>전체</c:otherwise>
+    </c:choose>
+</c:set>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/user_inquiry/style.css">
-	<script src="${pageContext.request.contextPath}/resources/board/user_inquiry/script.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/board/user_inquiry/script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
-	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-	
-    <title>LOG.GG - 1:1 문의</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+    <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    
+    <title>LOG.GG - 고객지원 </title>
 </head>
 <body>
-	<c:set var="headerTitle" value="게시판" />
+    <c:set var="headerTitle" value="${displayGameName}" />
     <%@ include file="../common/header.jsp" %>
 
     <div class="main-layout">
         <aside class="side-left">
-            <div class="side-card">
-                <h3>카테고리</h3>
-                <a href="<c:url value = '/gallery/list' />"><div class="menu-item">갤러리</div></a>
-                
-                <div class="menu-item-group">
-                    <div class="menu-item">게시판</div>
-                    <div class="sub-menu-container">
-                        <a href="<c:url value = '/board/free' />"><div class="sub-item">자유게시판</div></a>
-                        <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
-                    </div>
-                </div>
-                <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
-            </div>
+            <%-- 사이드바에서 현재 페이지가 고객지원임을 표시 --%>
+            <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
         <main class="content-area">
@@ -39,8 +42,17 @@
             
             <div class="content-card">
                 <div class="board-header">
-                    <h2 class="board-title">1:1 문의 내역</h2>
-                    <button class="btn-write" onclick="location.href='qna-write.html'">문의하기</button>
+                    <h2 class="board-title">고객지원 (${displayGameName})</h2>
+                    <%-- 문의하기 클릭 시 현재 게임 정보를 들고 가도록 설정 가능 --%>
+                    <button class="btn-write" onclick="location.href='<c:url value='/board/inquiryWrite?game=${currentGame}' />'">문의하기</button>
+                </div>
+
+                <%-- ✨ 추가: 게임 분류 필터 탭 (갤러리와 동일한 스타일) --%>
+                <div class="gallery-filter" style="margin-bottom: 20px;">
+                    <a href="<c:url value='/board/inquiry?game=all' />" class="filter-btn ${currentGame == 'all' ? 'active' : ''}">전체</a>
+                    <a href="<c:url value='/board/inquiry?game=battleground' />" class="filter-btn ${currentGame == 'battleground' ? 'active' : ''}">배틀그라운드</a>
+                    <a href="<c:url value='/board/inquiry?game=lol' />" class="filter-btn ${currentGame == 'lol' ? 'active' : ''}">리그 오브 레전드</a>
+                    <a href="<c:url value='/board/inquiry?game=overwatch' />" class="filter-btn ${currentGame == 'overwatch' ? 'active' : ''}">오버워치</a>
                 </div>
 
                 <table class="qna-table">
@@ -54,37 +66,25 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <%-- 실데이터 출력 시 <c:forEach>를 사용하게 될 부분 --%>
                         <tr>
                             <td>003</td>
-                            <td class="title-td">로그인 오류가 계속 발생합니다.</td>
+                            <td class="title-td">
+                                <%-- 전체보기일 때 어떤 게임 문의인지 태그 달아주면 좋음 --%>
+                                <c:if test="${currentGame == 'all'}"><small style="color:#3b82f6">[배그]</small> </c:if>
+                                로그인 오류가 계속 발생합니다.
+                            </td>
                             <td>USER01</td>
                             <td>25-03-09</td>
                             <td><span class="status-badge waiting">답변대기</span></td>
                         </tr>
-                        <tr>
-                            <td>002</td>
-                            <td class="title-td private-text">
-                                <span class="lock-icon">🔒</span> 비공개 문의글입니다.
-                            </td>
-                            <td>user***</td>
-                            <td>25-03-08</td>
-                            <td><span class="status-badge completed">답변완료</span></td>
-                        </tr>
-                        <tr>
-                            <td>001</td>
-                            <td class="title-td">아이템 복구 관련 문의드립니다.</td>
-                            <td>USER01</td>
-                            <td>25-03-07</td>
-                            <td><span class="status-badge completed">답변완료</span></td>
-                        </tr>
+                        <%-- ... 반복 ... --%>
                     </tbody>
                 </table>
 
                 <div class="pagination">
                     <button class="page-btn">이전</button>
                     <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">3</button>
                     <button class="page-btn">다음</button>
                 </div>
             </div>
@@ -102,7 +102,6 @@
         </aside>
     </div>
 
-    <footer>© 2026 LOG.GG 배틀그라운드 서비스. 모든 권리 보유.</footer>
-
+    <footer>© 2026 LOG.GG ${displayGameName} 서비스. 모든 권리 보유.</footer>
 </body>
 </html>
