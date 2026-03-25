@@ -14,8 +14,7 @@ public class ChampionVO {
     private String champPosition; // CHAMP_POSITION 
     private String champRoles;    // CHAMP_ROLES 
     private String champImg;      // CHAMP_IMG 
-    private String champIntro;
-    
+
     private String id;            // API에서 키값으로 사용하는 영문명 (예: Garen)
 
     // --- 추가: 스킬과 스킨 정보 ---

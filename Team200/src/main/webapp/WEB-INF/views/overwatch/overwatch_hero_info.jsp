@@ -63,7 +63,7 @@
                         <c:if test="${not empty skills.skillLclickName}">
                             <div class="skill-item">
                                 <img src="${skills.skillLclickImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
-                                <strong style="color: #0f172a;">${skills.skillLclickName}</strong> 
+                                <strong>L-CLICK</strong> - ${skills.skillLclickName} 
                                 <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillLclickDesc}</span>
                             </div>
                         </c:if>
@@ -71,7 +71,7 @@
                         <c:if test="${not empty skills.skillRclickName}">
                             <div class="skill-item">
                                 <img src="${skills.skillRclickImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
-                                <strong style="color: #0f172a;">${skills.skillRclickName}</strong>
+                                <strong>R-CLICK</strong> - ${skills.skillRclickName}
                                 <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillRclickDesc}</span>
                             </div>
                         </c:if>
@@ -79,7 +79,7 @@
                         <c:if test="${not empty skills.skillShiftName}">
                             <div class="skill-item">
                                 <img src="${skills.skillShiftImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
-                                <strong style="color: #0f172a;">${skills.skillShiftName}</strong>
+                                <strong>SHIFT</strong> - ${skills.skillShiftName}
                                 <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillShiftDesc}</span>
                             </div>
                         </c:if>
@@ -87,24 +87,16 @@
                         <c:if test="${not empty skills.skillEName}">
                             <div class="skill-item">
                                 <img src="${skills.skillEImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
-                                <strong style="color: #0f172a;">${skills.skillEName}</strong>
+                                <strong>E</strong> - ${skills.skillEName}
                                 <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillEDesc}</span>
                             </div>
                         </c:if>
 
                         <c:if test="${not empty skills.skillQName}">
                             <div class="skill-item">
-                                <img src="${skills.skillQImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
-                                <strong style="color: #0f172a;">${skills.skillQName}</strong>
+                                <img src="${skills.skillQImg}" style="width:30px; height:30px; background:#000; border-radius:4px; border:2px solid #eab308;">
+                                <strong style="color: #ca8a04;">Q (궁극기)</strong> - ${skills.skillQName}
                                 <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillQDesc}</span>
-                            </div>
-                        </c:if>
-
-                        <c:if test="${not empty skills.skillPName}">
-                            <div class="skill-item">
-                                <img src="${skills.skillPImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
-                                <strong style="color: #0f172a;">${skills.skillPName}</strong>
-                                <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillPDesc}</span>
                             </div>
                         </c:if>
                     </div>
