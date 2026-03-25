@@ -12,6 +12,7 @@
     <package name="com.semi.spring.board.model.vo"/> 
     <package name="com.semi.spring.security.model.vo"/>
     <package name="com.semi.spring.lol.model.vo"/>
+    <package name="com.semi.spring.overwatch.model.vo"/>
 </typeAliases>
 
 </configuration>

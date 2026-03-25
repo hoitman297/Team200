@@ -17,85 +17,71 @@ import com.semi.spring.lol.model.vo.TalentVO;
 
 @Repository
 public class LolDaoImpl implements LolDao {
-	
+
 	@Autowired
 	private SqlSessionTemplate session;
+	private final String NAMESPACE = "lolMapper.";
 
 	@Override
 	public List<ChampionVO> selectAllChampions() {
 		// TODO Auto-generated method stub
-		return session.selectList("lolMapper.selectAllChampions");
-
-//		
-//		mapper 파일 제작 시 코드
-//
-//		<mapper namespace="lolMapper">
-//
-//			<select id="selectAllChampions" resultType="com.semi.spring.lol.model.vo.ChampionVO">
-//				SELECT 
-//					CHAMP_NAME AS name,
-//					CHAMP_ENG_NAME AS engName
-//				FROM CHAMPIONS
-//				ORDER BY CHAMP_NAME ASC
-//			</select>
-//
-//		</mapper>
+		return session.selectList(NAMESPACE + "selectAllChampions");
 	}
 
 	@Override
 	public int insertChampion(ChampionVO vo) {
-		return session.insert("lolMapper.insertChampion", vo);
+		return session.insert(NAMESPACE + "insertChampion", vo);
 	}
 
 	@Override
 	public ChampionVO getChampDeta(int champNo) {
 		// TODO Auto-generated method stub
-		return session.selectOne("lolMapper.getChampDeta",champNo);
+		return session.selectOne(NAMESPACE + "getChampDeta", champNo);
 	}
-	
+
 	// 기존 코드 유지하고 아래 두 메서드만 추가해 주세요!
 	@Override
 	public int insertChampionSkills(SkillVO skill) {
-	    return session.insert("lolMapper.insertChampionSkills", skill);
+		return session.insert(NAMESPACE + "insertChampionSkills", skill);
 	}
 
 	@Override
 	public int insertChampionSkin(SkinVO skin) {
-	    return session.insert("lolMapper.insertChampionSkin", skin);
+		return session.insert(NAMESPACE + "insertChampionSkin", skin);
 	}
 
 	@Override
 	public List<LolItemVO> selectAllItems() {
 		// TODO Auto-generated method stub
-		return session.selectList("lolMapper.selectAllItems");
+		return session.selectList(NAMESPACE + "selectAllItems");
 	}
 
 	@Override
 	public int insertItem(LolItemVO itemVO) {
-		return session.insert("lolMapper.insertItem",itemVO);
-		
+		return session.insert(NAMESPACE + "insertItem", itemVO);
+
 	}
 
 	@Override
 	public int insertRune(RuneVO rune) {
 		// TODO Auto-generated method stub
-		return session.insert("lolMapper.insertRune",rune);
+		return session.insert(NAMESPACE + "insertRune", rune);
 	}
 
 	@Override
 	public int insertTalent(TalentVO talent) {
 		// TODO Auto-generated method stub
-		return session.insert("lolMapper.insertTalent",talent);
+		return session.insert(NAMESPACE + "insertTalent", talent);
 	}
 
 	@Override
 	public List<RuneVO> selectAllRunes() {
-	    return session.selectList("lolMapper.selectAllRunes");
+		return session.selectList(NAMESPACE + "selectAllRunes");
 	}
 
 	@Override
 	public List<TalentVO> selectTalentsByRune(int runeNo) {
 		// TODO Auto-generated method stub
-		return session.selectList("lolMapper.selectTalentsByRune",runeNo);
+		return session.selectList(NAMESPACE + "selectTalentsByRune", runeNo);
 	}
 }
