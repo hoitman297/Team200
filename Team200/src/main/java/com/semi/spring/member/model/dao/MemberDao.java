@@ -1,14 +1,14 @@
 package com.semi.spring.member.model.dao;
 
 import org.springframework.security.core.userdetails.UserDetails;
-
+import org.apache.ibatis.annotations.Param;
 import com.semi.spring.member.model.vo.Member;
 import com.semi.spring.security.model.vo.MemberExt;
 
 public interface MemberDao {
 
-	UserDetails loadUserByUsername(String username);
-
+	UserDetails loadUserByUsername(String userName);
+	
 	int insertMember(Member member);
 
 	void insertAuthority(Member member);

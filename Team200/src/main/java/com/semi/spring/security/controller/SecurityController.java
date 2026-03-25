@@ -1,10 +1,7 @@
 package com.semi.spring.security.controller;
 
 import java.security.Principal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,30 +20,26 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.semi.spring.member.model.validator.MemberValidator;
 import com.semi.spring.member.model.vo.Member;
-import com.semi.spring.security.model.vo.MemberExt;
 import com.semi.spring.member.service.MemberService;
+import com.semi.spring.security.model.vo.MemberExt;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/security")
+@RequiredArgsConstructor
 @Controller
 public class SecurityController {
 
-	// 필드방식 의존성 주입
-	//@Autowired
-	private MemberService mService;
+	private final MemberService mService;
+	private final BCryptPasswordEncoder passwordEncoder;
 	
-	//@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-		
-	// 생성자에 의해 자동 의존성 주입 방식
-	// 단, 생성자가 여러개면 @Autowired어노테이션 필요
-	public SecurityController(MemberService mService , BCryptPasswordEncoder passwordEncoder) {
-		this.mService = mService;
-		this.passwordEncoder = passwordEncoder;
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(new MemberValidator());
 	}
-	
+		
 	@RequestMapping("/accessDenied")
 	public String accessDenied(Model m) {
 		m.addAttribute("errorMsg","접근 불가능한 페이지입니다.");
@@ -70,9 +63,10 @@ public class SecurityController {
 		}
 		
 		// 유효성 검사 성공시 비밀번호 암호화하여 회원가입 진행
+		String rawPwd = member.getUserPw();
 		String encryptedPassword
-			= passwordEncoder.encode(member.getUserPwd());
-		member.setUserPwd(encryptedPassword); 
+			= passwordEncoder.encode(member.getUserPw());
+		member.setUserPw(encryptedPassword); 
 		
 		mService.insertMember(member);
 		return "redirect:/member/login";
