@@ -17,7 +17,7 @@
 	defer></script>
 <script
 	src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-<title>${champ.champName}- 롤 상세</title>
+<title>${champ.champName}-롤상세</title>
 </head>
 <body>
 	<c:set var="headerTitle" value="리그 오브 레전드" />
@@ -25,8 +25,8 @@
 
 	<div class="main-layout">
 		<aside class="side-left">
-            <%@ include file="../common/sidebar.jsp" %>
-        </aside>
+			<%@ include file="../common/sidebar.jsp"%>
+		</aside>
 
 		<main class="content-area">
 			<div class="top-row">
@@ -39,9 +39,8 @@
 			<div class="detail-card">
 				<div class="hero-title">
 					<c:out value="${champ.champName}" />
-					<span
-						style="font-size: 14px; color: #64748b; font-weight: normal; margin-left: 10px;">
-							<c:out value="${champ.champPosition}" />
+					<span style="font-size: 14px; font-weight: bold; color: #64748b; margin-left: 10px;">
+						<c:out value="${champ.champPosition}" />
 					</span>
 				</div>
 
@@ -51,12 +50,14 @@
 							style="width: 100%; height: 100%; object-fit: cover;">
 					</div>
 					<div class="hero-desc-text">
-						<div>${champ.champName}의상세 정보입니다.</div>
-						<div style="color: #3b82f6;">
+						<div style="font-weight: bold;">${champ.champName}</div>
+						<div style="color: #3b82f6; font-weight: bold;">
 							주요 포지션:
 							<c:out value="${champ.champPosition}" />
 						</div>
-						<div>난이도: 데이터 준비 중 / 공격 타입: 데이터 준비 중</div>
+						<div style="width : 300px; font-size: 14px; color: #475569; line-height: 1.6; border-top: 1px solid #e2e8f0; pt-10px; margin-top: 10px;">
+							${champ.champIntro}
+						</div>
 					</div>
 				</div>
 				<div class="detail-tabs">
@@ -71,55 +72,71 @@
 
 				<div class="info-section" id="skill">
 					<h4>스킬 정보</h4>
-					<div class="skill-list" style="display: flex; flex-direction: column; gap: 15px;">
-						
-						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
-							<img src="${champ.skills.skillPImg}" alt="패시브" style="width: 50px; height: 50px; border-radius: 8px;">
+					<div class="skill-list"
+						style="display: flex; flex-direction: column; gap: 15px;">
+
+						<div class="skill-item"
+							style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillPImg}" alt="패시브"
+								style="width: 50px; height: 50px; border-radius: 8px;">
 							<div>
-								<div style="font-weight: bold;">P (패시브) - ${champ.skills.skillPName}</div>
-								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
-									${champ.skills.skillPDesc}
-								</div>
+								<div style="font-weight: bold;">P (패시브) -
+									${champ.skills.skillPName}</div>
+								<div
+									style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillPDesc}</div>
 							</div>
 						</div>
 
-						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
-							<img src="${champ.skills.skillQImg}" alt="Q" style="width: 50px; height: 50px; border-radius: 8px;">
+						<div class="skill-item"
+							style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillQImg}" alt="Q"
+								style="width: 50px; height: 50px; border-radius: 8px;">
 							<div>
-								<div style="font-weight: bold;">Q - ${champ.skills.skillQName}</div>
-								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
-									${champ.skills.skillQDesc}
-								</div>
+								<div style="font-weight: bold;">Q -
+									${champ.skills.skillQName}</div>
+								<div
+									style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillQDesc}</div>
 							</div>
 						</div>
 
-						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
-							<img src="${champ.skills.skillWImg}" alt="W" style="width: 50px; height: 50px; border-radius: 8px;">
+						<div class="skill-item"
+							style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillWImg}" alt="W"
+								style="width: 50px; height: 50px; border-radius: 8px;">
 							<div>
-								<div style="font-weight: bold;">W - ${champ.skills.skillWName}</div>
-								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
-									${champ.skills.skillWDesc}
-								</div>
+								<div style="font-weight: bold;">W -
+									${champ.skills.skillWName}</div>
+								<div
+									style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillWDesc}</div>
 							</div>
 						</div>
 
-						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
-							<img src="${champ.skills.skillEImg}" alt="E" style="width: 50px; height: 50px; border-radius: 8px;">
+						<div class="skill-item"
+							style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillEImg}" alt="E"
+								style="width: 50px; height: 50px; border-radius: 8px;">
 							<div>
-								<div style="font-weight: bold;">E - ${champ.skills.skillEName}</div>
-								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
-									${champ.skills.skillEDesc}
-								</div>
+								<div style="font-weight: bold;">E -
+									${champ.skills.skillEName}</div>
+								<div
+									style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillEDesc}</div>
 							</div>
 						</div>
 
-						<div class="skill-item" style="display: flex; align-items: flex-start; gap: 15px;">
-							<img src="${champ.skills.skillRImg}" alt="R" style="width: 50px; height: 50px; border-radius: 8px;">
+						<div class="skill-item"
+							style="display: flex; align-items: flex-start; gap: 15px;">
+							<img src="${champ.skills.skillRImg}" alt="R"
+								style="width: 50px; height: 50px; border-radius: 8px;">
 							<div>
-								<div style="font-weight: bold;">R (궁극기) - ${champ.skills.skillRName}</div>
-								<div style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
-									${champ.skills.skillRDesc}
-								</div>
+								<div style="font-weight: bold;">R (궁극기) -
+									${champ.skills.skillRName}</div>
+								<div
+									style="font-size: 14px; color: #64748b; margin-top: 5px; line-height: 1.4;">
+									${champ.skills.skillRDesc}</div>
 							</div>
 						</div>
 
@@ -128,21 +145,26 @@
 
 				<div class="info-section" id="skin">
 					<h4>스킨 목록</h4>
-					<div class="skin-list" style="display: flex; flex-wrap: wrap; gap: 20px;">
-						
+					<div class="skin-list"
+						style="display: flex; flex-wrap: wrap; gap: 20px;">
+
 						<c:if test="${not empty champ.skins}">
 							<c:forEach var="skin" items="${champ.skins}">
-								<div class="skin-box" style="width: 250px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-									<img src="${skin.champSkinImg}" alt="${skin.champSkinName}" style="width: 100%; height: auto; display: block;">
-									<div style="padding: 10px; background: #f8fafc; text-align: center; font-weight: bold; font-size: 14px; color: #334155;">
+								<div class="skin-box"
+									style="width: 250px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+									<img src="${skin.champSkinImg}" alt="${skin.champSkinName}"
+										style="width: 100%; height: auto; display: block;">
+									<div
+										style="padding: 10px; background: #f8fafc; text-align: center; font-weight: bold; font-size: 14px; color: #334155;">
 										<c:out value="${skin.champSkinName}" />
 									</div>
 								</div>
 							</c:forEach>
 						</c:if>
-						
+
 						<c:if test="${empty champ.skins}">
-							<div style="font-size: 14px; color: #94a3b8; width: 100%;">등록된 스킨 정보가 없습니다.</div>
+							<div style="font-size: 14px; color: #94a3b8; width: 100%;">등록된
+								스킨 정보가 없습니다.</div>
 						</c:if>
 
 					</div>
@@ -160,11 +182,10 @@
 				</div>
 
 				<div class="comment-row">
-					<div>심해 탈출러 |</div>
-					<div class="comment-main">이 챔피언 이번 패치로 엄청 상향된 것 같아요!</div>
+					<div>댓글 글쓴이 |</div>
+					<div class="comment-main">댓글 내용</div>
 					<div class="comment-side">
-						<span style="cursor: pointer;">| 신고 |</span> <span
-							style="cursor: pointer; color: var(- -accent-blue);">공감</span>
+						<span>| 댓글신고 |</span> <span>공감</span>
 					</div>
 				</div>
 			</div>

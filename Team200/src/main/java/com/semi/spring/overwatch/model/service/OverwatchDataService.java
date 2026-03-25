@@ -26,7 +26,7 @@ public class OverwatchDataService {
             System.out.println("=== 오버워치 영웅 DB가 비어있어 API 데이터를 가져옵니다 ===");
             new Thread(() -> updateHeroData()).start();
         } else {
-            System.out.println("=== 이미 " + count + "개의 오버워치 영웅 데이터가 있어 업데이트를 건너뜜 ===");
+            System.out.println("=== 이미 " + count + "개의 오버워치 영웅 데이터가 있어 업데이트를 건너띔 ===");
         }
     }
 
@@ -120,7 +120,7 @@ public class OverwatchDataService {
                 insertCount++;
             }
             
-            System.out.println("=== [성공] 총 " + insertCount + "명의 영웅 스킬 100% 자동 업데이트 완료! ===");
+            System.out.println("=== [성공] 총 " + insertCount + "명의 영웅 스킬  업데이트 완료 ===");
 
         } catch (Exception e) {
             e.printStackTrace();
