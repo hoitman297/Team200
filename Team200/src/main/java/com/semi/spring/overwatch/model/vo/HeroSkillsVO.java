@@ -1,8 +1,18 @@
 package com.semi.spring.overwatch.model.vo;
 
+import java.util.List;
+
+import com.semi.spring.lol.model.vo.ChampionVO;
+import com.semi.spring.lol.model.vo.SkillVO;
+import com.semi.spring.lol.model.vo.SkinVO;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HeroSkillsVO {
     private int heroNo;
     
@@ -30,4 +40,9 @@ public class HeroSkillsVO {
     private String skillQName;
     private String skillQDesc;
     private String skillQImg;
+    
+    private String skillPName;
+    private String skillPDesc;
+    private String skillPImg;
+    // Getter, Setter도 꼭 추가해 주세요!
 }
