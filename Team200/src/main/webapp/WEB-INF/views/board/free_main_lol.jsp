@@ -3,9 +3,9 @@
 
 <%-- 1. 배그 게시판에만 보여줄 정보 세팅 --%>
 <c:set var="boardTitle" value="리그오브레전드 자유 게시판" />
-<c:set var="gameName" value="리그오브레전드" />
+<c:set var="gameName" value="리그 오브 레전드" />
 <c:set var="gameThemeCss" value="lol/board.css" /> <%-- 배그 전용 CSS --%>
-<c:set var="writeUrl" value="/board/freewrite" />
+<c:set var="writeUrl" value="/board/free_write_lol" />
 <c:set var="boardNotice" value="검색 기능을 통해 이전에 올라온 롤 꿀팁들을 쉽게 찾아보실 수 있습니다." />
 
 <%-- ✨ URL 경로용 변수 추가 ✨ --%>

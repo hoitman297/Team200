@@ -26,8 +26,8 @@
                 <div class="menu-item-group">
                     <div class="menu-item">게시판</div>
                     <div class="sub-menu-container">
-                        <a href="<c:url value = '/board/free_battle' />"><div class="sub-item">자유게시판</div></a>
-                        <a href="<c:url value = '/board/strategy' />"><div class="sub-item">공략게시판</div></a>
+                        <a href="<c:url value = '/board/free_battleground' />"><div class="sub-item">자유게시판</div></a>
+                        <a href="<c:url value = '/board/strategy_battleground' />"><div class="sub-item">공략게시판</div></a>
                     </div>
                 </div>
                 
