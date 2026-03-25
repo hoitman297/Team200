@@ -5,19 +5,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/overwatch/style.css">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/resources/overwatch/script.js" defer></script>
-	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-    <title>오버워치</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/overwatch/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/overwatch/script.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    <title>${hero.heroName} - 오버워치</title>
 </head>
 <body>
-	<c:set var="headerTitle" value="오버워치" />
-	<%@ include file="../common/header.jsp" %>
+    <c:set var="headerTitle" value="오버워치" />
+    <%@ include file="../common/header.jsp" %>
     
-    
-	    <div class="main-layout">
+    <div class="main-layout">
         <aside class="side-left">
             <div class="side-card">
                 <h3>카테고리</h3>
@@ -43,15 +42,20 @@
                     <span>🔍</span>
                 </div>
             </div>
+            
             <div class="detail-card">
-                <div class="hero-title">영웅 이름 / 역할군</div>
+                <div class="hero-title">${hero.heroName} / ${hero.heroPosition}</div>
 
                 <div class="hero-info-top">
-                    <div class="hero-illust">일러스트</div>
+                    <div class="hero-illust" style="padding: 0; border: none; overflow: hidden;">
+                        <img src="${hero.heroImg}" alt="${hero.heroName}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    
                     <div class="hero-desc-text">
-                        <div>챔피언 배경 이야기 및 소개</div>
-                        <div>주요 포지션</div>
-                        <div>난이도 / 공격 타입</div>
+                        <div style="color: var(--primary-navy); font-weight: 800; font-size: 18px;">${hero.heroName}</div>
+                        <div style="font-weight: 500; color: #475569; line-height: 1.5;">${hero.heroIntro}</div>
+                        <div style="margin-top: 10px;">포지션: <span style="color: var(--accent-blue);">${hero.heroPosition}</span></div>
+                        <div>최대 HP: ${hero.heroHp}</div>
                     </div>
                 </div>
 
@@ -62,17 +66,52 @@
                     <a href="#patch"><div class="d-tab">패치</div></a>
                 </div>
 
-                <div class="info-section" id = "skill">
+                <div class="info-section" id="skill">
                     <h4>스킬 목록</h4>
                     <div class="skill-list">
-                        <div class="skill-item"><input type="checkbox"> L-CLICK - </div>
-                        <div class="skill-item"><input type="checkbox"> SHIFT - </div>
-                        <div class="skill-item"><input type="checkbox"> E - </div>
-                        <div class="skill-item"><input type="checkbox"> R - </div>
+                        <c:if test="${not empty skills.skillLclickName}">
+                            <div class="skill-item">
+                                <img src="${skills.skillLclickImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
+                                <strong>L-CLICK</strong> - ${skills.skillLclickName} 
+                                <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillLclickDesc}</span>
+                            </div>
+                        </c:if>
+
+                        <c:if test="${not empty skills.skillRclickName}">
+                            <div class="skill-item">
+                                <img src="${skills.skillRclickImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
+                                <strong>R-CLICK</strong> - ${skills.skillRclickName}
+                                <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillRclickDesc}</span>
+                            </div>
+                        </c:if>
+
+                        <c:if test="${not empty skills.skillShiftName}">
+                            <div class="skill-item">
+                                <img src="${skills.skillShiftImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
+                                <strong>SHIFT</strong> - ${skills.skillShiftName}
+                                <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillShiftDesc}</span>
+                            </div>
+                        </c:if>
+
+                        <c:if test="${not empty skills.skillEName}">
+                            <div class="skill-item">
+                                <img src="${skills.skillEImg}" style="width:30px; height:30px; background:#000; border-radius:4px;">
+                                <strong>E</strong> - ${skills.skillEName}
+                                <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillEDesc}</span>
+                            </div>
+                        </c:if>
+
+                        <c:if test="${not empty skills.skillQName}">
+                            <div class="skill-item">
+                                <img src="${skills.skillQImg}" style="width:30px; height:30px; background:#000; border-radius:4px; border:2px solid #eab308;">
+                                <strong style="color: #ca8a04;">Q (궁극기)</strong> - ${skills.skillQName}
+                                <span style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">: ${skills.skillQDesc}</span>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
 
-                <div class="info-section" id = "skin">
+                <div class="info-section" id="skin">
                     <h4>스킨 목록</h4>
                     <div class="skin-list">
                         <div class="skin-box"></div>
@@ -81,12 +120,12 @@
                     </div>
                 </div>
 
-                <div class="info-section" id = "sp">
+                <div class="info-section" id="sp">
                     <h4>특전 목록</h4>
                     <div style="font-size: 14px; color: #94a3b8;">내용이 없습니다.</div>
                 </div>
 
-                <div class="info-section" id = "patch">
+                <div class="info-section" id="patch">
                     <h4>패치 내역</h4>
                     <div style="font-size: 14px; color: #94a3b8;">최근 패치 내역이 없습니다.</div>
                 </div>
@@ -112,7 +151,7 @@
         </aside>
     </div>
     
-	<%@ include file="../common/footer.jsp" %>
+    <%@ include file="../common/footer.jsp" %>
 
 </body>
 </html>

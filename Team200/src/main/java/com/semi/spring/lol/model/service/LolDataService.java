@@ -49,7 +49,7 @@ public class LolDataService {
 		// 1. 챔피언 데이터 체크 
 		List<ChampionVO> list = lolDao.selectAllChampions();
 		if (list == null || list.isEmpty()) {
-			System.out.println("=== 챔피언 DB가 비어있어 API 데이터를 가져옵니다 ===");
+			System.out.println("=== 롤 챔피언 DB가 비어있어 API 데이터를 가져옵니다 ===");
 
 			new Thread(() -> updateChampionData()).start();
 
@@ -59,14 +59,14 @@ public class LolDataService {
 		// 2. 아이템 데이터 체크 
 		List<LolItemVO> itemList = lolDao.selectAllItems();
 		if (itemList == null || itemList.isEmpty()) {
-			System.out.println("=== 아이템 DB가 비어있어 API 데이터를 가져옵니다 ===");
+			System.out.println("=== 롤 아이템 DB가 비어있어 API 데이터를 가져옵니다 ===");
 			new Thread(() -> updateItemData()).start();
 		}
 		
 		// 3. 룬 데이터 체크
         List<RuneVO> runeList = lolDao.selectAllRunes(); // DAO에 이 메서드가 있다고 가정
         if(runeList == null || runeList.isEmpty()) {
-            System.out.println("=== 룬 DB가 비어있어 API 데이터를 가져옵니다 ===");
+            System.out.println("=== 롤 룬 DB가 비어있어 API 데이터를 가져옵니다 ===");
             new Thread(() -> updateRuneData()).start();
         } else {
             System.out.println("=== 이미 " + runeList.size() + "개의 룬 빌드 데이터가 있습니다. ===");

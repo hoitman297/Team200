@@ -125,7 +125,7 @@
 	</select>
 
 	<select id="selectAllItems"
-		resultType="com.semi.spring.lol.model.vo.LolItemVO">
+		resultType="LolItemVO">
 		SELECT
 		ITEM_NO AS itemNo,
 		ITEM_NAME AS itemName,
@@ -139,7 +139,7 @@
 	</select>
 
 	<insert id="insertItem"
-		parameterType="com.semi.spring.lol.model.vo.LolItemVO">
+		parameterType="LolItemVO">
 		INSERT INTO LOL_ITEM_INFO (
 		ITEM_NO, ITEM_NAME,
 		ITEM_PRICE, ITEM_INFO, ITEM_IMG, ITEM_TAG ) VALUES (
@@ -149,7 +149,7 @@
 	</insert>
 
 	<insert id="insertRune"
-		parameterType="com.semi.spring.lol.model.vo.RuneVO">
+		parameterType="RuneVO">
 		INSERT INTO RUNE_INFO (RUNE_NO, RUNE_NAME, RUNE_INFO, RUNE_IMG)
 		VALUES
 		(SEQ_RUNE_NO.NEXTVAL, #{runeName}, #{runeInfo}, #{runeImg})
@@ -160,7 +160,7 @@
 	</insert>
 
 	<insert id="insertTalent"
-		parameterType="com.semi.spring.lol.model.vo.TalentVO">
+		parameterType="TalentVO">
 		INSERT INTO TALENT_INFO (TALENT_NO, RUNE_NO,
 		TALENT_NAME, TALENT_INFO,
 		TALENT_IMG)
@@ -170,7 +170,7 @@
 	</insert>
 
 	<select id="selectAllRunes"
-		resultType="com.semi.spring.lol.model.vo.RuneVO">
+		resultType="RuneVO">
 		SELECT
 		RUNE_NO as runeNo,
 		RUNE_NAME as runeName,
@@ -180,7 +180,7 @@
 		ORDER BY RUNE_NO ASC
 	</select>
 	<select id="selectTalentsByRune" parameterType="int"
-		resultType="com.semi.spring.lol.model.vo.TalentVO">
+		resultType="TalentVO">
 		SELECT
 		TALENT_NO as talentNo,
 		RUNE_NO as runeNo,

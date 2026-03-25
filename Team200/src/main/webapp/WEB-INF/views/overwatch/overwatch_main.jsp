@@ -46,7 +46,7 @@
 			<div class="board-card">
 				<div class="tab-menu">
 					<div class="tab-item">실시간 인기글</div>
-					<a href="<c:url value = '/overwatch/hero' />">
+					<a href="<c:url value = '/overwatch/hero_main' />">
 						<div class="tab-item">영웅 정보</div>
 					</a> <a href="<c:url value = '/overwatch/box' />">
 						<div class="tab-item">상자 시뮬레이터</div>
