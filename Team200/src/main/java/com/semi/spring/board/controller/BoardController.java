@@ -26,7 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
-	// 게시글 확인 페이지
+	
+	// 게시글 목록 확인 페이지
     @GetMapping("/view")
     public String board_view() {
         return "board/board_view"; 
@@ -34,51 +35,74 @@ public class BoardController {
 
     
     // 자유게시판 메인 배그
-    @GetMapping("/free_battle")
-    public String board_freeBattleground() {
+    @GetMapping("/free_battleground")
+    public String freeBattleground() {
         return "board/free_main_battleground";
     }
     // 자유게시판 메인 롤
     @GetMapping("/free_lol")
-    public String board_freeLol() {
+    public String freeLol() {
         return "board/free_main_lol";
     }
     // 자유게시판 메인 옵치
-    @GetMapping("/free_over")
-    public String board_overwatch() {
+    @GetMapping("/free_overwatch")
+    public String freeOverwatch() {
         return "board/free_main_overwatch";
     }
     
     
     // 자유게시판 작성 배그
     @GetMapping("/free_write_battleground")
-    public String board_freeWriteBattleground() {
+    public String freeWriteBattleground() {
         return "board/free_write_battleground";
     }
     // 자유게시판 작성 롤
     @GetMapping("/free_write_lol")
-    public String board_freeWriteLol() {
+    public String freeWriteLol() {
         return "board/free_write_lol";
     }
     // 자유게시판 작성 옵치
     @GetMapping("/free_write_overwatch")
-    public String board_freeWriteOverwatch() {
+    public String freeWriteOverwatch() {
         return "board/free_write_overwatch";
     }
 
     
     
-    // 공략게시판 메인
-    @GetMapping("/strategy")
-    public String board_strategy() {
-        return "board/strategy_main";
+    // 공략게시판 메인 배그
+    @GetMapping("/strategy_battleground")
+    public String strategyBattleground() {
+        return "board/strategy_main_battleground";
+    }
+    // 공략게시판 메인 롤
+    @GetMapping("/strategy_lol")
+    public String strategyLol() {
+        return "board/strategy_main_lol";
+    }
+    // 공략게시판 메인 옵치
+    @GetMapping("/strategy_overwatch")
+    public String strategyOverwatch() {
+        return "board/strategy_main_overwatch";
     }
     
-    // 공략게시판 작성
-    @GetMapping("/strategywrite")
-    public String board_strategyWrite() {
-        return "board/strategy_write";
+    
+    // 공략게시판 작성 배그
+    @GetMapping("/strategy_write_battleground")
+    public String strategyWriteBattleground() {
+        return "board/strategy_write_battleground";
     }
+    // 공략게시판 작성 롤
+    @GetMapping("/strategy_write_lol")
+    public String strategyWriteLol() {
+        return "board/strategy_write_lol";
+    }
+    // 공략게시판 작성 옵치
+    @GetMapping("/strategy_write_overwatch")
+    public String strategyWriteOverwatch() {
+        return "board/strategy_write_overwatch";
+    }
+    
+    
     
     // 문의 메인
     @GetMapping("/inquiry")
