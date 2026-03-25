@@ -2,13 +2,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%-- 1. 이 게임 게시판에만 보여줄 정보 세팅 --%>
-<c:set var="boardTitle" value="배틀그라운드 자유 게시판" />
-<c:set var="gameName" value="배틀그라운드" />
+<c:set var="boardTitle" value="오버워치 공략 게시판" />
+<c:set var="gameName" value="오버워치" />
 <c:set var="gameThemeCss" value="board/board_write/style.css" /> <%-- 게임별 전용 CSS가 있다면 경로 변경 --%>
 <c:set var="boardNotice" value="욕설 및 비방글은 금지됩니다.<br>게시판 성격에 맞는 글을 작성해 주세요.<br>도배 시 이용 제한이 있을 수 있습니다." />
 
 <%-- ✨ URL 경로용 변수 추가! (영어 소문자로 깔끔하게!) ✨ --%>
-<c:set var="gameId" value="battleground" />
+<c:set var="gameId" value="overwatch" />
 
 <%-- 2. 공통 뼈대 파일 불러오기 --%>
-<%@ include file="../common/board_free.jsp" %>
+<%@ include file="../common/board_strategywrite.jsp" %>

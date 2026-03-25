@@ -57,7 +57,7 @@
 
             <div class="board-header">
                 <div class="board-title">${boardTitle}</div>
-               <a href="<c:url value = '${ writeUrl}' />"><button class="btn-write">글쓰기</button></a>
+               <a href="<c:url value = '${writeUrl}' />"><button class="btn-write">글쓰기</button></a>
             </div>
 
             <table class="list-table">
