@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+
 <%-- 1. 변수 설정: 주소창의 game 값을 읽어옴 (기본값 all) --%>
 <c:set var="currentGame" value="${empty param.game ? 'all' : param.game}" />
 
