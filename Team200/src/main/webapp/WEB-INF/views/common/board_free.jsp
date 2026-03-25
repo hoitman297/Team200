@@ -6,21 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/board_main/style.css">
+    <%-- CSS 경로 확인 필수! --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
-    <c:if test="${not empty gameThemeCss}">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/${gameThemeCss}">
-    </c:if>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/board_main/style.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-    
-    <style>
-        a, a:hover, a:visited, a:active {
-            text-decoration: none !important;
-            color: inherit !important;
-        }
-    </style>
     
     <title>LOG.GG - ${boardTitle}</title>
 </head>
@@ -30,25 +21,12 @@
 
     <div class="main-layout">
         <aside class="side-left">
-            <div class="side-card">
-                <h3>카테고리</h3>
-                <a href="<c:url value='/gallery/list' />"><div class="menu-item">갤러리</div></a>
-                
-                <div class="menu-item-group">
-                    <div class="menu-item">게시판</div>
-                    <div class="sub-menu-container">
-                        <a href="<c:url value='/board/free_${gameId}' />"><div class="sub-item">자유게시판</div></a>
-                        <a href="<c:url value='/board/strategy_${gameId}' />"><div class="sub-item">공략게시판</div></a>
-                    </div>
-                </div>
-                
-                <a href="<c:url value='/board/inquiry' />"><div class="menu-item">고객지원</div></a>
-            </div>
+            <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
         <main class="content-area">
             <div class="board-top-row">
-                <a href="<c:url value='/' />"><div class="logo">LOG.GG</div></a>
+                <a href="<c:url value='/' />" class="logo-link"><div class="logo">LOG.GG</div></a>
                 <div class="search-bar">
                     <input type="text" placeholder="${boardTitle} 내 글 검색">
                     <span style="cursor:pointer">🔍</span>
@@ -57,7 +35,8 @@
 
             <div class="board-header">
                 <div class="board-title">${boardTitle}</div>
-               <a href="<c:url value = '${ writeUrl}' />"><button class="btn-write">글쓰기</button></a>
+                <%-- 버튼 테두리 문제 해결을 위해 클래스 직접 부여 --%>
+                <a href="<c:url value='${writeUrl}' />" class="btn-write">글쓰기</a>
             </div>
 
             <table class="list-table">
@@ -75,7 +54,7 @@
                     <c:choose>
                         <c:when test="${empty boardList}">
                             <tr>
-                                <td colspan="6" style="padding: 50px; color: #94a3b8;">게시글이 없습니다.</td>
+                                <td colspan="6" class="empty-msg">게시글이 없습니다.</td>
                             </tr>
                         </c:when>
                         <c:otherwise>
@@ -95,18 +74,20 @@
             </table>
 
             <div class="pagination">
-                <span>&lt; 이전</span>
+                <span class="page-link">&lt; 이전</span>
                 <span class="page-num active">1</span>
                 <span class="page-num">2</span>
                 <span class="page-num">3</span>
-                <span>다음 &gt;</span>
+                <span class="page-link">다음 &gt;</span>
             </div>
         </main>
 
-        <aside class="sidebar-right" style="background: #cbd5e1; border-radius: 20px; padding: 25px; height: fit-content;">
-            <h3 style="font-size: 16px; margin: 0 0 20px 0; font-weight: 800;">공지사항</h3>
-            <div style="font-size: 14px; color: #475569; line-height: 1.8;">
-                ${boardNotice}
+        <aside class="sidebar-right">
+            <div class="notice-card">
+                <h3>공지사항</h3>
+                <div class="notice-content">
+                    ${boardNotice}
+                </div>
             </div>
         </aside>
     </div>
