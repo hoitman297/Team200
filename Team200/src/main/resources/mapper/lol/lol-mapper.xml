@@ -3,39 +3,6 @@
 
 <mapper namespace="lolMapper">
 
-
-	<resultMap id="champDetailMap" type="championVO">
-		<id property="champNo" column="CHAMP_NO" />
-		<result property="champName" column="CHAMP_NAME" />
-		<result property="champPosition" column="CHAMP_POSITION" />
-		<result property="champImg" column="CHAMP_IMG" />
-		<result property="champIntro" column="CHAMP_INTRO" />
-
-		<association property="skills" javaType="skillVO">
-			<result property="skillPName" column="SKILL_P_NAME" />
-			<result property="skillPDesc" column="SKILL_P_DESC" />
-			<result property="skillPImg" column="SKILL_P_IMG" />
-			<result property="skillQName" column="SKILL_Q_NAME" />
-			<result property="skillQDesc" column="SKILL_Q_DESC" />
-			<result property="skillQImg" column="SKILL_Q_IMG" />
-			<result property="skillWName" column="SKILL_W_NAME" />
-			<result property="skillWDesc" column="SKILL_W_DESC" />
-			<result property="skillWImg" column="SKILL_W_IMG" />
-			<result property="skillEName" column="SKILL_E_NAME" />
-			<result property="skillEDesc" column="SKILL_E_DESC" />
-			<result property="skillEImg" column="SKILL_E_IMG" />
-			<result property="skillRName" column="SKILL_R_NAME" />
-			<result property="skillRDesc" column="SKILL_R_DESC" />
-			<result property="skillRImg" column="SKILL_R_IMG" />
-		</association>
-
-		<collection property="skins" ofType="skinVO">
-			<id property="champSkinNo" column="CHAMP_SKIN_NO" />
-			<result property="champSkinName" column="CHAMP_SKIN_NAME" />
-			<result property="champSkinImg" column="CHAMP_SKIN_IMG" />
-		</collection>
-	</resultMap>
-
 	<select id="selectAllChampions" resultType="championVO">
 		SELECT CHAMP_NO AS
 		champNo, CHAMP_NAME AS champName,
@@ -53,20 +20,11 @@
 			SELECT SEQ_CHAMP_NO.NEXTVAL FROM DUAL
 		</selectKey>
 		INSERT INTO CHAMP_INFO (
-		CHAMP_NO,
-		CHAMP_NAME,
-		CHAMP_POSITION,
-		CHAMP_ROLES,
-		CHAMP_IMG,
-		CHAMP_INTRO
+		CHAMP_NO, CHAMP_NAME, CHAMP_POSITION,
+		CHAMP_ROLES, CHAMP_IMG
 		) VALUES (
-		#{champNo},
-		#{champName},
-		#{champPosition},
-		#{champRoles},
-		#{champImg},
-		#{champIntro,
-		jdbcType=VARCHAR}
+		#{champNo}, #{champName},
+		#{champPosition}, #{champRoles}, #{champImg}
 		)
 	</insert>
 
@@ -105,15 +63,44 @@
 		)
 	</insert>
 
+	<resultMap id="champDetailMap" type="championVO">
+		<id property="champNo" column="CHAMP_NO" />
+		<result property="champName" column="CHAMP_NAME" />
+		<result property="champPosition" column="CHAMP_POSITION" />
+		<result property="champImg" column="CHAMP_IMG" />
 
+		<association property="skills" javaType="skillVO">
+			<result property="skillPName" column="SKILL_P_NAME" />
+			<result property="skillPDesc" column="SKILL_P_DESC" />
+			<result property="skillPImg" column="SKILL_P_IMG" />
+			<result property="skillQName" column="SKILL_Q_NAME" />
+			<result property="skillQDesc" column="SKILL_Q_DESC" />
+			<result property="skillQImg" column="SKILL_Q_IMG" />
+			<result property="skillWName" column="SKILL_W_NAME" />
+			<result property="skillWDesc" column="SKILL_W_DESC" />
+			<result property="skillWImg" column="SKILL_W_IMG" />
+			<result property="skillEName" column="SKILL_E_NAME" />
+			<result property="skillEDesc" column="SKILL_E_DESC" />
+			<result property="skillEImg" column="SKILL_E_IMG" />
+			<result property="skillRName" column="SKILL_R_NAME" />
+			<result property="skillRDesc" column="SKILL_R_DESC" />
+			<result property="skillRImg" column="SKILL_R_IMG" />
+		</association>
+
+		<collection property="skins" ofType="skinVO">
+			<id property="champSkinNo" column="CHAMP_SKIN_NO" />
+			<result property="champSkinName" column="CHAMP_SKIN_NAME" />
+			<result property="champSkinImg" column="CHAMP_SKIN_IMG" />
+		</collection>
+	</resultMap>
 
 	<select id="getChampDeta" parameterType="int"
 		resultMap="champDetailMap">
 		SELECT
 		C.CHAMP_NO, C.CHAMP_NAME, C.CHAMP_IMG,
-		C.CHAMP_INTRO,
 		CASE
-		WHEN LOWER(C.CHAMP_POSITION) LIKE '%assassin%' THEN '암살자'
+		WHEN
+		LOWER(C.CHAMP_POSITION) LIKE '%assassin%' THEN '암살자'
 		WHEN
 		LOWER(C.CHAMP_POSITION) LIKE '%fighter%' THEN '전사'
 		WHEN
@@ -137,7 +124,8 @@
 		WHERE C.CHAMP_NO = #{champNo}
 	</select>
 
-	<select id="selectAllItems" resultType="LolItemVO">
+	<select id="selectAllItems"
+		resultType="LolItemVO">
 		SELECT
 		ITEM_NO AS itemNo,
 		ITEM_NAME AS itemName,
@@ -147,22 +135,21 @@
 		ITEM_IMG AS itemImg,
 		ITEM_TAG AS
 		itemTag FROM LOL_ITEM_INFO
-		ORDER BY
-		ITEM_PRICE ASC, ITEM_NAME ASC
+		ORDER BY ITEM_PRICE ASC, ITEM_NAME ASC
 	</select>
 
-	<insert id="insertItem" parameterType="LolItemVO">
-		INSERT INTO LOL_ITEM_INFO
-		(
+	<insert id="insertItem"
+		parameterType="LolItemVO">
+		INSERT INTO LOL_ITEM_INFO (
 		ITEM_NO, ITEM_NAME,
-		ITEM_PRICE, ITEM_INFO, ITEM_IMG, ITEM_TAG ) VALUES
-		(
+		ITEM_PRICE, ITEM_INFO, ITEM_IMG, ITEM_TAG ) VALUES (
 		#{itemNo},
 		#{itemName}, #{itemPrice}, #{itemInfo}, #{itemImg},
 		#{itemTag} )
 	</insert>
 
-	<insert id="insertRune" parameterType="RuneVO">
+	<insert id="insertRune"
+		parameterType="RuneVO">
 		INSERT INTO RUNE_INFO (RUNE_NO, RUNE_NAME, RUNE_INFO, RUNE_IMG)
 		VALUES
 		(SEQ_RUNE_NO.NEXTVAL, #{runeName}, #{runeInfo}, #{runeImg})
@@ -172,25 +159,24 @@
 		</selectKey>
 	</insert>
 
-	<insert id="insertTalent" parameterType="TalentVO">
-		INSERT INTO TALENT_INFO
-		(TALENT_NO, RUNE_NO,
+	<insert id="insertTalent"
+		parameterType="TalentVO">
+		INSERT INTO TALENT_INFO (TALENT_NO, RUNE_NO,
 		TALENT_NAME, TALENT_INFO,
 		TALENT_IMG)
-		VALUES
-		(SEQ_TALENT_NO.NEXTVAL,
+		VALUES (SEQ_TALENT_NO.NEXTVAL,
 		#{runeNo}, #{talentName}, #{talentInfo},
 		#{talentImg})
 	</insert>
 
-	<select id="selectAllRunes" resultType="RuneVO">
+	<select id="selectAllRunes"
+		resultType="RuneVO">
 		SELECT
 		RUNE_NO as runeNo,
 		RUNE_NAME as runeName,
 		RUNE_INFO as runeInfo,
 		RUNE_IMG as runeImg
-		FROM
-		RUNE_INFO
+		FROM RUNE_INFO
 		ORDER BY RUNE_NO ASC
 	</select>
 	<select id="selectTalentsByRune" parameterType="int"
@@ -198,12 +184,10 @@
 		SELECT
 		TALENT_NO as talentNo,
 		RUNE_NO as runeNo,
-		TALENT_NAME
-		as talentName,
+		TALENT_NAME as talentName,
 		TALENT_INFO as talentInfo,
 		TALENT_IMG as talentImg
-		FROM
-		TALENT_INFO
+		FROM TALENT_INFO
 		WHERE RUNE_NO = #{runeNo}
 		ORDER BY
 		TALENT_NO ASC

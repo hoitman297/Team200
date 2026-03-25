@@ -22,171 +22,167 @@ import com.semi.spring.lol.model.vo.TalentVO;
 @Service
 public class LolDataService {
 
-    @Autowired
-    private LolDao lolDao;
+	@Autowired
+	private LolDao lolDao;
 
-    // =========================================================================
-    // 이미지 확인 도우미 메서드 (기다리는 시간을 1초로 단축!)
-    // =========================================================================
-    private boolean isImageUrlValid(String urlString) {
-        try {
-            java.net.URL url = new java.net.URL(urlString);
-            java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("HEAD");
-            connection.setConnectTimeout(1000);
-            connection.setReadTimeout(1000);
+	// =========================================================================
+	// [수정됨] 이미지 확인 도우미 메서드 (기다리는 시간을 1초로 단축!)
+	// =========================================================================
+	private boolean isImageUrlValid(String urlString) {
+		try {
+			java.net.URL url = new java.net.URL(urlString);
+			java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("HEAD");
+			connection.setConnectTimeout(1000);
+			connection.setReadTimeout(1000);
 
-            int responseCode = connection.getResponseCode();
-            return responseCode == 200;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-    // =========================================================================
+			int responseCode = connection.getResponseCode();
+			return responseCode == 200;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	// =========================================================================
 
-    @PostConstruct
-    public void init() {
-        // 1. 챔피언 데이터 체크 
-        List<ChampionVO> list = lolDao.selectAllChampions();
-        if (list == null || list.isEmpty()) {
-            System.out.println("=== 롤 챔피언 DB가 비어있어 API 데이터를 가져옵니다 ===");
-            new Thread(() -> updateChampionData()).start();
-        } else {
-            System.out.println("=== 이미 " + list.size() + "개의 데이터가 있어 업데이트를 건너뜁니다. ===");
-        }
-        
-        // 2. 아이템 데이터 체크 
-        List<LolItemVO> itemList = lolDao.selectAllItems();
-        if (itemList == null || itemList.isEmpty()) {
-            System.out.println("=== 롤 아이템 DB가 비어있어 API 데이터를 가져옵니다 ===");
-            new Thread(() -> updateItemData()).start();
-        }
-        
-        // 3. 룬 데이터 체크
-        List<RuneVO> runeList = lolDao.selectAllRunes(); 
+	@PostConstruct
+	public void init() {
+		// 1. 챔피언 데이터 체크 
+		List<ChampionVO> list = lolDao.selectAllChampions();
+		if (list == null || list.isEmpty()) {
+			System.out.println("=== 롤 챔피언 DB가 비어있어 API 데이터를 가져옵니다 ===");
+
+			new Thread(() -> updateChampionData()).start();
+
+		} else {
+			System.out.println("=== 이미 " + list.size() + "개의 데이터가 있어 업데이트를 건너뜁니다. ===");
+		}
+		// 2. 아이템 데이터 체크 
+		List<LolItemVO> itemList = lolDao.selectAllItems();
+		if (itemList == null || itemList.isEmpty()) {
+			System.out.println("=== 롤 아이템 DB가 비어있어 API 데이터를 가져옵니다 ===");
+			new Thread(() -> updateItemData()).start();
+		}
+		
+		// 3. 룬 데이터 체크
+        List<RuneVO> runeList = lolDao.selectAllRunes(); // DAO에 이 메서드가 있다고 가정
         if(runeList == null || runeList.isEmpty()) {
             System.out.println("=== 롤 룬 DB가 비어있어 API 데이터를 가져옵니다 ===");
             new Thread(() -> updateRuneData()).start();
         } else {
             System.out.println("=== 이미 " + runeList.size() + "개의 룬 빌드 데이터가 있습니다. ===");
         }
-    }
 
-    public void updateChampionData() {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String versionUrl = "https://ddragon.leagueoflegends.com/api/versions.json";
-            List<String> versions = restTemplate.getForObject(versionUrl, List.class);
-            String latestVersion = versions.get(0);
+	}
 
-            System.out.println("=== 최신 롤 패치 버전: " + latestVersion + " ===");
+	public void updateChampionData() {
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			String versionUrl = "https://ddragon.leagueoflegends.com/api/versions.json";
+			List<String> versions = restTemplate.getForObject(versionUrl, List.class);
+			String latestVersion = versions.get(0);
 
-            String baseUrl = "https://ddragon.leagueoflegends.com/cdn/" + latestVersion;
-            String listUrl = baseUrl + "/data/ko_KR/champion.json";
+			System.out.println("=== 최신 롤 패치 버전: " + latestVersion + " ===");
 
-            Map<String, Object> response = restTemplate.getForObject(listUrl, Map.class);
-            Map<String, Object> data = (Map<String, Object>) response.get("data");
+			String baseUrl = "https://ddragon.leagueoflegends.com/cdn/" + latestVersion;
+			String listUrl = baseUrl + "/data/ko_KR/champion.json";
 
-            int insertCount = 0;
-            for (String key : data.keySet()) {
-                // [1단계] 챔피언 기본 정보
-                Map<String, Object> champInfo = (Map<String, Object>) data.get(key);
-                ChampionVO champ = new ChampionVO();
-                champ.setChampName((String) champInfo.get("name"));
+			Map<String, Object> response = restTemplate.getForObject(listUrl, Map.class);
+			Map<String, Object> data = (Map<String, Object>) response.get("data");
 
-                List<String> tags = (List<String>) champInfo.get("tags");
-                champ.setChampPosition(String.join(", ", tags));
+			int insertCount = 0;
+			for (String key : data.keySet()) {
+				// [1단계] 챔피언 기본 정보
+				Map<String, Object> champInfo = (Map<String, Object>) data.get(key);
+				ChampionVO champ = new ChampionVO();
+				champ.setChampName((String) champInfo.get("name"));
 
-                String imgUrl = baseUrl + "/img/champion/" + key + ".png";
-                champ.setChampImg(imgUrl);
+				List<String> tags = (List<String>) champInfo.get("tags");
+				champ.setChampPosition(String.join(", ", tags));
 
-                // =========================================================
-                // ⭐ [추가됨] 챔피언 배경 스토리(설명) 파싱 및 세팅
-                // =========================================================
-                String blurb = (String) champInfo.get("blurb");
-                if (blurb != null) {
-                    // HTML 태그 제거
-                    blurb = blurb.replaceAll("<[^>]*>", "");
-                    champ.setChampIntro(blurb);
-                }
-                // =========================================================
+				String imgUrl = baseUrl + "/img/champion/" + key + ".png";
+				champ.setChampImg(imgUrl);
 
-                lolDao.insertChampion(champ);
-                int currentChampNo = champ.getChampNo();
+				lolDao.insertChampion(champ);
+				int currentChampNo = champ.getChampNo();
 
-                // [2단계] 챔피언 상세 정보
-                String detailUrl = baseUrl + "/data/ko_KR/champion/" + key + ".json";
-                Map<String, Object> detailRes = restTemplate.getForObject(detailUrl, Map.class);
-                Map<String, Object> detailData = (Map<String, Object>) detailRes.get("data");
-                Map<String, Object> detail = (Map<String, Object>) detailData.get(key);
+				// [2단계] 챔피언 상세 정보
+				String detailUrl = baseUrl + "/data/ko_KR/champion/" + key + ".json";
+				Map<String, Object> detailRes = restTemplate.getForObject(detailUrl, Map.class);
+				Map<String, Object> detailData = (Map<String, Object>) detailRes.get("data");
+				Map<String, Object> detail = (Map<String, Object>) detailData.get(key);
 
-                // --- 2-1. 스킬 파싱 및 저장 ---
-                SkillVO skillVO = new SkillVO();
-                skillVO.setChampNo(currentChampNo);
+				// --- 2-1. 스킬 파싱 및 저장 ---
+				SkillVO skillVO = new SkillVO();
+				skillVO.setChampNo(currentChampNo);
 
-                Map<String, Object> passive = (Map<String, Object>) detail.get("passive");
-                skillVO.setSkillPName((String) passive.get("name"));
-                skillVO.setSkillPDesc((String) passive.get("description"));
-                Map<String, Object> passiveImgObj = (Map<String, Object>) passive.get("image");
-                skillVO.setSkillPImg(baseUrl + "/img/passive/" + passiveImgObj.get("full"));
+				Map<String, Object> passive = (Map<String, Object>) detail.get("passive");
+				skillVO.setSkillPName((String) passive.get("name"));
+				skillVO.setSkillPDesc((String) passive.get("description"));
+				Map<String, Object> passiveImgObj = (Map<String, Object>) passive.get("image");
+				skillVO.setSkillPImg(baseUrl + "/img/passive/" + passiveImgObj.get("full"));
 
-                List<Map<String, Object>> spells = (List<Map<String, Object>>) detail.get("spells");
+				List<Map<String, Object>> spells = (List<Map<String, Object>>) detail.get("spells");
 
-                skillVO.setSkillQName((String) spells.get(0).get("name"));
-                skillVO.setSkillQDesc((String) spells.get(0).get("description"));
-                skillVO.setSkillQImg(
-                        baseUrl + "/img/spell/" + ((Map<String, Object>) spells.get(0).get("image")).get("full"));
+				skillVO.setSkillQName((String) spells.get(0).get("name"));
+				skillVO.setSkillQDesc((String) spells.get(0).get("description"));
+				skillVO.setSkillQImg(
+						baseUrl + "/img/spell/" + ((Map<String, Object>) spells.get(0).get("image")).get("full"));
 
-                skillVO.setSkillWName((String) spells.get(1).get("name"));
-                skillVO.setSkillWDesc((String) spells.get(1).get("description"));
-                skillVO.setSkillWImg(
-                        baseUrl + "/img/spell/" + ((Map<String, Object>) spells.get(1).get("image")).get("full"));
+				skillVO.setSkillWName((String) spells.get(1).get("name"));
+				skillVO.setSkillWDesc((String) spells.get(1).get("description"));
+				skillVO.setSkillWImg(
+						baseUrl + "/img/spell/" + ((Map<String, Object>) spells.get(1).get("image")).get("full"));
 
-                skillVO.setSkillEName((String) spells.get(2).get("name"));
-                skillVO.setSkillEDesc((String) spells.get(2).get("description"));
-                skillVO.setSkillEImg(
-                        baseUrl + "/img/spell/" + ((Map<String, Object>) spells.get(2).get("image")).get("full"));
+				skillVO.setSkillEName((String) spells.get(2).get("name"));
+				skillVO.setSkillEDesc((String) spells.get(2).get("description"));
+				skillVO.setSkillEImg(
+						baseUrl + "/img/spell/" + ((Map<String, Object>) spells.get(2).get("image")).get("full"));
 
-                skillVO.setSkillRName((String) spells.get(3).get("name"));
-                skillVO.setSkillRDesc((String) spells.get(3).get("description"));
-                skillVO.setSkillRImg(
-                        baseUrl + "/img/spell/" + ((Map<String, Object>) spells.get(3).get("image")).get("full"));
+				skillVO.setSkillRName((String) spells.get(3).get("name"));
+				skillVO.setSkillRDesc((String) spells.get(3).get("description"));
+				skillVO.setSkillRImg(
+						baseUrl + "/img/spell/" + ((Map<String, Object>) spells.get(3).get("image")).get("full"));
 
-                lolDao.insertChampionSkills(skillVO);
+				lolDao.insertChampionSkills(skillVO);
 
-                // --- 2-2. 스킨 파싱 및 저장 (병렬 스트림 사용) ---
-                List<Map<String, Object>> skins = (List<Map<String, Object>>) detail.get("skins");
+				// =========================================================
+				// [핵심 변경] 2-2. 스킨 파싱 및 저장 (병렬 스트림 사용)
+				// =========================================================
+				List<Map<String, Object>> skins = (List<Map<String, Object>>) detail.get("skins");
 
-                skins.parallelStream().forEach(skinData -> {
-                    SkinVO skinVO = new SkinVO();
-                    skinVO.setChampNo(currentChampNo);
+				// for문 대신 parallelStream()을 사용하여 여러 스킨을 동시에 처리합니다!
+				skins.parallelStream().forEach(skinData -> {
+					SkinVO skinVO = new SkinVO();
+					skinVO.setChampNo(currentChampNo);
 
-                    String skinName = (String) skinData.get("name");
-                    if ("default".equalsIgnoreCase(skinName)) {
-                        skinName = "기본";
-                    }
-                    skinVO.setChampSkinName(skinName);
+					String skinName = (String) skinData.get("name");
+					if ("default".equalsIgnoreCase(skinName)) {
+						skinName = "기본";
+					}
+					skinVO.setChampSkinName(skinName);
 
-                    String skinNum = String.valueOf(skinData.get("num"));
-                    String skinImgUrl = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/" + key + "_"
-                            + skinNum + ".jpg";
+					String skinNum = String.valueOf(skinData.get("num"));
+					String skinImgUrl = "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/" + key + "_"
+							+ skinNum + ".jpg";
 
-                    if (!isImageUrlValid(skinImgUrl)) {
-                        return;
-                    }
+					if (!isImageUrlValid(skinImgUrl)) {
+						System.out.println("[" + champ.getChampName() + " - " + skinName + "] 이미지가 없습니다. 저장을 생략합니다.");
+						return; // 람다식 내부에서는 continue 대신 return
+					}
 
-                    skinVO.setChampSkinImg(skinImgUrl);
-                    lolDao.insertChampionSkin(skinVO);
-                });
+					skinVO.setChampSkinImg(skinImgUrl);
+					lolDao.insertChampionSkin(skinVO);
+				});
+				// =========================================================
 
-                insertCount++;
-            }
-            System.out.println("=== [성공] 총 " + insertCount + "명의 챔피언과 스킬/스킨/설명을 DB에 저장했습니다! ===");
-        } catch (Exception e) {
-            System.out.println("=== [에러 발생] 데이터 업데이트 중지: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+				insertCount++;
+			}
+			System.out.println("=== [성공] 총 " + insertCount + "명의 챔피언과 스킬/스킨을 DB에 저장했습니다! ===");
+		} catch (Exception e) {
+			System.out.println("=== [에러 발생] 데이터 업데이트 중지: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
 	public void updateItemData() {
 		try {
