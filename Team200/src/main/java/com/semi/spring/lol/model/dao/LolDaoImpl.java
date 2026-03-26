@@ -25,12 +25,13 @@ public class LolDaoImpl implements LolDao {
 	@Override
 	public List<ChampionVO> selectAllChampions() {
 		// TODO Auto-generated method stub
-		return session.selectList(NAMESPACE + "selectAllChampions");
+		return session.selectList("lolMapper.selectAllChampions");
 	}
 
 	@Override
 	public int insertChampion(ChampionVO vo) {
 		return session.insert(NAMESPACE + "insertChampion", vo);
+
 	}
 
 	@Override

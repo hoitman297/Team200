@@ -26,7 +26,7 @@
         </aside>
 
 		<main class="content-area">
-			<a href="<c:url value ='/lol/main'/>"><div class="logo">LOG.GG</div></a>
+			<a href="<c:url value ='/overwatch/main'/>"><div class="logo">LOG.GG</div></a>
 
 			<div class="sim-container">
 				<div id="display" class="result-screen">준비 완료!</div>

@@ -39,7 +39,7 @@
         </aside>
 
         <main class="content-area">
-            <div class="logo">LOG.GG</div>
+            <a href="<c:url value ='/'/>"><div class="logo">LOG.GG</div></a>
             
             <div class="content-card">
                 <div class="board-header">
