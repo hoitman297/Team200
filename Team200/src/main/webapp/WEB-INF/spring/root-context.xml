@@ -7,63 +7,44 @@
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 	
-	<!-- Root Context: defines shared resources visible to all other web components -->
-		
 	<context:property-placeholder location="classpath:driver.properties" />
 	
-	<!-- DB연결설정 -->
-	 <!-- 1단계 ) DB연결을 위한 도구 설정
-	 	BasicDataSource datasource = new BasicDataSource()
-	 	datasource.setDriverClassName("...");	
-	 -->
-	 <bean class="org.apache.commons.dbcp.BasicDataSource" id="datasource" destroy-method="close">
+	<bean class="org.apache.commons.dbcp.BasicDataSource" id="datasource" destroy-method="close">
 	 	<property name="driverClassName" value="${datasource.driverClassName}" />
 	 	<property name="url" value="${datasource.url}"/>
 	 	<property name="username" value="${datasource.username}"/>
 	 	<property name="password" value="${datasource.password}"/>
 	 </bean>
 	 
-	 <!-- 2단계 ) Mybatis Spring에서 제공하는 SQL명령 실행 도구 등록 -->
 	 <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
-	 	<!-- mybatis 설정파일 위치 지정 -->
 	 	<property name="configLocation" value="classpath:mybatis-config.xml"/>
-	 	
-	 	<!-- DB연결을 위한 도구 -->
 	 	<property name="dataSource" ref="datasource" />
-	 	
-	 	<!--  매퍼파일의 위치 등록 -->
 	 	<property name="mapperLocations" value="classpath*:mapper/**/*.xml"/>
 	 </bean>
 	 
-	 <!-- 3단계 ) sql구문을 실행하기 위한 템플릿을 제공하는 bean객체 등록 -->
 	 <bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession">
 	 		<constructor-arg ref="sqlSessionFactory"/>
 	 </bean> 
 	 
-	 <!-- 암호화 인코딩 기능을 가진 bean객체 등록 -->
-	<bean id="bcryptPasswordEncoder" 
-		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"
-	/>
-	 <!-- 정적파일에 대한 보안검사 제외 옵션 -->
-	<security:http security="none" pattern="/resources/**"  />
-	<security:http auto-config="true">
+	 <bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 	
-		<!-- 
-			메인페이지, 회원가입페이지, 로그인페이지, 아이디 중복 체크 기능은
-			모든 사용자가 이용 가능하도록 설정.
-		 -->
- 		<security:intercept-url pattern="/" access="permitAll" />
- 		<security:intercept-url pattern="/security/insert" access="permitAll" />
- 		<security:intercept-url pattern="/member/login" access="permitAll" />
+	 <security:http security="none" pattern="/resources/**"  />
+	
+	<security:http auto-config="true" use-expressions="true">
+	
+		<security:intercept-url pattern="/" access="permitAll" />
+		<security:intercept-url pattern="/security/insert" access="permitAll" />
+		<security:intercept-url pattern="/member/login" access="permitAll" />
 		<security:intercept-url pattern="/member/idCheck" access="permitAll" />
- 		<security:intercept-url pattern="/security/accessDenied" access="permitAll"/>
- 		<security:intercept-url pattern="/member/loginProcess" access="permitAll"/> 
+		<security:intercept-url pattern="/security/accessDenied" access="permitAll"/>
+		<security:intercept-url pattern="/member/loginProcess" access="permitAll"/> 
 		
-		<!-- 채팅과 관련된 url 권한 -->
-<!-- 		<security:intercept-url pattern="/board/**" access="hasRole('USER')"/> -->
-<!-- 		<security:intercept-url pattern="/reply/**" access="hasRole('USER')"/> -->
-<!-- 		<security:intercept-url pattern="/stomp/**" access="permitAll"/> -->
-<!-- 		<security:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/> -->
+	<security:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
+		<security:intercept-url pattern="/board/**" access="hasRole('USER')"/>
+		<security:intercept-url pattern="/reply/**" access="hasRole('USER')"/>
+		<security:intercept-url pattern="/stomp/**" access="permitAll"/>
+		
+		<security:intercept-url pattern="/**" access="permitAll" />
 		
 		<security:form-login
 			login-page="/member/login"
@@ -78,41 +59,22 @@
 			logout-success-url="/"
 		/>
 		
-<!-- 		<security:remember-me  -->
-<!-- 			data-source-ref="datasource" -->
-<!-- 			token-validity-seconds="1209600" -->
-<!-- 		/> -->
-		<!-- 접근권한 없는 url을 요청시 처리할 핸들러 -->
-		<security:access-denied-handler 
-			error-page = "/security/accessDenied"
-		/>
+		<security:access-denied-handler error-page="/security/accessDenied"/>
 	</security:http>
 	
-	<!-- 
-		authentication-manager
-		 - 인증 처리를 담당하는 컴포넌트
-		authentication-provider
-		 - authentication-manager에 등록되어 실제 "인증로직"을 수행하는 객체
-		 - 실제 인증로직으로는 UserDetailsService를 구현한 bean객체를 등록해야한다.
-		 - provider는 인증 성공시 UserDetails를 반환한다.
-	 -->
-	 
- 	<context:component-scan base-package="com.semi.spring">
- 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
- 	</context:component-scan>
- 	
- 	<bean id="securityServiceImpl" class="com.semi.spring.security.model.service.SecurityServiceImpl" >
- 		<constructor-arg ref="bcryptPasswordEncoder"/>
- 		<constructor-arg ref="securityDaoImpl" />
- 	</bean>
- 	
- 	
-	 
+	<context:component-scan base-package="com.semi.spring">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<bean id="securityServiceImpl" class="com.semi.spring.security.model.service.SecurityServiceImpl" >
+		<constructor-arg ref="bcryptPasswordEncoder"/>
+		<constructor-arg ref="securityDaoImpl" />
+	</bean>
+	
 	 <security:authentication-manager alias="authenticationManager">
 	 	<security:authentication-provider user-service-ref="securityServiceImpl">
 	 		<security:password-encoder ref="bcryptPasswordEncoder" />
 	 	</security:authentication-provider>
 	 </security:authentication-manager>
-	 
 	 
 </beans>

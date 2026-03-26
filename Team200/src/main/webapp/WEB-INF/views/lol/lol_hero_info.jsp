@@ -173,12 +173,13 @@
 		</main>
 
 		<aside class="side-right">
-			<div class="side-card" style="background: #cbd5e1; height: 300px;">
-				<h3>최근 업데이트</h3>
-				<div style="font-size: 14px; color: #475569; line-height: 1.8;">
-					최신 업데이트 내용을 확인하세요.</div>
-			</div>
-		</aside>
+            <div class="side-card" style="background: #cbd5e1; height: 300px;">
+                	<h3>최근 업데이트</h3>
+            	<div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                	최신 업데이트 내용을 확인하세요.
+            	</div>
+            </div>
+        </aside>
 	</div>
 
 	<%@ include file="../common/footer.jsp"%>

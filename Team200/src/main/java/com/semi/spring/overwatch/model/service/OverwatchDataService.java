@@ -43,7 +43,7 @@ public class OverwatchDataService {
             JsonNode heroArray = objectMapper.readTree(listJson);
 
             int insertCount = 0;
-
+            
             // 2. 각 영웅의 상세 정보(스킬, 체력 등)를 순회하며 가져오기
             for (JsonNode basicNode : heroArray) {
                 String heroKey = basicNode.get("key").asText();
@@ -88,7 +88,8 @@ public class OverwatchDataService {
                 // 영웅 정보 DB Insert
                 overdao.insertHero(hero);
                 int currentHeroNo = hero.getHeroNo();
-
+                
+                
                 // --- [2단계] HERO_SKILLS_INFO 데이터 세팅 및 저장 ---
                 HeroSkillsVO skills = new HeroSkillsVO();
                 skills.setHeroNo(currentHeroNo); // 받아온 PK 세팅
@@ -126,6 +127,8 @@ public class OverwatchDataService {
                     }
                 }
                 
+
+
                 // 스킬 정보 DB Insert
                 overdao.insertHeroSkills(skills);
                 insertCount++;
@@ -136,6 +139,7 @@ public class OverwatchDataService {
         } catch (Exception e) {
             System.out.println("=== [에러 발생] 오버워치 데이터 업데이트 중지: " + e.getMessage());
             e.printStackTrace();
+            
         }
     }
 }
