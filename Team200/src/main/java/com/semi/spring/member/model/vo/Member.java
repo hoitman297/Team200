@@ -13,7 +13,7 @@ import lombok.ToString;
 public class Member {
 	private int userNo;
     private String userId;
-    private String userPwd;
+    private String userPw;
     private String userName;
 
     private Date enrollDate;
@@ -22,6 +22,6 @@ public class Member {
     private Date modifiedDate;
     
     private String email;
-    
+        
     // private String userRole; 유저 권한까지 넣어야 되나?
 }
