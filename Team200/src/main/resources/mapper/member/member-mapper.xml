@@ -7,7 +7,7 @@
 		INSERT INTO LOG_GG_USER (
 			USER_NO, USER_ID, USER_PW, USER_NAME, EMAIL, STATUS, WITHDRAW, ENROLL_DATE, MODIFIED_DATE, USER_ROLE
 		) VALUES (
-			SEQ_USER_NO.NEXTVAL, #{userId}, #{userPwd}, #{userName}, #{email}, DEFAULT, DEFAULT, DEFAULT, NULL, DEFAULT
+			SEQ_USER_NO.NEXTVAL, #{userId}, #{userPw}, #{userName}, #{email}, DEFAULT, DEFAULT, DEFAULT, NULL, DEFAULT
 		)
 	</insert>
 	
@@ -25,7 +25,8 @@
 	</select>
 	
 	<select id="selectOne" resultType="member">
-		SELECT * FROM LOG_GG_USER
+		SELECT USER_ID, USER_NAME
+		FROM LOG_GG_USER
 		WHERE USER_ID = #{userId}
 	</select>
 	
@@ -37,13 +38,13 @@
           AND WITHDRAW = 'N'
     </select>
     
-    <!-- 닉네임,PWD 수정 -->
+    <!-- 닉네임,PW 수정 -->
 	<update id="updateMember">
 		UPDATE LOG_GG_USER 
 		SET 
 		    USER_NAME = #{userName},
-			<if test="userPwd != null and userPwd != ''">
-			USER_PW = #{userPwd},
+			<if test="userPw != null and userPw != ''">
+			USER_PW = #{userPw},
 			MODIFIED_DATE = SYSDATE ,
 			</if>
 		    EMAIL = #{email}

@@ -32,6 +32,7 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public Member loginMember(Member member) {
+		System.out.println("loginMember method from MemberServiceImpl");
 		return memberDao.loginMember(member);
 	}
 

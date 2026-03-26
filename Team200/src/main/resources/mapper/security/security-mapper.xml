@@ -6,13 +6,14 @@
 		SELECT 
 			USER_NO, 
 			USER_ID, 
-			USER_PW AS USER_PWD,  USER_NAME,
+			USER_PW,  
+			USER_NAME,
 			CASE 
 				WHEN USER_ROLE = 'A' THEN 'ROLE_ADMIN'
 				ELSE 'ROLE_USER'
 			END AS AUTHORITY
 		FROM LOG_GG_USER
-		WHERE USER_ID = #{userName} 
+		WHERE USER_ID = #{username} 
 		  AND STATUS = 'Y' 
 		  AND WITHDRAW = 'N'
 	</select>
@@ -20,7 +21,7 @@
 	<resultMap id="userDetailResultMap" type="memberExt">
 		<id column="USER_NO" property="userNo"/>
 		<result column="USER_ID" property="userId" />
-		<result column="USER_PWD" property="userPwd" />
+		<result column="USER_PW" property="userPw" />
 		<result column="USER_NAME" property="userName" />
 		
 		<collection property="authorities"

@@ -10,6 +10,14 @@
 	<script src="${pageContext.request.contextPath}/resources/member/user_join/script.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	
+<style>
+.error{
+		color:red;
+		font-size: 0.9em;
+		margin-left : 10px;
+	}
+</style>
+	
     <title>LOG.GG - 회원가입</title>
 </head>
 <body>
@@ -23,27 +31,31 @@
                 <div class="label-row"><span class="label">아이디 (중복체크)</span>
                 <button type="button" class="inner-btn" onclick="idCheck();">확인</button></div>
                 <form:input path="userId" type="text" placeholder="아이디 입력"/>
+                <form:errors path="userId" cssClass="error" />
             </div>
 
             <div class="form-group">
                 <div class="label-row"><span class="label">비밀번호</span></div>
-                <form:input path="userPwd" type="password" placeholder="영문, 숫자 포함 8자 이상" />
+                <form:input path="userPw" type="password" placeholder="영문, 숫자 포함 8자 이상" />
+                <form:errors path="userPw" cssClass="error" />
             </div>
 
             <div class="form-group">
                 <div class="label-row"><span class="label">비밀번호 확인</span></div>
-                <form:input path="userPwd" type="password" placeholder="비밀번호 재입력" />
+                <input type="password"placeholder="비밀번호 재입력" />
             </div>
 
             <div class="form-group">
                 <div class="label-row"><span class="label">인증 이메일</span><button type="button" class="inner-btn">인증하기</button></div>
                 <form:input path="email" type="email" placeholder="example@log.gg"/>
+                <form:errors path="email" cssClass="error" />
             </div>
 
             <div class="form-group">
                 <div class="label-row"><span class="label">닉네임 (중복체크)</span>
                 <button type="button" class="inner-btn" onclick="nameCheck();">확인</button></div>
                 <form:input path="userName" type="text" placeholder="사용할 닉네임" />
+                <form:errors path="userName" cssClass="error" />
             </div>
 
 

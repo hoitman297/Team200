@@ -13,12 +13,6 @@ public class MemberDaoImpl implements MemberDao{
 
 	@Autowired
 	private SqlSessionTemplate session;
-	
-	@Override
-	public UserDetails loadUserByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public int insertMember(Member member) {
@@ -37,6 +31,7 @@ public class MemberDaoImpl implements MemberDao{
 
 	@Override
 	public Member loginMember(Member member) {
+		System.out.println("loginMember : MemberDaoImpl");
 		return session.selectOne("member.loginMember", member);
 	}
 
@@ -55,6 +50,9 @@ public class MemberDaoImpl implements MemberDao{
 		return session.selectOne("member.selectOne",userId);
 	}
 
-	
+	@Override
+	public UserDetails loadUserByUsername(String userName) {
+		return session.selectOne("security.loadUserByUsername", userName);
+	}
 
 }

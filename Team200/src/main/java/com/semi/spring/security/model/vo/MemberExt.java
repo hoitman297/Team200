@@ -17,12 +17,15 @@ public class MemberExt extends Member implements UserDetails{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
 		return this.authorities;
+		//String role = userRole.equals("A") ? "ROLE_ADMIN" : "ROLE_USER";
+		//return List.of(new SimpleGrantedAuthority(role));
 	}
 
 	@Override
 	public String getPassword() {
-		return getUserPwd();
+		return getUserPw();
 	}
 
 	@Override
