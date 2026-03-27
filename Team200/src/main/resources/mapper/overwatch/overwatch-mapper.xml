@@ -62,7 +62,7 @@
 		HERO_SKIN_IMG
 		) VALUES (
 		SEQ_HERO_SKIN_NO.NEXTVAL,
-		#{heroNo},
+		#{heroNo}, 
 		#{heroSkinName},
 		#{heroSkinImg}
 		)

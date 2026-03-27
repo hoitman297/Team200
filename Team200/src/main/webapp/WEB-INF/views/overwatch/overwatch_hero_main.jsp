@@ -21,6 +21,8 @@
 <script src="${pageContext.request.contextPath}/resources/overwatch/script.js" defer></script>
 <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
 
+
+
 <%-- 💖 공통 검색창 JS (ReferenceError 방지를 위해 수정된 script.js 사용) 💖 --%>
 <script src="${pageContext.request.contextPath}/resources/search/script.js?v=1.3" defer></script>
 <title>오버워치 영웅 정보 - LOG.GG</title>
@@ -33,33 +35,6 @@
             <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
-<<<<<<< HEAD
-		<main class="content-area">
-			<div class="top-row">
-				<a href="<c:url value='/ow/main'/>" style="text-decoration: none;">
-					<div class="logo">LOG.GG</div>
-				</a>
-				<div class="search-bar">
-					<input type="text" placeholder="영웅 검색"> <span>🔍</span>
-				</div>
-			</div>
-
-			<div class="board-card">
-				<div class="hero-grid-container">
-					<div class="hero-grid">
-						<c:forEach var="hero" items="${heroList}">
-							<a href="${pageContext.request.contextPath}/ow/hero_main/hero_info?heroNo=${hero.heroNo}"
-								class="hero-card"> <img src="${hero.heroImg}"
-								alt="${hero.heroName}" class="hero-img">
-								<h4>${hero.heroName}</h4>
-								<p style="font-size: 12px; color: gray;">${hero.heroPosition}</p>
-							</a>
-						</c:forEach>
-					</div>
-				</div>
-			</div>
-		</main>
-=======
         <main class="content-area">
             <div class="top-row">
                 <a href="<c:url value='/overwatch/main'/>" style="text-decoration: none;">
@@ -76,7 +51,7 @@
                     <div class="hero-grid">
                         <c:forEach var="hero" items="${heroList}">
                             <%-- 💡 검색 필터링 타겟: hero-item --%>
-                            <a href="${pageContext.request.contextPath}/overwatch/hero_main/hero_info?heroNo=${hero.heroNo}" class="hero-item"> 
+                            <a href="${pageContext.request.contextPath}/ow/hero_main/hero_info?heroNo=${hero.heroNo}" class="hero-item"> 
                                 <img src="${hero.heroImg}" alt="${hero.heroName}" class="hero-img">
                                 <%-- 💡 이름 비교 타겟: hero-name --%>
                                 <h4 class="hero-name">${hero.heroName}</h4>
@@ -87,7 +62,6 @@
                 </div>
             </div>
         </main>
->>>>>>> main
 
         <aside class="side-right">
             <div class="side-card" style="background: #e2e8f0; height: 300px;">

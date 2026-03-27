@@ -43,15 +43,9 @@
             <div class="board-card">
                 <div class="tab-menu">
                     <div class="tab-item active">인기 게시글</div>
-<<<<<<< HEAD
-                    <a href="<c:url value='/lol/main'/>"><div class="tab-item">리그 오브 레전드</div></a>
-                    <a href="<c:url value='/overwatch/main'/>"><div class="tab-item">오버워치</div></a>
-                    <a href="<c:url value='/battleground/main'/>"><div class="tab-item">배틀그라운드</div></a>
-=======
                     <a href="<c:url value = '/lol/main' />"><div class="tab-item">리그 오브 레전드</div></a>
                     <a href="<c:url value = '/ow/main' />"><div class="tab-item">오버워치</div></a>
                     <a href="<c:url value = '/bg/main' />"><div class="tab-item">배틀그라운드</div></a>
->>>>>>> main
                 </div>
                 <div class="tab-content">
                     <div class="board-row header-row">
