@@ -30,9 +30,8 @@
 
         <main class="content-area">
             <div class="top-row">
-                <a href="<c:url value ='/overwatch/main'/>"><div class="logo">LOG.GG</div></a>
+                <a href="<c:url value ='/ow/main'/>"><div class="logo">LOG.GG</div></a>
                 
-                <%-- 💖 핵심 수정: 공통 검색바를 위한 변수 설정 및 포함 💖 --%>
                 <c:set var="currentGameName" value="오버워치" />
                 <c:set var="currentGameCode" value="overwatch" />
                 
@@ -43,8 +42,8 @@
             <div class="board-card">
                 <div class="tab-menu">
                     <div class="tab-item active">실시간 인기글</div>
-                    <a href="<c:url value='/overwatch/hero_main'/>"><div class="tab-item">영웅 정보</div></a>
-                    <a href="<c:url value='/overwatch/box'/>"><div class="tab-item">상자 시뮬레이터</div></a>
+                    <a href="<c:url value='/ow/hero_main'/>"><div class="tab-item">영웅 정보</div></a>
+                    <a href="<c:url value='/ow/box'/>"><div class="tab-item">상자 시뮬레이터</div></a>
                 </div>
                 <div class="tab-content">
                     <div class="board-row header-row">

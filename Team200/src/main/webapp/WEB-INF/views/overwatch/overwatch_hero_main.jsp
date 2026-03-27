@@ -35,7 +35,7 @@
 
 		<main class="content-area">
 			<div class="top-row">
-				<a href="<c:url value='/overwatch/main'/>" style="text-decoration: none;">
+				<a href="<c:url value='/ow/main'/>" style="text-decoration: none;">
 					<div class="logo">LOG.GG</div>
 				</a>
 				<div class="search-bar">
@@ -47,7 +47,7 @@
 				<div class="hero-grid-container">
 					<div class="hero-grid">
 						<c:forEach var="hero" items="${heroList}">
-							<a href="${pageContext.request.contextPath}/overwatch/hero_main/hero_info?heroNo=${hero.heroNo}"
+							<a href="${pageContext.request.contextPath}/ow/hero_main/hero_info?heroNo=${hero.heroNo}"
 								class="hero-card"> <img src="${hero.heroImg}"
 								alt="${hero.heroName}" class="hero-img">
 								<h4>${hero.heroName}</h4>
