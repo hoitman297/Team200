@@ -1,6 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%-- 💖 [핵심 수정] 파일 최상단에서 변수를 미리 선언합니다! 💖 --%>
+<c:set var="headerTitle" value="오버워치" />
+<c:set var="currentGameName" value="오버워치" />
+<c:set var="gameId" value="overwatch" />
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,23 +13,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/overwatch/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
-    <%-- 🔍 검색창 전용 스타일 (메인페이지에 있던 <style> 태그 내용을 style_main.css에 옮겨두면 더 좋아요) --%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/search/style_main.css">
+    
+    <%-- 🔍 검색창 전용 스타일 (공통 파일로 경로 통일) --%>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/search/style.css">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/overwatch/script.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-    <script src="${pageContext.request.contextPath}/resources/search/script_main.js" defer></script>
+    
+    <%-- 🔍 공통 검색 스크립트 (방금 우리가 수정한 script.js) --%>
+    <%-- 기존 script.js 경로를 아래처럼 버전(v=1.1)을 붙여서 수정 --%>
+	<script src="${pageContext.request.contextPath}/resources/search/script.js" defer></script>
 
     <title>오버워치 - LOG.GG</title>
 </head>
 
 <body>
-    <c:set var="headerTitle" value="오버워치" />
+    <%-- 헤더 --%>
     <%@ include file="../common/header.jsp"%>
 
     <div class="main-layout">
         <aside class="side-left">
+            <%-- 사이드바 --%>
             <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
@@ -32,10 +42,15 @@
             <div class="top-row">
                 <a href="<c:url value ='/ow/main'/>"><div class="logo">LOG.GG</div></a>
                 
+<<<<<<< HEAD
                 <c:set var="currentGameName" value="오버워치" />
                 <c:set var="currentGameCode" value="overwatch" />
                 
                 <%-- 공통 검색바 파일 호출 (파일 경로를 확인하세요!) --%>
+=======
+                <%-- 💖 통합 검색(global) 모드로 검색창 호출! 💖 --%>
+                <c:set var="searchType" value="global" />
+>>>>>>> main
                 <%@ include file="../common/search_bar.jsp" %>
             </div>
 
@@ -52,6 +67,7 @@
                         <div class="col-author">작성자</div>
                         <div class="col-date">날짜</div>
                     </div>
+                    <%-- 실제 데이터가 들어오는 곳 (예시 데이터) --%>
                     <div class="board-row">
                         <div class="col-likes">150</div>
                         <div class="col-title">오버워치 인게임 최근 소식 및 패치노트 안내</div>
@@ -86,6 +102,7 @@
             </div>
         </aside>
     </div>
+    
     <%@ include file="../common/footer.jsp"%>
 </body>
 </html>

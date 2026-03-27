@@ -8,10 +8,13 @@
     
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/board_main/style.css">
+    <%-- 💖 공통 검색창 CSS로 경로 수정 💖 --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/search/style.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    <%-- 💖 공통 검색창 JS 추가 💖 --%>
+    <script src="${pageContext.request.contextPath}/resources/search/script.js" defer></script>
     
     <title>LOG.GG - ${boardTitle}</title>
 </head>
@@ -27,10 +30,10 @@
         <main class="content-area">
             <div class="board-top-row">
                 <a href="<c:url value ='/${gameId}/main'/>"><div class="logo">LOG.GG</div></a>
-                <div class="search-bar">
-                    <input type="text" id="boardSearchInput" placeholder="${boardTitle} 내 글 검색">
-                    <span style="cursor:pointer">🔍</span>
-                </div>
+                
+                <%-- 💖 마법의 주문! 공통 검색창을 게시판 모드(board)로 불러옵니다 💖 --%>
+                <c:set var="searchType" value="board" />
+                <%@ include file="../common/search_bar.jsp" %>
             </div>
 
             <div class="board-header">
@@ -118,16 +121,5 @@
 
     <footer>© 2026 LOG.GG ${gameName} 서비스. 모든 권리 보유.</footer>
 
-    <script>
-        $(document).ready(function() {
-            $("#boardSearchInput").on("keyup", function() {
-                let searchValue = $(this).val().toLowerCase();
-                $("#boardTableBody .board-row-item").filter(function() {
-                    let titleText = $(this).find(".td-title").text().toLowerCase();
-                    $(this).toggle(titleText.indexOf(searchValue) > -1);
-                });
-            });
-        });
-    </script>
 </body>
 </html>
