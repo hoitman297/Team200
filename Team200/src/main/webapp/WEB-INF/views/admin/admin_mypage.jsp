@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/admin_mypage/style.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/admin_mypage/style.css"> 
+<%--     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css"> --%>
 	<script src="${pageContext.request.contextPath}/resources/admin/admin_mypage/script.js"></script>
 
     <title>마이페이지 - Desktop Dashboard</title>

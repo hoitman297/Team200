@@ -6,27 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/admin_main/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
     <script src="${pageContext.request.contextPath}/resources/admin/admin_main/script.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
     
     <title>LOG.GG - 통합 게임 플랫폼</title>
+    <%@ include file="../common/header.jsp"%>
 </head>
 <body>
-
-    <header>
-        <div class="header-left">☰ 메인페이지 ▾</div>
-        <div class="header-right">
-            <span>게시글 추가</span>
-            <span>마이페이지</span>
-            <span>개인정보 수정</span>
-            <b>⚙️ ADMIN01 님</b>
-            <button class="btn-logout">로그아웃</button>
-        </div>
-    </header>
 
     <div class="container">
         <aside class="main-side">
             <div class="side-card">
-                <h3>| 게임별 패치노트 <button class="btn-mini">패치노트 등록</button></h3>
+                <h3>| 게임별 패치노트 <button class="btn-mini">
+                 <a href="<c:url value = '/admin/patchnote'/>">패치노트 등록</a></button></h3>
                 <ul class="patch-list">
                     <li><strong>오버워치</strong><span>2026.03.05</span></li>
                     <li><strong>배틀그라운드</strong><span>2026.02.05</span></li>
@@ -153,7 +146,10 @@
 
         <aside class="main-side">
             <div class="side-card" style="background:#cbd5e1">
-                <h3 style="border-color: #475569;">공지사항 <button class="btn-mini" style="background:#fff">공지 등록</button></h3>
+                <h3 style="border-color: #475569;">공지사항 
+                <button class="btn-mini" style="background:#fff">
+                <a href="<c:url value = '/admin/notice'/>">공지 등록</a></button>
+                </h3>
                 <ul class="patch-list">
                     <li style="border-color: #94a3b8;">공개 테스트 서버 안내<span>2026.03.10</span></li>
                     <li style="border-color: #94a3b8;">웹사이트 업데이트 내역<span>2026.03.01</span></li>

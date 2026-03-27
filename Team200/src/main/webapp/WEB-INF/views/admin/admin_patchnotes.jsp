@@ -6,19 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/admin_patchnotes/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
     
     <title>LOG.GG - 패치노트 등록</title>
+    <%@ include file="../common/header.jsp"%>
 </head>
 <body>
-
-    <header>
-        <div class="header-left">☰ 메인페이지 ▾</div>
-        <div class="user-nav">
-            <span>게시글 추가</span>
-            <b>⚙️ ADMIN01 님</b>
-            <button style="padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer;">로그아웃</button>
-        </div>
-    </header>
 
     <div class="main-layout">
         <aside>
@@ -38,40 +31,42 @@
                     <h2 class="page-title">패치노트 등록</h2>
                     <button class="btn-back">← 목록으로</button>
                 </div>
-
+                
+		<form:form modelAttribute="patchnote" action="patchnote" method="POST">
                 <div class="input-group">
                     <label>대상 게임 선택</label>
                     <div class="game-selector">
                         <label class="game-option">
-                            <input type="radio" name="game" value="LOL" checked>
+                            <form:radiobutton path="gameCode" value="LOL" />
                             <span class="game-label">리그 오브 레전드</span>
                         </label>
                         <label class="game-option">
-                            <input type="radio" name="game" value="OW">
+                            <form:radiobutton path="gameCode" value="OW"/>
                             <span class="game-label">오버워치</span>
                         </label>
                         <label class="game-option">
-                            <input type="radio" name="game" value="PUBG">
+                            <form:radiobutton path="gameCode" value="BG"/>
                             <span class="game-label">배틀그라운드</span>
                         </label>
                     </div>
                 </div>
-
+		
                 <div class="input-group">
                     <label>패치노트 제목</label>
-                    <input type="text" class="title-input" placeholder="패치 버전 및 핵심 내용을 입력하세요">
+               			<form:input path="title" type="text" class="title-input" placeholder="패치 버전 및 핵심 내용을 입력하세요" />
                 </div>
 
                 <div class="input-group" style="flex-grow: 1;">
                     <label>상세 업데이트 내용</label>
                     <div class="content-editor">
-                        <textarea placeholder="밸런스 조정, 신규 콘텐츠, 버그 수정 내역 등을 상세히 입력해 주세요."></textarea>
+                		<form:textarea path="patchnoteContent" placeholder="밸런스 조정, 신규 콘텐츠, 버그 수정 내역 등을 상세히 입력해 주세요."/>
                     </div>
                 </div>
 
                 <div class="submit-area">
                     <button class="btn-submit">패치노트 게시하기</button>
                 </div>
+        </form:form>
             </div>
         </main>
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="admin">
+
+	<insert id="insertNotice">
+		<selectKey keyProperty="noticeNo" resultType="int" order="BEFORE">
+			SELECT SEQ_NOTICE_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO NOTICE (
+			NOTICE_NO,
+			TITLE,
+			POST_DATE,
+			NOTICE_CONTENT
+			)
+		VALUES (
+		#{noticeNo}, #{title}, DEFAULT, #{noticeContent}
+		)
+	</insert>
+	
+	<insert id="insertPatchnote">
+		<selectKey keyProperty="patchnoteNo" resultType="int" order="BEFORE">
+			SELECT SEQ_PATCHNOTE_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO PATCHNOTE (
+			PATCHNOTE_NO,
+			GAME_CODE,
+			TITLE,
+			POST_DATE,
+			PATCHNOTE_CONTENT
+			)
+		VALUES (
+		#{patchnoteNo}, #{gameCode}, #{title}, DEFAULT, #{patchnoteContent}
+		)
+	</insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>
