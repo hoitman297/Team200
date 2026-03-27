@@ -6,8 +6,12 @@ import java.util.Map;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.semi.spring.board.model.vo.AttachFile;
 import com.semi.spring.board.model.vo.Board;
+import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardImg;
+import com.semi.spring.board.model.vo.Notice;
+import com.semi.spring.board.model.vo.Patchnote;
 import com.semi.spring.common.model.vo.PageInfo;
 
 import lombok.RequiredArgsConstructor;
@@ -79,24 +83,39 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public int insertBoardImgList(List<BoardImg> imgList) {
-		return session.insert("board.insertBoardImgList", imgList);
+	public List<BoardExt> selectBestBoards() {
+		return session.selectList("board.selectBestBoards");
 	}
 
 	@Override
-	public int insertBoardImg(BoardImg bi) {
-		return session.insert("board.insertBoardImg",bi);
+	public List<Notice> selectNotice() {
+		return session.selectList("board.selectNotice");
 	}
 
 	@Override
-	public int deleteBoardImg(String deleteList) {
-		return session.update("board.deleteBoardImg",deleteList);
+	public List<Patchnote> selectPatchnoteList(Map<String, Object> paramMap) {
+		return session.selectList("board.selectPatchnoteList", paramMap);
 	}
 
 	@Override
-	public int updateBoard(Board board) {
-		return session.update("board.updateBoard",board);
+	public BoardExt selectBoard(int boardNo) {
+		return session.selectOne("board.selectBoard", boardNo);
 	}
+
+	@Override
+	public void increaseCount(int boardNo) {
+		session.update("board.increaseCount", boardNo);
+	}
+
+	@Override
+	public int insertAttachFileList(List<AttachFile> attachFileList) {
+		return session.insert("board.insertAttachFileList", attachFileList);
+	}
+
+//	@Override
+//	public int updateBoard(Board board) {
+//		return session.update("board.updateBoard",board);
+//	}
 
 
 }

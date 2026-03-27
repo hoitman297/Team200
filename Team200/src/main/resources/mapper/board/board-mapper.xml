@@ -27,7 +27,6 @@
 	<select id="getBoardTypeMap" resultType="boardtype">
 		SELECT
 			CATEGORY_NO,
-			CATEGORY_NAME,
 			GAME_CODE
 		FROM CATEGORY_TABLE
 		<if test="gameCode != null">
@@ -70,7 +69,8 @@
 						(SELECT FILE_PATH || CHANGE_NAME 
 		                 FROM ATTACH_FILE F 
 		                 WHERE F.BOARD_NO = B.BOARD_NO 
-		                   AND ROWNUM = 1) AS thumbnail
+		                   AND ROWNUM = 1) AS thumbnail,
+		                    ROW_NUMBER() OVER (ORDER BY B.BOARD_NO ASC) AS dispNo
 					FROM BOARD B
 					LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
 					JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
@@ -98,12 +98,16 @@
 	
 	<!-- 선택 -->
 	<select id="selectBoard" resultMap="boardMap">
-		SELECT B.* , U.USER_NAME, P.* , C.CATEGORY_NAME
+		SELECT B.BOARD_NO, B.USER_NO, B.CATEGORY_NO, B.GAME_CODE,
+        B.BOARD_TITLE, B.BOARD_CONTENT, B.POST_DATE, B.BOARD_CD, B.READ_COUNT,
+        U.USER_NAME,
+        P.CAPACITY, P.TIER, P.PARTY_CURRENT, P.PREFER_MAP,
+        C.CATEGORY_NAME
 		FROM BOARD B
 		LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
 		LEFT JOIN PARTY_RECRUIT P ON B.BOARD_NO = P.BOARD_NO
 		LEFT JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
-		WHERE BOARD_NO = #{boardNo} AND  BOARD_CD = 'Y'
+		WHERE B.BOARD_NO = #{boardNo} AND  B.BOARD_CD = 'Y'
 	</select>
 
 	<select id="selectBoardFileList" resultType="attachfile">
@@ -151,7 +155,7 @@
 		)
 	</insert>
 	
-	<insert id="insertBoardFileList">
+	<insert id="insertAttachFileList">
 		INSERT INTO ATTACH_FILE (
 		FILE_NO, BOARD_NO, GAME_CODE, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_EXT, FILE_SIZE
 		)
