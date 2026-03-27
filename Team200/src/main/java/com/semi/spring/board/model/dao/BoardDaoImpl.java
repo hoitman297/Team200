@@ -1,5 +1,6 @@
 package com.semi.spring.board.model.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,9 +8,10 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.semi.spring.board.model.vo.AttachFile;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
-import com.semi.spring.board.model.vo.BoardImg;
+import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.common.model.vo.PageInfo;
 
 import lombok.RequiredArgsConstructor;
@@ -22,15 +24,15 @@ public class BoardDaoImpl implements BoardDao {
 
 	private final SqlSessionTemplate session;
 	
-	@Override
-	public Map<String, Object> getBoardTypeMap(String boardType) {
-		return session.selectOne("board.getBoardTypeMap", "boardType");
-	}
+//	@Override
+//	public Map<String, Object> getBoardTypeMap(String boardType) {
+//		return session.selectOne("board.getBoardTypeMap", "boardType");
+//	}
 	
-	@Override
-	public Map<String, Object> getCategoryTableMap(String gameCode) {
-		return session.selectOne("board.getCategoryTableMap", gameCode);
-	}
+//	@Override
+//	public Map<String, Object> getCategoryTableMap(String gameCode) {
+//		return session.selectOne("board.getCategoryTableMap", gameCode);
+//	}
 	
 	@Override
 	public List<Board> selectList(Map<String, Object> paramMap) {
@@ -56,21 +58,6 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public int insertBoardImgList(List<BoardImg> imgList) {
-		return session.insert("board.insertBoardImgList", imgList);
-	}
-
-	@Override
-	public int insertBoardImg(BoardImg bi) {
-		return session.insert("board.insertBoardImg",bi);
-	}
-
-	@Override
-	public int deleteBoardImg(String deleteList) {
-		return session.update("board.deleteBoardImg",deleteList);
-	}
-
-	@Override
 	public int updateBoard(Board board) {
 		return session.update("board.updateBoard",board);
 	}
@@ -91,7 +78,19 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	
-	
+	@Override
+	public int insertAttachFileList(List<AttachFile> attachFileList) {
+		return session.insert("board.insertAttachFileList", attachFileList);
+	}
+
+	@Override
+	public BoardType getBoardTypeMap(String dbGameCode , String boardType) {
+		Map<String, String> paramMap = new HashMap<>();
+	    paramMap.put("gameCode", dbGameCode);
+	    paramMap.put("boardType", boardType); 
+	    
+	    return session.selectOne("board.getBoardTypeMap", paramMap);
+	}
 
 
 }
