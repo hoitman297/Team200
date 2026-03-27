@@ -1,5 +1,6 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -68,25 +69,43 @@
                                 <%-- 💖 검색 필터링을 조종하기 위한 class 추가 💖 --%>
                                 <tr class="board-row-item">
                                     <td>${post.id}</td>
-                                    <td class="td-title">${post.title}</td>
-                                    <td>${post.writer}</td>
-                                    <td>${post.date}</td>
-                                    <td>${post.views}</td>
-                                    <td>${post.likes}</td>
+                                    <td class="td-title">
+									<a href="<c:url value='/board/view?boardNo=${post.boardNo}' />">${post.boardTitle}</a>
+									</td>
+                                    <td>${post.userName}</td>
+                                    <td><fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd"/></td>
+                                    <td>${post.readCount}</td>
+                                    <td>${post.likeCount}</td>
                                 </tr>
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>
                 </tbody>
             </table>
-
+		
             <div class="pagination">
-                <span class="page-link">&lt; 이전</span>
-                <span class="page-num active">1</span>
-                <span class="page-num">2</span>
-                <span class="page-num">3</span>
-                <span class="page-link">다음 &gt;</span>
-            </div>
+			    <%-- 이전 페이지 --%>
+			    <c:if test="${pi.currentPage > 1}">
+			        <a href="?cp=${pi.currentPage - 1}" class="page-link">&lt; 이전</a>
+			    </c:if>
+			
+			    <%-- 페이지 번호 반복문 --%>
+			    <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
+			        <c:choose>
+			            <c:when test="${p == pi.currentPage}">
+			                <span class="page-num active">${p}</span> <%-- 현재 페이지 --%>
+			            </c:when>
+			            <c:otherwise>
+			                <a href="?cp=${p}" class="page-num">${p}</a>
+			            </c:otherwise>
+			        </c:choose>
+			    </c:forEach>
+			
+			    <%-- 다음 페이지 --%>
+			    <c:if test="${pi.currentPage < pi.maxPage}">
+			        <a href="?cp=${pi.currentPage + 1}" class="page-link">다음 &gt;</a>
+			    </c:if>
+			</div>
         </main>
 
         <aside class="sidebar-right">

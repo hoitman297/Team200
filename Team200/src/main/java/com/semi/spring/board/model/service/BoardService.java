@@ -7,12 +7,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
+import com.semi.spring.board.model.vo.BoardType;
 
 public interface BoardService {
 
-	Map<String, Object> getBoardTypeMap(String boardType);
+//	Map<String, Object> getBoardTypeMap(String boardType);
 	
-	Map<String, Object> getCategoryTableMap(String gameCode);
+//	Map<String, Object> getCategoryTableMap(String gameCode);
 
 	int selectListCount(Map<String, Object> paramMap);
 
@@ -23,6 +24,8 @@ public interface BoardService {
 	BoardExt selectBoard(int boardNo);
 
 	int insertBoard(Board board, List<MultipartFile> upFiles, String savePath);
+
+	BoardType getBoardTypeMap(String dbGameCode, String boardType);
 
 	
 
