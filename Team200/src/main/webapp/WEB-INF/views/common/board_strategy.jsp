@@ -6,9 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <%-- CSS 경로 확인 필수! --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/board_main/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/search/style.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
@@ -26,16 +26,15 @@
 
         <main class="content-area">
             <div class="board-top-row">
-                <a href="<c:url value='/' />" class="logo-link"><div class="logo">LOG.GG</div></a>
+                <a href="<c:url value ='/${gameId}/main'/>"><div class="logo">LOG.GG</div></a>
                 <div class="search-bar">
-                    <input type="text" placeholder="${boardTitle} 내 글 검색">
+                    <input type="text" id="boardSearchInput" placeholder="${boardTitle} 내 글 검색">
                     <span style="cursor:pointer">🔍</span>
                 </div>
             </div>
 
             <div class="board-header">
                 <div class="board-title">${boardTitle}</div>
-                <%-- 버튼 테두리 문제 해결을 위해 클래스 직접 부여 --%>
                 <a href="<c:url value='${writeUrl}' />" class="btn-write">글쓰기</a>
             </div>
 
@@ -50,26 +49,51 @@
                         <th style="width: 60px;">공감</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <c:choose>
-                        <c:when test="${empty boardList}">
-                            <tr>
-                                <td colspan="6" class="empty-msg">게시글이 없습니다.</td>
+                <tbody id="boardTableBody">
+                    <%-- 💖 임시 테스트용 가짜 데이터 시작 💖 --%>
+                    <tr class="board-row-item">
+                        <td>999</td>
+                        <td class="td-title">로그지지 테스트 글입니다</td>
+                        <td>류수정</td>
+                        <td>2026-03-26</td>
+                        <td>150</td>
+                        <td>30</td>
+                    </tr>
+                    <tr class="board-row-item">
+                        <td>998</td>
+                        <td class="td-title">안녕하세요 가입인사 드립니다</td>
+                        <td>노예1호</td>
+                        <td>2026-03-26</td>
+                        <td>12</td>
+                        <td>1</td>
+                    </tr>
+                    <tr class="board-row-item">
+                        <td>997</td>
+                        <td class="td-title">검색 기능 진짜 잘 되나요?</td>
+                        <td>지나가는사람</td>
+                        <td>2026-03-25</td>
+                        <td>42</td>
+                        <td>5</td>
+                    </tr>
+                    <%-- 💖 임시 테스트용 가짜 데이터 끝 💖 --%>
+
+                    <%-- 🚨 깐깐한 c:choose 블록 (공백 완전 제거) 🚨 --%>
+                    <c:choose><c:when test="${empty boardList}">
+                        <tr>
+                            <td colspan="6" class="empty-msg">게시글이 없습니다.</td>
+                        </tr>
+                    </c:when><c:otherwise>
+                        <c:forEach var="post" items="${boardList}">
+                            <tr class="board-row-item">
+                                <td>${post.id}</td>
+                                <td class="td-title">${post.title}</td>
+                                <td>${post.writer}</td>
+                                <td>${post.date}</td>
+                                <td>${post.views}</td>
+                                <td>${post.likes}</td>
                             </tr>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach var="post" items="${boardList}">
-                                <tr>
-                                    <td>${post.id}</td>
-                                    <td class="td-title">${post.title}</td>
-                                    <td>${post.writer}</td>
-                                    <td>${post.date}</td>
-                                    <td>${post.views}</td>
-                                    <td>${post.likes}</td>
-                                </tr>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
+                        </c:forEach>
+                    </c:otherwise></c:choose>
                 </tbody>
             </table>
 
@@ -93,5 +117,17 @@
     </div>
 
     <footer>© 2026 LOG.GG ${gameName} 서비스. 모든 권리 보유.</footer>
+
+    <script>
+        $(document).ready(function() {
+            $("#boardSearchInput").on("keyup", function() {
+                let searchValue = $(this).val().toLowerCase();
+                $("#boardTableBody .board-row-item").filter(function() {
+                    let titleText = $(this).find(".td-title").text().toLowerCase();
+                    $(this).toggle(titleText.indexOf(searchValue) > -1);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
