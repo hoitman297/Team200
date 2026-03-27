@@ -1,6 +1,11 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<<<<<<< HEAD
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+=======
 
+>>>>>>> main
 <!DOCTYPE html>
 <html lang="ko">
 <head>    
@@ -25,10 +30,24 @@
 <c:set var="headerTitle" value="리그 오브 레전드" />
 <%@ include file="../common/header.jsp" %>
 
+<<<<<<< HEAD
+        <div class="main-layout">
+        <aside class="side-left">
+            <div class="side-card">
+                <h3>카테고리</h3>
+                <a href="<c:url value = '/member/main' />"><div class="menu-item">갤러리</div></a>
+                <div class="menu-item">게시판</div>
+                <a href="<c:url value = '/board/free/lol'/>"><div class="sub-item">자유게시판</div></a>
+                <a href="<c:url value = '/board/strategy/lol' />"><div class="sub-item">공략게시판</div></a>
+                <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
+            </div>
+        </aside>
+=======
 <div class="main-layout">
     <aside class="side-left">
         <%@ include file="../common/sidebar.jsp" %>
     </aside>
+>>>>>>> main
 
     <main class="content-area">
         <div class="top-row">
