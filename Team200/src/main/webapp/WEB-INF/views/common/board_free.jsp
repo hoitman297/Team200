@@ -9,10 +9,13 @@
     <%-- CSS 경로 확인 필수! --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/board/board_main/style.css">
+    <%-- 💖 우리가 만든 공통 검색창 CSS 추가 💖 --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/search/style.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    <%-- 💖 우리가 만든 공통 검색창 JS 추가 💖 --%>
+    <script src="${pageContext.request.contextPath}/resources/search/script.js" defer></script>
     
     <title>LOG.GG - ${boardTitle}</title>
 </head>
@@ -29,11 +32,9 @@
             <div class="board-top-row">
                 <a href="<c:url value ='/${gameId}/main'/>"><div class="logo">LOG.GG</div></a>
 
-                <%-- 💖 검색창 영역: id="boardSearchInput" 유지 💖 --%>
-                <div class="search-bar">
-                    <input type="text" id="boardSearchInput" placeholder="${boardTitle} 내 글 검색"> 
-                    <span style="cursor: pointer">🔍</span>
-                </div>
+                <%-- 💖 마법의 주문! 공통 검색창을 게시판 모드(board)로 불러옵니다 💖 --%>
+                <c:set var="searchType" value="board" />
+                <%@ include file="../common/search_bar.jsp" %>
             </div>
 
             <div class="board-header">
@@ -99,23 +100,6 @@
     </div>
 
     <footer>© 2026 LOG.GG ${gameName} 서비스. 모든 권리 보유.</footer>
-
-    <%-- 💖 게시판 리스트 즉시 필터링 자바스크립트 💖 --%>
-    <script>
-        $(document).ready(function() {
-            $("#boardSearchInput").on("keyup", function() {
-                // 1. 검색창에 입력한 값을 소문자로 가져옵니다.
-                let searchValue = $(this).val().toLowerCase();
-
-                // 2. 테이블의 모든 행(tr)을 돌면서 검사합니다.
-                $("#boardTableBody .board-row-item").filter(function() {
-                    // 3. 제목(td.td-title)의 텍스트와 검색어를 비교해서
-                    // 포함되어 있으면 보여주고, 없으면 숨깁니다(toggle).
-                    let titleText = $(this).find(".td-title").text().toLowerCase();
-                    $(this).toggle(titleText.indexOf(searchValue) > -1);
-                });
-            });
-        });
-    </script>
+	
 </body>
 </html>

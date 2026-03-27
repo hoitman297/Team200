@@ -1,9 +1,18 @@
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <<<<<<< HEAD
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%-- 💖 [핵심 수정] 사이드바와 헤더가 길을 잃지 않도록 맨 위에서 쾅쾅! 선언해 줍니다 💖 --%>
+<c:set var="gameId" value="lol" />
+<c:set var="currentGameName" value="리그 오브 레전드" />
+<c:set var="headerTitle" value="리그 오브 레전드" />
+=======
+<<<<<<< HEAD
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 =======
+>>>>>>> main
 
 >>>>>>> main
 <!DOCTYPE html>
@@ -22,12 +31,11 @@
     <%-- 🔍 모든 페이지 공통 검색 로직 --%>
     <script src="${pageContext.request.contextPath}/resources/search/script_main.js" defer></script>
     
-    
     <title>리그 오브 레전드 - LOG.GG</title>
 </head>
 
 <body>
-<c:set var="headerTitle" value="리그 오브 레전드" />
+<%-- 변수를 맨 위로 올렸으니 여기선 부르기만 하면 됩니다 --%>
 <%@ include file="../common/header.jsp" %>
 
 <<<<<<< HEAD
@@ -45,6 +53,7 @@
 =======
 <div class="main-layout">
     <aside class="side-left">
+        <%-- ✨ 이제 사이드바가 gameId="lol"을 미리 읽어서 링크가 정상적으로 잡혀요! ✨ --%>
         <%@ include file="../common/sidebar.jsp" %>
     </aside>
 >>>>>>> main
@@ -53,11 +62,7 @@
         <div class="top-row">
             <a href="<c:url value='/lol/main'/>"><div class="logo">LOG.GG</div></a>
             
-            <%-- 💖 검색바 설정: 롤 전용으로 데이터 세팅 💖 --%>
-            <c:set var="currentGameName" value="리그 오브 레전드" />
-            <c:set var="currentGameCode" value="lol" />
-            
-            <%-- 💖 공통 검색바 삽입 💖 --%>
+            <%-- 변수 선언부는 위로 올렸으니, 여기는 깔끔하게 공통 검색바만 삽입! --%>
             <%@ include file="../common/search_bar.jsp" %>
         </div>
 
@@ -122,3 +127,4 @@
 
 <%@ include file="../common/footer.jsp" %>
 </body>
+</html>
