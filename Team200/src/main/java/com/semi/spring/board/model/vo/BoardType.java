@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class Category {
+public class BoardType {
 	private int categoryNo;
     private String categoryName;
     private String gameCode;

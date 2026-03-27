@@ -1,5 +1,16 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<c:set var="safeGameId" value="${fn:toLowerCase(board.gameCode)}" />
+<c:choose>
+    <c:when test="${board.gameCode == 'BG'}"><c:set var="gameName" value="배틀그라운드"/></c:when>
+    <c:when test="${board.gameCode == 'OW'}"><c:set var="gameName" value="오버워치"/></c:when>
+    <c:otherwise><c:set var="gameName" value="리그 오브 레전드"/></c:otherwise>
+</c:choose>
+<c:set var="boardTypePath" value="${fn:contains(board.categoryName, '공략') ? 'strategy' : 'free'}" />
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,7 +22,7 @@
 	<script src="${pageContext.request.contextPath}/resources/board/board_view/script.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
     
-    <title>LOG.GG - 게시글 보기</title>
+    <title>LOG.GG - ${board.boardTitle}</title>
 </head>
 <body>	
 <c:set var="headerTitle" value="게시판" />
@@ -26,8 +37,8 @@
                 <div class="menu-item-group">
                     <div class="menu-item">게시판</div>
                     <div class="sub-menu-container"> 
-                        <div class="sub-item active" onclick="location.href='board-free.html'">자유게시판</div>
-                        <div class="sub-item" onclick="location.href='board-tip.html'">공략게시판</div>
+                        <div class="sub-item ${boardTypePath == 'free' ? 'active' : ''}" onclick="location.href='<c:url value="/board/free_${safeGameId}"/>'">자유게시판</div>
+                        <div class="sub-item" ${boardTypePath == 'strategy' ? 'active' : ''}" onclick="location.href='<c:url value="/board/strategy_${safeGameId}"/>'">공략게시판</div>
                     </div>
                 </div>
                 
@@ -40,24 +51,31 @@
 
             <article class="view-container">
                 <div class="post-header">
-                    <div class="post-category">자유 게시판</div>
-                    <h1 class="post-title">오늘 배그 점검 시간 아시는 분 계신가요?</h1>
+                    <div class="post-category">${board.categoryName}</div>
+                    <h1 class="post-title">${board.boardTitle}</h1>
                     <div class="post-info">
-                        <span>글쓴이: <b>배그왕01</b></span>
-                        <span>날짜: <b>2025-03-09</b></span>
-                        <span>조회수: <b>1,240</b></span>
+                        <span>글쓴이: <b>${board.userName}</b></span>
+                        <span>날짜: <b><fmt:formatDate value="${board.postDate}" pattern="yyyy-MM-dd:HH:mm"/></b></span>
+                        <span>조회수: <b>${board.readCount}</b></span>
                     </div>
                 </div>
 
-                <div class="post-body">
-                    안녕하세요. 오늘 친구들이랑 배그 한판 하려고 하는데<br>
-                    혹시 오늘 정기 점검 시간이 몇 시부터 몇 시까지인지 아시는 분 계신가요?<br><br>
-                    공홈 가봐도 공지가 잘 안 보여서 여쭤봅니다! 아시는 분 댓글 부탁드려요.
+                <div class="post-body" style="white-space: pre-wrap; line-height: 1.6;">${board.boardContent}
+                    <c:if test="${not empty board.fileList}">
+				        <div class="post-images" style="margin-top: 20px; text-align: center;">
+				            <c:forEach var="file" items="${board.fileList}">
+				                <%-- 업로드된 경로에 맞춰 이미지 태그 생성 --%>
+				                <img src="<c:url value='/resources/upload/board/${file.changeName}'/>" 
+				                     alt="첨부 이미지" 
+				                     style="max-width: 100%; height: auto; margin-bottom: 15px; border-radius: 8px;">
+				            </c:forEach>
+				        </div>
+				    </c:if>
                 </div>
 
                 <div class="post-action">
-                    <button class="btn-action like">👍 공감 150</button>
-                    <button class="btn-action" onclick="location.href='board-free.html'">목록으로</button>
+                    <button class="btn-action like">👍 공감 <b>${board.likeCount}</b></button>
+                    <button class="btn-action" onclick="location.href='<c:url value="/board/${boardTypePath}_${safeGameId}"/>'">목록으로</button>
                     <button class="btn-action report">🚨 신고</button>
                 </div>
 
@@ -92,7 +110,7 @@
 
         <aside class="side-right">
             <div class="side-card">
-                <h3>배틀그라운드 소식</h3>
+                <h3>${gameName} 소식</h3>
                 <p>
                     최신 패치노트와 공략을 확인하고<br>
                     승률을 높여보세요!<br>
