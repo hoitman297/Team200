@@ -1,5 +1,5 @@
 package com.semi.spring.battleground.model.service;
 
-public class BattlegroundServiceImpl {
+public class BattlegroundServiceImpl implements BattlegroundService{
 
 }

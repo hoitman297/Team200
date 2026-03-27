@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.semi.spring.overwatch.model.vo.HeroSkillsVO;
+import com.semi.spring.overwatch.model.vo.HeroSkinVO;
 import com.semi.spring.overwatch.model.vo.HeroVO;
 
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,16 @@ public class OverwatchDaoImpl implements OverwatchDao {
 	public HeroSkillsVO selectHeroSkills(int heroNo) {
 		// 특정 영웅 1명의 스킬 정보만 가져오므로 selectOne 사용
 		return session.selectOne(NAMESPACE + "selectHeroSkills", heroNo);
+	}
+
+	@Override
+	public void insertHeroSkin(HeroSkinVO skin) {
+		session.insert(NAMESPACE + "insertHeroSkin", skin);
+	}
+
+	@Override
+	public List<HeroSkinVO> getHeroSkinList(int heroNo) {
+		// TODO Auto-generated method stub
+		return session.selectList(NAMESPACE + "selectHeroSkinList", heroNo);
 	}
 }
