@@ -28,11 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-<<<<<<< HEAD
 @RequestMapping("/ow") 
-=======
-@RequestMapping("/overwatch")
->>>>>>> main
 @Slf4j
 @RequiredArgsConstructor
 public class OverwatchController {
@@ -49,22 +45,13 @@ public class OverwatchController {
 	}
 
 	@GetMapping("/board/{categoryNo}")
-<<<<<<< HEAD
-	// categoryNo = 자유 게시판 (free) , 공략 게시판(strategy)
-	public String overwatchBoard(
-			@PathVariable("categoryNo") String categoryNo ,
-			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage ,
-			Model model,
-			@RequestParam Map<String, Object> paramMap
-			) {
-		
-=======
+
+
 	// categoryNo = 자유 게시판 (N?) , 공략 게시판(S?)
 	public String overwatchBoard(@PathVariable("categoryNo") String categoryNo,
 			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model,
 			@RequestParam Map<String, Object> paramMap) {
 
->>>>>>> main
 		paramMap.put("categoryNo", categoryNo);
 
 		int boardLimit = 10;
