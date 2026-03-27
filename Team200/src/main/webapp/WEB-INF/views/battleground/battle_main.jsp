@@ -1,5 +1,10 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%-- 💖 [핵심 수정] 사이드바와 헤더가 길을 잃지 않도록 맨 위에서 쾅쾅! 선언해 줍니다 💖 --%>
+<c:set var="gameId" value="battleground" />
+<c:set var="currentGameName" value="배틀그라운드" />
+<c:set var="headerTitle" value="배틀그라운드" />
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -21,23 +26,22 @@
 </head>
 
 <body>
-    <c:set var="headerTitle" value="배틀그라운드" />
+    <%-- 변수 선언은 끝났으니 공통 헤더만 깔끔하게 불러옵니다 --%>
     <%@ include file="../common/header.jsp" %>
 
     <div class="main-layout">
         <aside class="side-left">
+            <%-- ✨ 이제 사이드바가 gameId="battleground"를 먼저 읽고 자유게시판 링크를 잘 연결해! ✨ --%>
             <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
         <main class="content-area">
             <div class="top-row">
-                <a href="<c:url value='/battleground/main'/>"><div class="logo">LOG.GG</div></a>
+                <a href="<c:url value='/battleground/main'/>" style="text-decoration: none;">
+                    <div class="logo">LOG.GG</div>
+                </a>
                 
-                <%-- 💖 검색바 설정: 배그 전용 데이터 세팅 💖 --%>
-                <c:set var="currentGameName" value="배틀그라운드" />
-                <c:set var="gameId" value="battleground" />
-                
-                <%-- 💖 공통 검색바 삽입 💖 --%>
+                <%-- 💖 공통 검색바 삽입 (변수 세팅은 위로 올렸으니 여기는 검색바만!) 💖 --%>
                 <%@ include file="../common/search_bar.jsp" %>
             </div>
 
@@ -88,13 +92,13 @@
             </div>
         </main>
 
-		<aside class="sidebar-right">
+        <aside class="sidebar-right">
             <h3>최근 업데이트</h3>
             <div style="font-size: 14px; color: #475569; line-height: 1.8;">
                 최신 업데이트 내용을 확인하세요.
             </div>
         </aside>
-	</div>
+    </div>
 
     <%@ include file="../common/footer.jsp" %>
 </body>
