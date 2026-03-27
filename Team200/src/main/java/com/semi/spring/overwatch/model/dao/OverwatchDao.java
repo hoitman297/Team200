@@ -17,4 +17,5 @@ public interface OverwatchDao {
     HeroVO selectHero(int heroNo);          // 상세 화면: 영웅 기본 정보
     HeroSkillsVO selectHeroSkills(int heroNo); // 상세 화면: 영웅 스킬 정보
 	void insertHeroSkin(HeroSkinVO skin);
+	List<HeroSkinVO> getHeroSkinList(int heroNo);
 }

@@ -67,4 +67,15 @@
 		#{heroSkinImg}
 		)
 	</insert>
+	
+	<select id="selectHeroSkinList" parameterType="int" resultType="HeroSkinVO">
+		SELECT 
+			HERO_SKIN_NO AS heroSkinNo,
+			HERO_NO AS heroNo,
+			HERO_SKIN_NAME AS heroSkinName,
+			HERO_SKIN_IMG AS heroSkinImg
+		FROM HERO_SKIN_INFO
+		WHERE HERO_NO = #{heroNo}
+		ORDER BY HERO_SKIN_NO ASC
+	</select>
 </mapper>

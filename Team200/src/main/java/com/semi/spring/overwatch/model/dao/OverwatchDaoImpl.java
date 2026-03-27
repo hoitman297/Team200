@@ -62,4 +62,10 @@ public class OverwatchDaoImpl implements OverwatchDao {
 	public void insertHeroSkin(HeroSkinVO skin) {
 		session.insert(NAMESPACE + "insertHeroSkin", skin);
 	}
+
+	@Override
+	public List<HeroSkinVO> getHeroSkinList(int heroNo) {
+		// TODO Auto-generated method stub
+		return session.selectList(NAMESPACE + "selectHeroSkinList", heroNo);
+	}
 }
