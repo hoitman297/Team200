@@ -53,7 +53,6 @@ public class OverwatchDataService {
 					JsonNode detailNode = objectMapper.readTree(detailJson);
 
 					// --- [1단계] HERO_INFO 데이터 세팅 및 안전 검사 ---
-					// .path("name").asText()를 사용하면 null 대신 빈 문자열을 반환하여 NPE를 방지합니다.
 					String heroName = detailNode.path("name").asText("");
 
 					if (heroName.isEmpty()) {
@@ -134,19 +133,20 @@ public class OverwatchDataService {
 	}
 
 	public void scrapeHeroSkins(int heroNo, String heroKey) {
-		String wikiName = convertToWikiName(heroKey); // 이름 변환 로직은 별도 메서드로 분리 권장
-		String url = "https://overwatch.fandom.com/wiki/" + wikiName + "/Cosmetics";
+		String wikiName = convertToWikiName(heroKey);
+		String targetUrl = "https://overwatch.fandom.com/wiki/" + wikiName + "/Cosmetics";
 
 		try {
-			// ⭐ [핵심 2] Jsoup.connect().execute()를 사용하여 세션 쿠키를 흉내 냄
-			Document doc = Jsoup.connect(url).userAgent(
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36")
-					.header("Accept",
-							"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
+			// ⭐ [우회 핵심 적용] AllOrigins 무료 프록시 서버를 통해 접속 (IP 차단 및 클라우드플레어 우회)
+			String proxyUrl = "https://api.allorigins.win/raw?url=" + java.net.URLEncoder.encode(targetUrl, "UTF-8");
+
+			// 프록시 서버를 거치기 때문에 타임아웃을 30초(30000ms)로 넉넉하게 잡습니다.
+			Document doc = Jsoup.connect(proxyUrl)
+					.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36")
+					.header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
 					.header("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
-					.header("Cache-Control", "no-cache").header("Pragma", "no-cache")
-					.header("Sec-Fetch-Dest", "document").header("Sec-Fetch-Mode", "navigate")
-					.header("Sec-Fetch-Site", "none").referrer("https://www.google.com/").timeout(15000).get();
+					.timeout(30000) 
+					.get();
 
 			Elements skinElements = doc.select("div.wikia-gallery-item, li.gallerybox");
 
@@ -157,10 +157,14 @@ public class OverwatchDataService {
 						: el.select("img").attr("data-src");
 
 				if (!skinName.isEmpty() && skinImg != null && skinImg.contains("static.wikia")) {
-					// 원본 이미지 주소 정제
-					if (skinImg.contains("/revision/latest")) {
-						skinImg = skinImg.split("/revision/latest")[0] + "/revision/latest";
-					}
+					
+					// ⭐ [핵심 수정] 원본 고화질 주소 추출 (정규식 사용)
+					// "/scale-to-width-down/숫자" 부분만 깔끔하게 제거하여 
+					// ?cb=... 파라미터가 포함된 완벽한 원본 링크를 만듭니다.
+					skinImg = skinImg.replaceAll("/scale-to-width-down/[0-9]+", "");
+                    
+                    // (가끔 /smart/width/ 등의 다른 썸네일 포맷이 있을 경우를 대비한 추가 제거)
+					skinImg = skinImg.replaceAll("/smart/width/[0-9]+/height/[0-9]+", "");
 
 					HeroSkinVO skin = new HeroSkinVO();
 					skin.setHeroNo(heroNo);
@@ -174,9 +178,7 @@ public class OverwatchDataService {
 			System.out.println("-> [" + wikiName + "] 스킨 " + count + "개 저장 성공");
 
 		} catch (org.jsoup.HttpStatusException e) {
-			if (e.getStatusCode() == 403) {
-				System.err.println("!!! [치명적] IP가 서버에서 차단되었습니다. 핫스팟 사용을 추천합니다.");
-			}
+			System.err.println("!!! [" + wikiName + "] 프록시 접속 에러 (상태코드 " + e.getStatusCode() + ")");
 		} catch (Exception e) {
 			System.err.println("!!! [" + wikiName + "] 크롤링 실패: " + e.getMessage());
 		}
@@ -236,7 +238,7 @@ public class OverwatchDataService {
 					sb.append(parts[i].substring(0, 1).toUpperCase()).append(parts[i].substring(1));
 					if (i < parts.length - 1)
 						sb.append("_");
-				}
+				}                     
 				wikiName = sb.toString();
 			}
 			break;
