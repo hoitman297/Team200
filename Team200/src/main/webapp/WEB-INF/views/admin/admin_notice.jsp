@@ -1,25 +1,29 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/admin_notice/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+    <script src="${pageContext.request.contextPath}/resources/admin/admin_mypage/script.js"></script>
     
     <title>LOG.GG - 공지사항 등록 (1440x1024)</title>
+    <%@ include file="../common/header.jsp"%>
 </head>
 <body>
-    <header>
-        <div class="header-left">☰ 메인페이지 ▾</div>
-        <div class="user-nav">
-            <span>게시글 추가</span>
-            <span>마이페이지</span>
-            <span>개인정보 수정</span>
-            <b>⚙️ ADMIN01 님</b>
-            <button class="btn-logout">로그아웃</button>
-        </div>
-    </header>
+<!--     <header> -->
+<!--         <div class="header-left">☰ 메인페이지 ▾</div> -->
+<!--         <div class="user-nav"> -->
+<!--             <span>게시글 추가</span> -->
+<!--             <span>마이페이지</span> -->
+<!--             <span>개인정보 수정</span> -->
+<!--             <b>⚙️ ADMIN01 님</b> -->
+<!--             <button class="btn-logout">로그아웃</button> -->
+<!--         </div> -->
+<!--     </header> -->
 
     <div class="main-layout">
         <aside class="side-left">
@@ -47,22 +51,23 @@
                         <option>알림</option>
                     </select>
                 </div>
-
+		 <form:form modelAttribute="notice" action="notice" method="POST">
                 <div class="input-group">
                     <label>공지 제목</label>
-                    <input type="text" class="title-input" placeholder="공지사항의 제목을 입력하세요.">
+                    <form:input path="title" type="text" class="title-input" placeholder="공지사항의 제목을 입력하세요."/>
                 </div>
 
                 <div class="input-group">
                     <label>본문 내용</label>
                     <div class="content-editor">
-                        <textarea placeholder="사용자들에게 전달할 상세 내용을 작성하세요."></textarea>
+                        <form:textarea path="noticeContent" placeholder="사용자들에게 전달할 상세 내용을 작성하세요."/>
                     </div>
                 </div>
 
                 <div class="submit-area">
                     <button class="btn-submit">공지사항 등록</button>
                 </div>
+        </form:form>
             </div>
         </main>
 

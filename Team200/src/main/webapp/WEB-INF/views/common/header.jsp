@@ -34,7 +34,7 @@
 			
 <%-- 			<c:when test="${not empty sessionScope.loginUser}"> --%>
 			<sec:authorize access="hasRole('ROLE_ADMIN')">
-				<a href="<c:url value = '/' />"><span>게시글 추가</span></a>
+				<a href="<c:url value = '/admin/mypage'/>"><span>관리자 페이지</span></a>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
 				<a href="<c:url value = '/member/mypage' />"><span>마이페이지</span></a>
