@@ -32,7 +32,6 @@
 				<a href="<c:url value ='/lol/main'/>" style="text-decoration: none;">
 					<div class="logo">LOG.GG</div>
 				</a>
-				<%-- ✨ [수정] 아이템 검색을 위한 ID와 클래스 추가 ✨ --%>
 				<div class="search-bar">
 					<input type="text" id="itemSearchInput" class="search-input-field" placeholder="아이템 이름 또는 태그 검색"> 
 					<span style="cursor:pointer">🔍</span>
@@ -40,7 +39,6 @@
 			</div>
 
 			<div class="item-card">
-				<%-- ✨ 카테고리 버튼 클릭 시 자동 검색 연동 예정 ✨ --%>
 				<div class="item-categories">
 					<div class="category-btn"><div class="category-icon"></div><span>전사</span></div>
 					<div class="category-btn"><div class="category-icon"></div><span>원거리 딜러</span></div>
@@ -51,6 +49,15 @@
 				</div>
 
 				<div class="item-table-container">
+					<%-- ✨ [추가] 테이블 상단 페이지 컨트롤러 ✨ --%>
+					<div class="table-controls" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 10px;">
+						<span style="font-size: 14px; font-weight: bold;">
+							<span id="currentPage">1</span> / <span id="totalPage">1</span>
+						</span>
+						<button id="prevBtn" class="page-nav-btn">◀</button>
+						<button id="nextBtn" class="page-nav-btn">▶</button>
+					</div>
+
 					<table class="item-table">
 						<thead>
 							<tr>
@@ -61,8 +68,7 @@
 						</thead>
 						<tbody id="itemTableBody">
 							<c:forEach var="item" items="${itemList}">
-								<%-- data-tags에 카테고리 정보가 들어있다고 가정해! --%>
-								<tr class="item-row" data-tags="${item.itemTag}" data-info="${item.itemInfo}">
+								<tr class="item-row" data-tags="${item.itemTag}" data-info="${item.itemInfo}" data-name="${item.itemName}">
 									<td>
 										<div class="item-img-placeholder" style="background: none;">
 											<img src="${item.itemImg}" alt="${item.itemName}"
