@@ -1,6 +1,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%-- 💖 [핵심 수정] 파일 최상단에서 변수를 미리 선언합니다! 💖 --%>
+<%-- 이렇게 해야 아래에서 부르는 사이드바와 검색창이 모두 이 값을 알 수 있어요! --%>
+<c:set var="headerTitle" value="오버워치" />
+<c:set var="currentGameName" value="오버워치" />
+<c:set var="gameId" value="overwatch" />
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/overwatch/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
-    <%-- 🔍 검색창 전용 스타일 (메인페이지에 있던 <style> 태그 내용을 style_main.css에 옮겨두면 더 좋아요) --%>
+    <%-- 🔍 검색창 전용 스타일 --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/search/style_main.css">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -20,11 +26,12 @@
 </head>
 
 <body>
-    <c:set var="headerTitle" value="오버워치" />
+    <%-- 헤더에도 위에서 선언한 headerTitle이 적용됩니다 --%>
     <%@ include file="../common/header.jsp"%>
 
     <div class="main-layout">
         <aside class="side-left">
+            <%-- ✨ 사이드바가 위에서 선언한 gameId="overwatch"를 읽고 정확한 링크를 생성해요! ✨ --%>
             <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
@@ -32,11 +39,7 @@
             <div class="top-row">
                 <a href="<c:url value ='/overwatch/main'/>"><div class="logo">LOG.GG</div></a>
                 
-                <%-- 💖 핵심 수정: 공통 검색바를 위한 변수 설정 및 포함 💖 --%>
-                <c:set var="currentGameName" value="오버워치" />
-                <c:set var="currentGameCode" value="overwatch" />
-                
-                <%-- 공통 검색바 파일 호출 (파일 경로를 확인하세요!) --%>
+                <%-- 공통 검색바 파일 호출 (변수 선언은 맨 위로 갔으니 호출만 하면 끝!) --%>
                 <%@ include file="../common/search_bar.jsp" %>
             </div>
 
@@ -87,6 +90,7 @@
             </div>
         </aside>
     </div>
+    
     <%@ include file="../common/footer.jsp"%>
 </body>
 </html>

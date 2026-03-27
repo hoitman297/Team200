@@ -35,7 +35,7 @@
                 
                 <%-- 💖 검색바 설정: 배그 전용 데이터 세팅 💖 --%>
                 <c:set var="currentGameName" value="배틀그라운드" />
-                <c:set var="currentGameCode" value="battleground" />
+                <c:set var="gameId" value="battleground" />
                 
                 <%-- 💖 공통 검색바 삽입 💖 --%>
                 <%@ include file="../common/search_bar.jsp" %>

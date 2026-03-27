@@ -5,7 +5,7 @@
     <input type="text" id="globalSearchInput" placeholder="${currentGameName} 글 검색..." autocomplete="off">
     <span style="cursor:pointer;">🔍</span>
     
-    <div id="searchResults" class="search-dropdown" data-current-game="${currentGameCode}" style="display: none;">
+    <div id="searchResults" class="search-dropdown" data-current-game="${gameId}" style="display: none;">
         <c:forEach var="post" items="${searchPool}">
             <a href="/post/${post.id}" class="search-item" data-game="${post.gameCode}">
                 [${post.boardName}] ${post.title}

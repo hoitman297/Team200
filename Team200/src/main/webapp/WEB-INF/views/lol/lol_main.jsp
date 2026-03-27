@@ -36,7 +36,7 @@
             
             <%-- 💖 검색바 설정: 롤 전용으로 데이터 세팅 💖 --%>
             <c:set var="currentGameName" value="리그 오브 레전드" />
-            <c:set var="currentGameCode" value="lol" />
+            <c:set var="gameId" value="lol" />
             
             <%-- 💖 공통 검색바 삽입 💖 --%>
             <%@ include file="../common/search_bar.jsp" %>

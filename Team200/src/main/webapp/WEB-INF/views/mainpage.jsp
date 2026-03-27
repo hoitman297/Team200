@@ -71,6 +71,10 @@
         <main class="content-area">
             <div class="top-row">
                 <a href="<c:url value = '/' />"><div class="logo">LOG.GG</div></a>
+                
+                <c:set var="gameId" value="all" />
+       			<c:set var="currentGameName" value="전체" />
+        
                 <%-- 💖 검색창에 드롭다운 구조 추가 및 position 설정 💖 --%>
                 <div class="search-bar" style="position: relative;">
                     <input type="text" id="globalSearchInput" placeholder="관심 있는 글을 검색해보세요." autocomplete="off">
