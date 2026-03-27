@@ -87,7 +87,7 @@
 
 		<main class="content-area">
 			<div class="top-row">
-				<a href="<c:url value ='/overwatch/main'/>"><div class="logo">LOG.GG</div></a>
+				<a href="<c:url value ='/ow/main'/>"><div class="logo">LOG.GG</div></a>
 				<div class="search-bar">
 					<input type="text" placeholder="영웅 검색"> <span>🔍</span>
 				</div>
@@ -217,7 +217,7 @@
 							<div class="skill-item">
 								<img src="${skills.skillLclickImg}"
 									style="width: 30px; height: 30px; background: #000; border-radius: 4px;">
-								<strong>L-CLICK</strong> - ${skills.skillLclickName} <span
+								${skills.skillLclickName} <span
 									style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">:
 									${skills.skillLclickDesc}</span>
 							</div>
@@ -227,7 +227,7 @@
 							<div class="skill-item">
 								<img src="${skills.skillRclickImg}"
 									style="width: 30px; height: 30px; background: #000; border-radius: 4px;">
-								<strong>R-CLICK</strong> - ${skills.skillRclickName} <span
+								${skills.skillRclickName} <span
 									style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">:
 									${skills.skillRclickDesc}</span>
 							</div>
@@ -237,7 +237,7 @@
 							<div class="skill-item">
 								<img src="${skills.skillShiftImg}"
 									style="width: 30px; height: 30px; background: #000; border-radius: 4px;">
-								<strong>SHIFT</strong> - ${skills.skillShiftName} <span
+								${skills.skillShiftName} <span
 									style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">:
 									${skills.skillShiftDesc}</span>
 							</div>
@@ -247,7 +247,7 @@
 							<div class="skill-item">
 								<img src="${skills.skillEImg}"
 									style="width: 30px; height: 30px; background: #000; border-radius: 4px;">
-								<strong>E</strong> - ${skills.skillEName} <span
+								${skills.skillEName} <span
 									style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">:
 									${skills.skillEDesc}</span>
 							</div>
@@ -256,8 +256,7 @@
 						<c:if test="${not empty skills.skillQName}">
 							<div class="skill-item">
 								<img src="${skills.skillQImg}"
-									style="width: 30px; height: 30px; background: #000; border-radius: 4px; border: 2px solid #eab308;">
-								<strong style="color: #ca8a04;">Q (궁극기)</strong> -
+									style="width: 30px; height: 30px; background: #000; border-radius: 4px;">
 								${skills.skillQName} <span
 									style="font-size: 13px; color: #64748b; font-weight: 500; margin-left: 5px;">:
 									${skills.skillQDesc}</span>

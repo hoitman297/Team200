@@ -33,6 +33,33 @@
             <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
+<<<<<<< HEAD
+		<main class="content-area">
+			<div class="top-row">
+				<a href="<c:url value='/ow/main'/>" style="text-decoration: none;">
+					<div class="logo">LOG.GG</div>
+				</a>
+				<div class="search-bar">
+					<input type="text" placeholder="영웅 검색"> <span>🔍</span>
+				</div>
+			</div>
+
+			<div class="board-card">
+				<div class="hero-grid-container">
+					<div class="hero-grid">
+						<c:forEach var="hero" items="${heroList}">
+							<a href="${pageContext.request.contextPath}/ow/hero_main/hero_info?heroNo=${hero.heroNo}"
+								class="hero-card"> <img src="${hero.heroImg}"
+								alt="${hero.heroName}" class="hero-img">
+								<h4>${hero.heroName}</h4>
+								<p style="font-size: 12px; color: gray;">${hero.heroPosition}</p>
+							</a>
+						</c:forEach>
+					</div>
+				</div>
+			</div>
+		</main>
+=======
         <main class="content-area">
             <div class="top-row">
                 <a href="<c:url value='/overwatch/main'/>" style="text-decoration: none;">
@@ -60,6 +87,7 @@
                 </div>
             </div>
         </main>
+>>>>>>> main
 
         <aside class="side-right">
             <div class="side-card" style="background: #e2e8f0; height: 300px;">

@@ -24,10 +24,6 @@ public class LolDataService {
 
 	@Autowired
 	private LolDao lolDao;
-
-	// =========================================================================
-	// [수정됨] 이미지 확인 도우미 메서드 (기다리는 시간을 1초로 단축!)
-	// =========================================================================
 	private boolean isImageUrlValid(String urlString) {
 		try {
 			java.net.URL url = new java.net.URL(urlString);
@@ -166,7 +162,6 @@ public class LolDataService {
 							+ skinNum + ".jpg";
 
 					if (!isImageUrlValid(skinImgUrl)) {
-						System.out.println("[" + champ.getChampName() + " - " + skinName + "] 이미지가 없습니다. 저장을 생략합니다.");
 						return; // 람다식 내부에서는 continue 대신 return
 					}
 
