@@ -1,5 +1,9 @@
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<c:set var="gameId" value="battleground" />
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,19 +24,8 @@
 
 	<div class="main-layout">
 		<aside class="side-left">
-			<div class="side-card">
-				<h3>카테고리</h3>
-				<div class="menu-item">갤러리</div>
-				<div class="menu-item">커뮤니티</div>
-				<div class="sub-item">자유게시판</div>
-				<div class="sub-item">공략게시판</div>
-				<div class="menu-item">아이템 정보</div>
-				<div class="sub-item">무기</div>
-				<div class="sub-item">차량</div>
-				<div class="menu-item">미디어</div>
-				<div class="menu-item">1:1 문의</div>
-			</div>
-		</aside>
+            <%@ include file="../common/sidebar.jsp" %>
+        </aside>
 
 		<main class="content-area">
 			<a href="<c:url value ='/battleground/main'/>"><div class="logo">LOG.GG</div></a>

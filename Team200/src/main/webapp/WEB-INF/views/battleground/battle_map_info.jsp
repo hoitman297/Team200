@@ -1,5 +1,9 @@
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<c:set var="gameId" value="battleground" />
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,16 +26,8 @@
 
 	<div class="main-layout">
 		<aside class="side-left">
-			<div class="side-card">
-				<h3>전장 선택</h3>
-				<button class="map-btn active">에란겔 (Erangel)</button>
-				<button class="map-btn">미라마 (Miramar)</button>
-				<button class="map-btn">사녹 (Sanhok)</button>
-				<button class="map-btn">비켄디 (Vikendi)</button>
-				<button class="map-btn">테이고 (Taego)</button>
-				<button class="map-btn">론도 (Rondo)</button>
-			</div>
-		</aside>
+            <%@ include file="../common/sidebar.jsp" %>
+        </aside>
 
 		<main class="content-area">
 			<a href="<c:url value ='/battleground/main'/>"><div class="logo">LOG.GG</div></a>

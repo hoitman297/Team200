@@ -14,7 +14,7 @@
 
     <div class="container">
         <div class="header-section">
-            <h2>1:1 문의 관리 (Admin)</h2>
+            <h2>고객지원 (Admin)</h2>
             <button class="select-box" onclick="history.back()">뒤로가기</button>
         </div>
 

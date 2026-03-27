@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="overwatchMapper">
+
+    <select id="checkHeroCount" resultType="int">
+        SELECT COUNT(*) FROM HERO_INFO
+    </select>
+
+    <insert id="insertHero" parameterType="HeroVO">
+        <selectKey keyProperty="heroNo" resultType="int" order="BEFORE">
+            SELECT SEQ_HERO_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO HERO_INFO (
+            HERO_NO, HERO_NAME, HERO_INTRO, HERO_HP, HERO_POSITION, HERO_IMG
+        ) VALUES (
+            #{heroNo}, #{heroName}, #{heroIntro}, #{heroHp}, #{heroPosition}, #{heroImg}
+        )
+    </insert>
+
+    <insert id="insertHeroSkills" parameterType="HeroSkillsVO">
+        INSERT INTO HERO_SKILLS_INFO (
+            HERO_NO,
+            SKILL_LCLICK_NAME, SKILL_LCLICK_DESC, SKILL_LCLICK_IMG,
+            SKILL_RCLICK_NAME, SKILL_RCLICK_DESC, SKILL_RCLICK_IMG,
+            SKILL_SHIFT_NAME, SKILL_SHIFT_DESC, SKILL_SHIFT_IMG,
+            SKILL_E_NAME, SKILL_E_DESC, SKILL_E_IMG,
+            SKILL_Q_NAME, SKILL_Q_DESC, SKILL_Q_IMG
+        ) VALUES (
+            #{heroNo},
+            #{skillLclickName, jdbcType=VARCHAR}, #{skillLclickDesc, jdbcType=VARCHAR}, #{skillLclickImg, jdbcType=VARCHAR},
+            #{skillRclickName, jdbcType=VARCHAR}, #{skillRclickDesc, jdbcType=VARCHAR}, #{skillRclickImg, jdbcType=VARCHAR},
+            #{skillShiftName, jdbcType=VARCHAR}, #{skillShiftDesc, jdbcType=VARCHAR}, #{skillShiftImg, jdbcType=VARCHAR},
+            #{skillEName, jdbcType=VARCHAR}, #{skillEDesc, jdbcType=VARCHAR}, #{skillEImg, jdbcType=VARCHAR},
+            #{skillQName, jdbcType=VARCHAR}, #{skillQDesc, jdbcType=VARCHAR}, #{skillQImg, jdbcType=VARCHAR}
+        )
+    </insert>
+    
+    <select id="selectHeroList" resultType="HeroVO">
+        SELECT * FROM HERO_INFO ORDER BY HERO_NAME ASC
+    </select>
+
+    <select id="selectHero" resultType="HeroVO">
+        SELECT * FROM HERO_INFO WHERE HERO_NO = #{heroNo}
+    </select>
+
+    <select id="selectHeroSkills" resultType="HeroSkillsVO">
+        SELECT * FROM HERO_SKILLS_INFO WHERE HERO_NO = #{heroNo}
+    </select>
+
+</mapper>
