@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/overwatch") 
+@RequestMapping("/ow") 
 @Slf4j
 @RequiredArgsConstructor
 public class OverwatchController {
@@ -37,7 +37,7 @@ public class OverwatchController {
 	}
 	
 	@GetMapping("/board/{categoryNo}")
-	// categoryNo = 자유 게시판 (N?) , 공략 게시판(S?)
+	// categoryNo = 자유 게시판 (free) , 공략 게시판(strategy)
 	public String overwatchBoard(
 			@PathVariable("categoryNo") String categoryNo ,
 			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage ,

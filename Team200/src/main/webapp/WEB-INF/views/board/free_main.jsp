@@ -1,5 +1,7 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -53,7 +55,9 @@
 
             <div class="board-header">
                 <div class="board-title">자유 게시판</div>
-                <a href="<c:url value = '/board/freewrite' />"><button class="btn-write">글쓰기</button></a>
+                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <a href="<c:url value = '/board/free/write/${gameCode}'/>"><button class="btn-write">글쓰기</button></a>
+                </sec:authorize>
             </div>
 
             <table class="list-table">
@@ -69,21 +73,13 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>003</td>
-                        <td class="td-title">오늘 배그 점검 시간 아시는 분 계신가요?</td>
-                        <td>배그왕01</td>
-                        <td>25-03-09</td>
-                        <td>124</td>
-                        <td>5</td>
-                    </tr>
-                    <tr>
-                        <td>002</td>
-                        <td class="td-title">공략게판에 올린 에란겔 꿀팁 추천 부탁드려요!</td>
-                        <td>user02</td>
-                        <td>25-02-01</td>
-                        <td>1,240</td>
-                        <td>88</td>
-                    </tr>
+                        <td>${board.boardNo}</td>
+                        <td class="td-title">${board.boardTitle}</td>
+                        <td>${board.userNo}</td>
+                        <td>${board.postDate}</td>
+                        <td>${board.readCount}</td>
+                        <td>${boardLikes}</td>
+                    </tr>   
                     <tr>
                         <td>001</td>
                         <td class="td-title">안녕하세요! 신규 유저 인사드립니다.</td>

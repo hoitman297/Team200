@@ -34,17 +34,17 @@
             </div>
 
             <div class="game-cards">
-                <div class="card" data-title="LEGAGUE OF LEGENDS"><a href="<c:url value='/lol/main'/>"><img src="${pageContext.request.contextPath}/resources/img/롤.webp" alt="LOL"></a></div>
-                <div class="card" data-title="OVERWATCH"><a href="<c:url value='/overwatch/main'/>"><img src="${pageContext.request.contextPath}/resources/img/오버워치.webp" alt="OW"></a></div>
-                <div class="card" data-title="BATTLEGROUNDS"><a href="<c:url value='/battleground/main'/>"><img src="${pageContext.request.contextPath}/resources/img/배그.jpg" alt="PUBG"></a></div>
+                <div class="card" data-title="LEAGUE OF LEGENDS"><a href="<c:url value='/lol/main'/>"><img src="${pageContext.request.contextPath}/resources/img/롤.webp" alt="LOL"></a></div>
+                <div class="card" data-title="OVERWATCH"><a href="<c:url value='/ow/main'/>"><img src="${pageContext.request.contextPath}/resources/img/오버워치.webp" alt="OW"></a></div>
+                <div class="card" data-title="BATTLEGROUNDS"><a href="<c:url value='/bg/main'/>"><img src="${pageContext.request.contextPath}/resources/img/배그.jpg" alt="PUBG"></a></div>
             </div>
 
             <div class="board-card">
                 <div class="tab-menu">
                     <div class="tab-item active">인기 게시글</div>
                     <a href="<c:url value = '/lol/main' />"><div class="tab-item">리그 오브 레전드</div></a>
-                    <a href="<c:url value = '/overwatch/main' />"><div class="tab-item">오버워치</div></a>
-                    <a href="<c:url value = '/battleground/main' />"><div class="tab-item">배틀그라운드</div></a>
+                    <a href="<c:url value = '/ow/main' />"><div class="tab-item">오버워치</div></a>
+                    <a href="<c:url value = '/bg/main' />"><div class="tab-item">배틀그라운드</div></a>
                 </div>
                 <div class="tab-content">
                     <div class="board-row header-row">
