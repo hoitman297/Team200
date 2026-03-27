@@ -21,13 +21,14 @@ import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
 import com.semi.spring.overwatch.model.service.OverwatchService;
 import com.semi.spring.overwatch.model.vo.HeroSkillsVO;
+import com.semi.spring.overwatch.model.vo.HeroSkinVO;
 import com.semi.spring.overwatch.model.vo.HeroVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/overwatch")
+@RequestMapping("/ow") 
 @Slf4j
 @RequiredArgsConstructor
 public class OverwatchController {
@@ -44,6 +45,8 @@ public class OverwatchController {
 	}
 
 	@GetMapping("/board/{categoryNo}")
+
+
 	// categoryNo = 자유 게시판 (N?) , 공략 게시판(S?)
 	public String overwatchBoard(@PathVariable("categoryNo") String categoryNo,
 			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model,
@@ -81,10 +84,11 @@ public class OverwatchController {
         // DB에서 해당 번호의 영웅 정보와 스킬 정보 조회
         HeroVO hero = service.selectHero(heroNo);
         HeroSkillsVO skills = service.selectHeroSkills(heroNo);
-        
+        List<HeroSkinVO> skinList = service.getHeroSkinList(heroNo);
         // JSP에서 ${hero}, ${skills}로 쓸 수 있게 담아줌
         model.addAttribute("hero", hero);
         model.addAttribute("skills", skills);
+        model.addAttribute("skinList", skinList);
 		return "overwatch/overwatch_hero_info";
 	}
 

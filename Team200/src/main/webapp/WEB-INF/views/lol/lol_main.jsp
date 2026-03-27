@@ -1,11 +1,20 @@
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<<<<<<< HEAD
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%-- 💖 [핵심 수정] 사이드바와 헤더가 길을 잃지 않도록 맨 위에서 쾅쾅! 선언해 줍니다 💖 --%>
 <c:set var="gameId" value="lol" />
 <c:set var="currentGameName" value="리그 오브 레전드" />
 <c:set var="headerTitle" value="리그 오브 레전드" />
+=======
+<<<<<<< HEAD
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+=======
+>>>>>>> main
 
+>>>>>>> main
 <!DOCTYPE html>
 <html lang="ko">
 <head>    
@@ -29,11 +38,25 @@
 <%-- 변수를 맨 위로 올렸으니 여기선 부르기만 하면 됩니다 --%>
 <%@ include file="../common/header.jsp" %>
 
+<<<<<<< HEAD
+        <div class="main-layout">
+        <aside class="side-left">
+            <div class="side-card">
+                <h3>카테고리</h3>
+                <a href="<c:url value = '/member/main' />"><div class="menu-item">갤러리</div></a>
+                <div class="menu-item">게시판</div>
+                <a href="<c:url value = '/board/free/lol'/>"><div class="sub-item">자유게시판</div></a>
+                <a href="<c:url value = '/board/strategy/lol' />"><div class="sub-item">공략게시판</div></a>
+                <a href="<c:url value = '/board/inquiry' />"><div class="menu-item">고객지원</div></a>
+            </div>
+        </aside>
+=======
 <div class="main-layout">
     <aside class="side-left">
         <%-- ✨ 이제 사이드바가 gameId="lol"을 미리 읽어서 링크가 정상적으로 잡혀요! ✨ --%>
         <%@ include file="../common/sidebar.jsp" %>
     </aside>
+>>>>>>> main
 
     <main class="content-area">
         <div class="top-row">

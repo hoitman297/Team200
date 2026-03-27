@@ -2,14 +2,21 @@ package com.semi.spring.overwatch.model.service;
 
 import javax.annotation.PostConstruct;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.semi.spring.overwatch.model.dao.OverwatchDao;
 import com.semi.spring.overwatch.model.vo.HeroSkillsVO;
+import com.semi.spring.overwatch.model.vo.HeroSkinVO;
 import com.semi.spring.overwatch.model.vo.HeroVO;
 
 @Service
@@ -43,7 +50,7 @@ public class OverwatchDataService {
             JsonNode heroArray = objectMapper.readTree(listJson);
 
             int insertCount = 0;
-
+            
             // 2. 각 영웅의 상세 정보(스킬, 체력 등)를 순회하며 가져오기
             for (JsonNode basicNode : heroArray) {
                 String heroKey = basicNode.get("key").asText();
@@ -88,7 +95,8 @@ public class OverwatchDataService {
                 // 영웅 정보 DB Insert
                 overdao.insertHero(hero);
                 int currentHeroNo = hero.getHeroNo();
-
+                
+                
                 // --- [2단계] HERO_SKILLS_INFO 데이터 세팅 및 저장 ---
                 HeroSkillsVO skills = new HeroSkillsVO();
                 skills.setHeroNo(currentHeroNo); // 받아온 PK 세팅
@@ -126,8 +134,13 @@ public class OverwatchDataService {
                     }
                 }
                 
+
+
                 // 스킬 정보 DB Insert
                 overdao.insertHeroSkills(skills);
+                
+                // 스킨 정보 DB Insert 메소드 호출
+                scrapeHeroSkins(currentHeroNo, heroKey);
                 insertCount++;
             }
             
@@ -136,6 +149,51 @@ public class OverwatchDataService {
         } catch (Exception e) {
             System.out.println("=== [에러 발생] 오버워치 데이터 업데이트 중지: " + e.getMessage());
             e.printStackTrace();
+            
         }
     }
+    
+    public void scrapeHeroSkins(int heroNo, String heroKey) {
+        // 영문 이름 첫 글자를 대문자로 변환 (위키 주소 규칙: D.Va, Tracer 등)
+        String wikiName = heroKey.substring(0, 1).toUpperCase() + heroKey.substring(1);
+        
+        // 크롤링할 타겟 URL (오버워치 팬덤 위키의 스킨 페이지)
+        String url = "https://overwatch.fandom.com/wiki/" + wikiName + "/Cosmetics";
+        
+        try {
+            System.out.println("=== [" + wikiName + "] 스킨 자동 수집 시작 ===");
+            
+            // 1. 해당 URL의 웹 페이지 HTML 문서를 통째로 가져옵니다.
+            Document doc = Jsoup.connect(url).timeout(10000).get();
+            
+            // 2. 스킨 이미지와 이름이 들어있는 HTML 태그 덩어리를 찾습니다.
+            // (보통 갤러리 형태의 태그 클래스명을 분석해서 넣습니다)
+            Elements skinElements = doc.select("div.wikia-gallery-item");
+            
+            for (Element el : skinElements) {
+                // 3. 덩어리 안에서 스킨 이름과 이미지 URL 추출
+                String skinName = el.select(".lightbox-caption").text(); // 스킨 이름
+                String skinImg = el.select("img").attr("data-src");      // 스킨 이미지 URL
+                
+                // 이미지가 비어있으면 원본 src를 가져옴 (지연 로딩 처리)
+                if (skinImg == null || skinImg.isEmpty()) {
+                    skinImg = el.select("img").attr("src");
+                }
+                
+                // 데이터가 유효한 경우에만 DB에 저장
+                if (skinName != null && !skinName.isEmpty() && skinImg.startsWith("http")) {
+                    HeroSkinVO skin = new HeroSkinVO();
+                    skin.setHeroNo(heroNo);
+                    skin.setHeroSkinName(skinName);
+                    skin.setHeroSkinImg(skinImg);
+                    
+                    overdao.insertHeroSkin(skin); // DB 저장!
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("=== [" + wikiName + "] 스킨 크롤링 실패 (페이지를 찾을 수 없거나 구조 다름) ===");
+            // e.printStackTrace(); 
+        }
+    }
+    
 }
