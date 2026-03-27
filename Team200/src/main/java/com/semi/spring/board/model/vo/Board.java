@@ -14,6 +14,7 @@ public class Board {
 	private String boardTitle;
 	private String boardContent;
 	private String boardCd;
+	private String boardType;
 	
 //	private String boardWriter; // userId, userName
 	private String userId;

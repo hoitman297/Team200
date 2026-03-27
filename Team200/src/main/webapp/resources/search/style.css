@@ -1,0 +1,15 @@
+// 게시판 리스트 즉시 필터링 기능
+$(document).ready(function() {
+    $("#boardSearchInput").on("keyup", function() {
+        // 1. 검색창에 입력한 값을 소문자로 가져옵니다.
+        let searchValue = $(this).val().toLowerCase();
+
+        // 2. 테이블의 모든 행(tr)을 돌면서 검사합니다.
+        $("#boardTableBody .board-row-item").filter(function() {
+            // 3. 제목(td.td-title)의 텍스트와 검색어를 비교해서
+            // 포함되어 있으면 보여주고, 없으면 숨깁니다(toggle).
+            let titleText = $(this).find(".td-title").text().toLowerCase();
+            $(this).toggle(titleText.indexOf(searchValue) > -1);
+        });
+    });
+});

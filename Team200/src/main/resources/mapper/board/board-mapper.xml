@@ -24,11 +24,15 @@
 		</if>
 	</sql>
 	
-	<select id="getBoardTypeMap" resultType="boardtype">
+	<select id="getBoardTypeMap" resultType="map">
+		SELECT BOARD_TYPE as "boardType" , BOARD_NAME as "boardName"
+		FROM BOARD_TYPE
+	</select>
+	
+	<select id="getCategoryTableMap" resultType="map">
 		SELECT
-			CATEGORY_NO,
-			CATEGORY_NAME,
-			GAME_CODE
+			CATEGORY_NO AS "categoryNo",
+			GAME_CODE AS "gameCode"
 		FROM CATEGORY_TABLE
 		<if test="gameCode != null">
 			WHERE GAME_CODE = #{gameCode}

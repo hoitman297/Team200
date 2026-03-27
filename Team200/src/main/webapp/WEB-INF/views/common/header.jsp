@@ -14,13 +14,13 @@
 		<div class="dropdown-content">
 			<c:if test="${headerTitle ne '배틀그라운드'}">
 				<%-- 폴더명 사진 확인: batterground --%>
-				<a href="<c:url value = '/battleground/main' />">배틀그라운드</a>
+				<a href="<c:url value = '/bg/main' />">배틀그라운드</a>
 			</c:if>
 			<c:if test="${headerTitle ne '리그 오브 레전드'}">
 				<a href="<c:url value = '/lol/main' />">리그 오브 레전드</a>
 			</c:if>
 			<c:if test="${headerTitle ne '오버워치'}">
-				<a href="<c:url value = '/overwatch/main' />">오버워치</a>
+				<a href="<c:url value = '/ow/main' />">오버워치</a>
 			</c:if>
 			<a href="<c:url value = '/' />" style="border-top: 1px solid #eee;">메인페이지</a>
 		</div>
@@ -33,6 +33,9 @@
 			<%-- 1. 로그인 상태일 때 (세션에 loginUser 정보가 있을 때) --%>
 			
 <%-- 			<c:when test="${not empty sessionScope.loginUser}"> --%>
+			<sec:authorize access="hasRole('ROLE_ADMIN')">
+				<a href="<c:url value = '/' />"><span>게시글 추가</span></a>
+			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
 				<a href="<c:url value = '/member/mypage' />"><span>마이페이지</span></a>
 				<a href="<c:url value = '/member/update' />"><span>개인정보 수정</span></a>
@@ -43,6 +46,7 @@
 				    <button type="submit" class="btn-logout">로그아웃</button>
 				</form:form>
 			</sec:authorize>
+			
 <%-- 			</c:when> --%>
 			
 

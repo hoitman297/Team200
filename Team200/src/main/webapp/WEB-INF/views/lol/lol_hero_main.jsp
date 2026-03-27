@@ -33,7 +33,7 @@
 		<main class="content-area">
 			<div class="top-row">
 				<a href="<c:url value='/lol/main'/>" style="text-decoration: none;">
-					<div class="logo">LOG.GG</div>
+					<a href="<c:url value='/lol/main'/>"><div class="logo">LOG.GG</div></a>
 				</a>
 				<div class="search-bar">
 					<input type="text" placeholder="챔피언 검색"> <span>🔍</span>
