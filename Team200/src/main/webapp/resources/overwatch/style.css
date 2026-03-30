@@ -1,6 +1,17 @@
 @import
 	url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css')
 	;
+:root { -
+	-primary-navy: #1e293b; -
+	-accent-blue: #3b82f6; -
+	-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); -
+	-transition: all 0.2s ease-in-out;
+	/* ✨ 추가된 공통 색상 변수 */ -
+	-text-muted: #64748b; -
+	-text-light: #94a3b8; -
+	-border-light: #e2e8f0;
+}
+
 
 /*영웅정보 스타일*/
 /* =========================================================================

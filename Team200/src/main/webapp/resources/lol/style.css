@@ -5,111 +5,434 @@
     --accent-blue: #3b82f6;
     --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     --transition: all 0.2s ease-in-out;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --border-light: #e2e8f0;
 }
 
-/* ... (사용자님의 기존 CSS 1~4번 섹션 그대로 유지) ... */
-
 /* =========================================================================
-   5. 아이템 정보 테이블 & 카테고리
+   룬(특성) 정보 영역 스타일
    ========================================================================= */
-.item-card {
+.rune-container {
     background: white;
     border-radius: 24px;
     display: flex;
-    gap: 40px;
-    padding: 20px;
+    gap: 30px;
 }
 
-.item-table-container {
-    flex: 1;
+.rune-visual-section {
+    flex: 1.2;
+    background: linear-gradient(145deg, #1e2328 0%, #090a0c 100%);
+    border-radius: 20px;
+    padding: 30px 40px;
+    color: white;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.item-table {
-    width: 100%;
-    border-collapse: collapse;
+.path-selector {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.item-table thead th {
-    padding: 15px;
-    border-bottom: 2px solid #e2e8f0;
-    color: var(--primary-navy);
-}
-
-.item-table tbody td {
-    padding: 15px;
-    border-bottom: 1px solid #f1f5f9;
-    text-align: center;
-}
-
-/* ✨ 추가된 페이지 버튼 스타일 ✨ */
-.page-nav-btn {
-    border: 1px solid #e2e8f0;
-    background: white;
-    padding: 5px 10px;
-    border-radius: 6px;
+.path-icon {
+    width: 45px;
+    height: 45px;
     cursor: pointer;
-    font-size: 12px;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+    opacity: 0.4;
+}
+
+.path-icon:hover, .path-icon.active {
+    filter: grayscale(0%);
+    transform: scale(1.15);
+    opacity: 1;
+}
+
+.slots-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.keystone-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+}
+
+.subrune-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    justify-items: center;
+    width: 70%;
+}
+
+.talent-slot {
+    border: 2px solid #333;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #121518;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    filter: grayscale(85%);
+    opacity: 0.5;
+}
+
+.talent-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.talent-slot.main-rune {
+    width: 65px;
+    height: 65px;
+}
+
+.talent-slot.sub-rune {
+    width: 45px;
+    height: 45px;
+}
+
+.talent-slot:hover, .talent-slot.active {
+    filter: grayscale(0%);
+    opacity: 1;
+    border-color: #c8aa6e;
+    box-shadow: 0 0 15px rgba(200, 170, 110, 0.5), inset 0 0 10px rgba(200, 170, 110, 0.2);
+    transform: translateY(-3px) scale(1.05);
+}
+
+.rune-desc-section {
+    flex: 1;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px 30px;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    height: fit-content;
+}
+
+#desc-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 20px;
+}
+
+#desc-name img {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+    background: #1e2328;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.desc-box {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #475569;
+}
+
+
+/*
+	====================================================================
+	영웅 메인 카드 디자인
+	====================================================================
+*/
+
+.hero-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important; 
+    gap: 25px 15px !important;
+    padding: 20px !important;
+    justify-items: center !important;
+}
+
+/* 개별 영웅 카드 */
+.hero-item {
+    width: 100% !important;
+    max-width: 160px !important;
+    background: #ffffff !important;
+    border: 1px solid #f1f5f9 !important;
+    border-radius: 20px !important;
+    padding: 20px 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 카드 마우스 호버 효과 */
+.hero-item:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+    border-color: #cbd5e1 !important;
+}
+
+
+/* =========================================================================
+   영웅 상세 카드 디자인
+   ========================================================================= */
+   
+   
+   
+.detail-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: var(--card-shadow);
+    padding: 30px;
+}
+
+.hero-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hero-title::before {
+    content: '•';
+    color: var(--accent-blue);
+}
+
+.hero-info-top {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.hero-illust {
+    width: 250px;
+    height: 180px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.hero-illust img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* =========================================================================
+   탭 메뉴 스타일
+   ========================================================================= */
+.detail-tabs {
+    display: flex;
+    border: 1px solid #cbd5e1;
+    width: fit-content;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.d-tab {
+    padding: 10px 25px;
+    border-right: 1px solid #cbd5e1;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
     transition: var(--transition);
 }
 
-.page-nav-btn:hover:not(:disabled) {
-    background: #f1f5f9;
-    border-color: var(--accent-blue);
+.d-tab:last-child { border-right: none; }
+
+.d-tab:hover, .d-tab.active {
+    background: var(--accent-blue);
+    color: white;
 }
 
-.page-nav-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
+/* =========================================================================
+   ✨ 스킬 영역 스타일 (트렌디 & 깔끔하게 업데이트!)
+   ========================================================================= */
+.info-section#skill {
+    padding-top: 10px;
 }
 
-/* 카테고리 (기존 유지) */
-.item-categories {
+.info-section h4 {
+    font-size: 18px;
+    color: var(--primary-navy);
+    margin-bottom: 20px;
+}
+
+.skill-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    min-width: 160px;
-    margin-top: 15px;
+    gap: 16px; /* 스킬들 사이의 간격 */
 }
 
-.category-btn {
+/* 스킬 아이템 카드 효과 */
+.skill-item {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 20px;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px;
+    background: #f8fafc; /* 부드러운 배경색 */
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    transition: var(--transition);
+}
+
+/* 호버 시 위로 떠오르는 효과 */
+.skill-item:hover {
+    background: #ffffff;
+    border-color: var(--accent-blue);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.08);
+    transform: translateY(-3px);
+}
+
+/* 스킬 아이콘 */
+.skill-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px; /* 둥근 사각형 */
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+}
+
+/* 궁극기(R) 아이콘 강조 효과 */
+.skill-icon.ultimate {
+    border: 2px solid #c8aa6e;
+    box-shadow: 0 0 15px rgba(200, 170, 110, 0.3);
+}
+
+/* 스킬 이름 텍스트 */
+.skill-name {
+    font-size: 16px;
+    font-weight: 800;
     color: var(--primary-navy);
-    font-size: 15px;
-    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.skill-name.ultimate {
+    color: #a17f2e; /* 궁극기 텍스트 골드 톤 변경 */
+}
+
+/* 스킬 설명 텍스트 */
+.skill-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    word-break: keep-all; /* 한글 단어 단위로 줄바꿈 */
+}
+
+/* =========================================================================
+   스킨 리스트
+   ========================================================================= */
+.skin-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.skin-box {
+    width: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f1f5f9;
+}
+
+.skin-box img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+
+.skin-box-name {
+    padding: 12px;
+    background: #fff;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+    color: #334155;
+}
+
+/* =========================================================================
+   기타 공통 요소 (빈 상태, 댓글, 사이드 카드)
+   ========================================================================= */
+.empty-state {
+    font-size: 14px;
+    color: var(--text-light);
+    padding: 10px;
+}
+
+.empty-state.skin {
+    width: 100%;
+    padding: 20px;
+}
+
+.comment-row {
+    margin-top: 30px;
+    border-top: 1px solid var(--border-light);
+    padding-top: 20px;
+    display: flex;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--primary-navy);
+}
+
+.comment-main {
+    flex: 1;
+    padding-left: 10px;
+    color: #475569;
+}
+
+.comment-side {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.comment-action {
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-    transition: all 0.2s ease-in-out;
 }
 
-.category-icon {
-    width: 8px;
-    height: 8px;
-    background-color: #cbd5e1;
-    border-radius: 50%;
-    transition: all 0.2s ease;
+.comment-action.like {
+    color: var(--accent-blue);
+    margin-left: 5px;
 }
 
-.category-btn:hover .category-icon {
-    background-color: var(--accent-blue);
+.side-card {
+    background: #cbd5e1;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
-.category-btn:hover,
-.category-btn.active {
-    background-color: #ffffff;
-    border-color: #3b82f6;
-    transform: translateX(8px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-    color: #3b82f6;
+.side-card h3 {
+    margin-bottom: 15px;
 }
 
-.category-btn.active .category-icon {
-    background-color: #3b82f6;
+.side-card-desc {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.8;
 }
-
-/* ... (이후 툴팁, 룬 섹션 스타일 기존 유지) ... */

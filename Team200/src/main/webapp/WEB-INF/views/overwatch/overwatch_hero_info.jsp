@@ -141,10 +141,6 @@
 					</div>
 				</div>
 
-				<div class="info-section" id="sp">
-					<h4>특전 목록</h4>
-					<div style="font-size: 14px; color: #94a3b8;">내용이 없습니다.</div>
-				</div>
 
 				<div class="info-section" id="patch">
 					<h4>패치 내역</h4>
