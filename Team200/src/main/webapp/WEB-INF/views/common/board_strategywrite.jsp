@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<<<<<<< HEAD
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+=======
+>>>>>>> main
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -40,6 +43,7 @@
                     <h2>새 공략 작성하기</h2>
                 </div>
 
+<<<<<<< HEAD
                 <%-- 
                    action 경로 주의: 
                    Controller의 @PostMapping("/{boardType}_write_{gameCode}")와 정확히 매칭되어야 합니다.
@@ -50,6 +54,12 @@
                     <%-- Spring Security 보안 방패 (CSRF 토큰) --%>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
+=======
+                <form id="writeForm" action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>" method="POST" 
+                enctype="multipart/form-data">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                
+>>>>>>> main
                     <div class="form-group">
                         <label>제목</label>
                         <input type="text" name="title" placeholder="공략 제목을 입력해 주세요" required>
@@ -57,11 +67,18 @@
 
                     <div class="form-group">
                         <label>내용</label>
+<<<<<<< HEAD
                         <textarea class="editor-area" name="content" rows="15" placeholder="나만의 꿀팁과 공략을 공유해 주세요! (비방/욕설 금지)" required></textarea>
                         
                         <div class="file-upload">
                             <input type="file" name="upFile" multiple style="margin-bottom: 10px;"> <br>
                             📎 공략에 필요한 이미지나 파일을 첨부할 수 있습니다.
+=======
+                        <textarea class="editor-area" name="content" placeholder="커뮤니티 가이드라인을 준수하여 내용을 작성해 주세요."></textarea>
+                        <div class="file-upload">
+                        📎 사진이나 파일을 첨부할 수 있습니다.<br>
+                        <input type="file" name="upFile" multiple style="margin-top: 10px;">
+>>>>>>> main
                         </div>
                     </div>
 

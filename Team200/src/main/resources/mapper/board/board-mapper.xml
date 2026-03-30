@@ -41,6 +41,7 @@
 		<id column="BOARD_NO" property="boardNo"/>
 
 		<result column="READ_COUNT" property="readCount" />
+		<result property="likeCount" column="likeCount"/>
 		
 		<association property="party" javaType="partyRecruit" autoMapping="true">
         <id column="BOARD_NO" property="boardNo"/>
@@ -104,7 +105,8 @@
         B.BOARD_TITLE, B.BOARD_CONTENT, B.POST_DATE, B.BOARD_CD, B.READ_COUNT,
         U.USER_NAME,
         P.CAPACITY, P.TIER, P.PARTY_CURRENT, P.PREFER_MAP,
-        C.CATEGORY_NAME
+        C.CATEGORY_NAME,
+        (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount
 		FROM BOARD B
 		LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
 		LEFT JOIN PARTY_RECRUIT P ON B.BOARD_NO = P.BOARD_NO
@@ -496,7 +498,7 @@
 	</select>
 	
 	<!-- 인기게시글 -->
-	<select id="selectBestBoards" resultType="boardExt">
+	<select id="selectBestBoards" resultType="boardExt" parameterType="string">
     SELECT * FROM (
         SELECT 
             B.BOARD_NO,
@@ -505,13 +507,17 @@
             B.GAME_CODE,
             U.USER_NAME,
             C.CATEGORY_NAME,
+            B.POST_DATE,
             (SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
             (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount
         FROM BOARD B
-        JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
-        JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+        LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+        LEFT JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
         WHERE B.BOARD_CD = 'Y' 
           AND B.POST_DATE >= SYSDATE - 7  
+          <if test="gameCode != null and gameCode != 'ALL'">
+              AND B.GAME_CODE = #{gameCode}
+          </if>
           ORDER BY likeCount DESC, B.READ_COUNT DESC, B.BOARD_NO DESC
     ) 
     WHERE ROWNUM &lt;= 5 

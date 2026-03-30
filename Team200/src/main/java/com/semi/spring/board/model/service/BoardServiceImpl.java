@@ -16,7 +16,9 @@ import com.semi.spring.board.model.dao.BoardDao;
 import com.semi.spring.board.model.vo.AttachFile;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
+import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Reply;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,6 +114,40 @@ public class BoardServiceImpl implements BoardService {
 		return boardDao.getBoardTypeMap(dbGameCode ,boardType);
 	}
 
+	@Override
+	@Transactional
+	public int insertBoardLike(int boardNo, int userNo) {
+	    BoardLike boardLike = new BoardLike(userNo, boardNo);
+	    
+	    // 1. 이미 공감을 눌렀는지 확인
+	    int check = boardDao.checkBoardLike(boardLike);
+	    
+	    // 2. 이미 눌렀다면 -1을 돌려보내서 빠꾸(?) 먹이기
+	    if (check > 0) {
+	        return -1; 
+	    }
+	    
+	    // 3. 안 눌렀다면 공감(INSERT) 추가!
+	    boardDao.insertBoardLike(boardLike);
+	    
+	    // 4. 추가된 후의 최신 공감 갯수 리턴
+	    return boardDao.selectBoardLikeCount(boardNo);
+	}
+
+	@Override
+	public List<BoardExt> selectBestBoards(String gameCode) {
+		return boardDao.selectBestBoards(gameCode);
+	}
+
+	@Override
+	public List<Reply> selectReplyList(int boardNo) {
+		return boardDao.selectReplyList(boardNo);
+	}
+
+	@Override
+	public int insertReply(Reply reply) {
+		return boardDao.insertReply(reply);
+	}
 	
 
 
