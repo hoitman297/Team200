@@ -44,11 +44,6 @@
                 
                 <c:set var="currentGameName" value="오버워치" />
                 <c:set var="currentGameCode" value="overwatch" />
-                
-                <%-- 공통 검색바 파일 호출 (파일 경로를 확인하세요!) --%>
-                <%-- 💖 통합 검색(global) 모드로 검색창 호출! 💖 --%>
-                <c:set var="searchType" value="global" />
-                <%@ include file="../common/search_bar.jsp" %>
             </div>
 
             <div class="board-card">

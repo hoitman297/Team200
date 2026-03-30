@@ -1,5 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,19 +15,31 @@
 <body>
 
     <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="profile-img" onclick="changeImage()">프로필 변경</div>
-            <div class="user-info">
-                <h1>닉네임</h1>
-                <p>일반 회원<br>email@naver.com</p>
-            </div>
-            
-            <a href="<c:url value = '/member/login' />"><button class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
-            
-            <div class="logo-bottom">LOG.GG</div>
-        </aside>
+		<aside class="sidebar">
+			<div class="profile-img"
+				onclick="document.getElementById('profileInput').click()">
+				<img id="profilePreview"
+					src="${pageContext.request.contextPath}${not empty secUser.profilePath ? secUser.profilePath : '/resources/img/default_profile.png'}"
+					alt="프로필">
+				<div class="overlay">변경</div>
+			</div>
+			<input type="file" id="profileInput" accept="image/*"
+				style="display: none;" onchange="uploadProfile(event)">
 
-        <main class="main-content">
+			<div class="user-info">
+				<sec:authentication property="principal" var="secUser" />
+				<h1>${secUser.userName}</h1>
+				<p>
+					일반 회원<br>${secUser.email}</p>
+			</div>
+
+			<a href="<c:url value = '/member/login' />"><button
+					class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
+
+			<div class="logo-bottom">LOG.GG</div>
+		</aside>
+
+		<main class="main-content">
             <section class="card">
                 <h2>⚙️ <span style="color: #475569;">계정 설정</span></h2>
                 <div class="menu-grid">
