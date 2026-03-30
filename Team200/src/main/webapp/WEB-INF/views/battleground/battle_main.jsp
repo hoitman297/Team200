@@ -37,24 +37,20 @@
 
         <main class="content-area">
             <div class="top-row">
-                <a href="<c:url value='/battleground/main'/>" style="text-decoration: none;">
-                    <div class="logo">LOG.GG</div>
-                </a>
-                
-                <%-- 💖 공통 검색바 삽입 (변수 세팅은 위로 올렸으니 여기는 검색바만!) 💖 --%>
-                <%@ include file="../common/search_bar.jsp" %>
+                <a href="<c:url value ='/bg/main'/>"><div class="logo">LOG.GG</div></a>
+
             </div>
 
             <div class="board-card">
                 <div class="tab-menu">
                     <div class="tab-item active">실시간 인기글</div>
-                    <a href="<c:url value='/battleground/item'/>">
+                    <a href="<c:url value='/bg/item'/>">
                         <div class="tab-item">아이템</div>
                     </a>
-                    <a href="<c:url value='/battleground/map'/>">
+                    <a href="<c:url value='/bg/map'/>">
                         <div class="tab-item">지도</div>
                     </a>
-                    <a href="<c:url value='/battleground/box'/>">
+                    <a href="<c:url value='/bg/box'/>">
                         <div class="tab-item">상자 시뮬레이터</div>
                     </a>
                 </div>

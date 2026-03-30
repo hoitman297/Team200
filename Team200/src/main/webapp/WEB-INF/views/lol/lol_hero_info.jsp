@@ -154,7 +154,6 @@
 		</main>
 
 		<aside class="side-right">
-<<<<<<< HEAD
 			<div class="side-card" style="background: #cbd5e1; height: 300px; border-radius: 12px; padding: 20px;">
 				<h3 style="margin-bottom: 15px;">챔피언 팁</h3>
 				<div style="font-size: 14px; color: #475569; line-height: 1.8;">
@@ -162,7 +161,6 @@
 				</div>
 			</div>
 		</aside>
-=======
             <div class="side-card" style="background: #cbd5e1; height: 300px;">
                 	<h3>최근 업데이트</h3>
             	<div style="font-size: 14px; color: #475569; line-height: 1.8;">
@@ -170,7 +168,6 @@
             	</div>
             </div>
         </aside>
->>>>>>> main
 	</div>
 
 	<%-- 공통 푸터 포함 --%>
