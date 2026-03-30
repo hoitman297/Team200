@@ -36,9 +36,7 @@
 
         <main class="content-area">
             <div class="top-row">
-                <a href="<c:url value='/battleground/main'/>" style="text-decoration: none;">
-                    <div class="logo">LOG.GG</div>
-                </a>
+                <a href="<c:url value ='/bg/main'/>"><div class="logo">LOG.GG</div></a>
             </div>
 
             <div class="map-container-card">
