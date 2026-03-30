@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Reply;
 
 public interface BoardService {
 
@@ -26,6 +27,16 @@ public interface BoardService {
 	int insertBoard(Board board, List<MultipartFile> upFiles, String savePath);
 
 	BoardType getBoardTypeMap(String dbGameCode, String boardType);
+
+	int insertBoardLike(int boardNo, int userNo);
+
+	List<BoardExt> selectBestBoards(String gameCode);
+
+	List<Reply> selectReplyList(int boardNo);
+
+	int insertReply(Reply reply);
+
+
 
 	
 

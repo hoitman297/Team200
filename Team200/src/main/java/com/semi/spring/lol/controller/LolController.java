@@ -43,10 +43,10 @@ public class LolController {
 	private final ResourceLoader resourceLoader;
 	private final ServletContext application;
 
-	@GetMapping("/main")
-	public String lol_main() {
-		return "lol/lol_main";
-	}
+//	@GetMapping("/main")
+//	public String lol_main() {
+//		return "lol/lol_main";
+//	}
 
 	@GetMapping("/board/{categoryNo}")
 	// categoryNo = 자유 게시판 (N?) , 공략 게시판(S?)

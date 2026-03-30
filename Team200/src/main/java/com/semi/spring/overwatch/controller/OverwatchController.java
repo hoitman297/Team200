@@ -39,10 +39,10 @@ public class OverwatchController {
 	
 	private final OverwatchService service;
 
-	@GetMapping("/main")
-	public String overwatch_main() {
-		return "overwatch/overwatch_main";
-	}
+//	@GetMapping("/main")
+//	public String overwatch_main() {
+//		return "overwatch/overwatch_main";
+//	}
 
 	@GetMapping("/board/{categoryNo}")
 
