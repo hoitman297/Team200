@@ -11,6 +11,7 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
 
 public interface BoardDao {
@@ -46,6 +47,16 @@ public interface BoardDao {
 	public List<Reply> selectReplyList(int boardNo);
 
 	public int insertReply(Reply reply);
+
+	public int deleteReply(Map<String, Object> paramMap);
+
+	public int selectCategoryNoByName(Map<String, Object> map);
+
+	public int selectGalleryCount(String game);
+
+	public List<BoardExt> selectGalleryList(Map<String, Object> map);
+
+	public int insertInquiry(Inquiry inquiry);
 
 	
 }

@@ -24,6 +24,7 @@ import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
@@ -42,18 +43,6 @@ public class BoardController {
 	private final ResourceLoader resourceLoader;
 	private final ServletContext application; // application scope
 
-    // 문의 메인
-    @GetMapping("/inquiry")
-    public String board_inquiry() {
-        return "board/user_inquiry";
-    }
-    
-    // 문의 작성
-    @GetMapping("/inquiryWrite")
-    public String board_inquiryWrite() {
-        return "board/user_inquiry_write";
-    }
-	
 	@GetMapping("/view")
 	public String board_view(
 	        @RequestParam("boardNo") int boardNo,
@@ -306,31 +295,82 @@ public class BoardController {
 		    
 		    return response;
 		}
-		// 1. 댓글 목록 불러오기 (화면 이동 없음!)
+		
+		//댓글 목록
 		@ResponseBody
 		@GetMapping(value = "/reply/list", produces = "application/json; charset=UTF-8")
 		public List<Reply> selectReplyList(int boardNo) {
-		    // 매퍼의 selectReplyList 호출
 		    return boardService.selectReplyList(boardNo);
 		}
-
-		// 2. 댓글 작성하기 (화면 이동 없음!)
+		
+		// 댓글 작성
 		@ResponseBody
 		@PostMapping("/reply/insert")
 		public String insertReply(Reply reply, Authentication auth) {
-		    // 비로그인 사용자가 댓글 달려고 할 때 방어
 		    if (auth == null || !auth.isAuthenticated()) {
 		        return "login"; 
 		    }
 		    
-		    // 로그인한 유저 정보 꺼내서 세팅
 		    MemberExt loginUser = (MemberExt)auth.getPrincipal();
 		    reply.setUserNo(loginUser.getUserNo());
 		    
-		    // 매퍼의 insertReply 호출
 		    int result = boardService.insertReply(reply);
 		    
 		    return result > 0 ? "success" : "fail";
 		}	
+		
+		// 댓글 삭제
+		@ResponseBody
+		@PostMapping("/reply/delete")
+		public String deleteReply(int replyNo, Authentication auth) {
+		    if (auth == null || !auth.isAuthenticated()) {
+		        return "login"; 
+		    }
 
+		    MemberExt loginUser = (MemberExt) auth.getPrincipal();
+		    
+		    boolean isAdmin = auth.getAuthorities().stream()
+		                          .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+		    Map<String, Object> paramMap = new HashMap<>();
+		    paramMap.put("replyNo", replyNo);
+
+		    if (!isAdmin) {
+		        paramMap.put("userNo", loginUser.getUserNo());
+		    }
+
+		    int result = boardService.deleteReply(paramMap);
+
+		    return result > 0 ? "success" : "fail";
+		}
+		
+		// 1:1문의 메인
+	    @GetMapping("/inquiry")
+	    public String inquiry() {
+	        return "board/user_inquiry";
+	    }
+	    
+		// 1:1 문의 작성 페이지 이동
+	    @GetMapping("/inquiryWrite")
+	    public String inquiryWrite() {
+	    	return "board/user_inquiry_write";
+	    }
+	    
+	    @PostMapping("/inquiry/insert")
+	    public String insertInquiry(Inquiry inquiry, Authentication auth, RedirectAttributes ra) {
+	        
+	        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+	        inquiry.setUserNo(loginUser.getUserNo());
+	        inquiry.setUserName(loginUser.getUserName());
+	        
+	        int result = boardService.insertInquiry(inquiry);
+	        
+	        if(result > 0) {
+	            ra.addFlashAttribute("message", "문의가 성공적으로 접수되었습니다.");
+	            return "redirect:/board/inquiry/list"; 
+	        } else {
+	            ra.addFlashAttribute("message", "문의 접수에 실패했습니다.");
+	            return "redirect:/board/inquiry/write";
+	        }
+	    }
 }

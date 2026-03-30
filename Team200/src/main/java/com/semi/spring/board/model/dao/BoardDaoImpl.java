@@ -13,6 +13,7 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
 
@@ -122,5 +123,30 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public int insertReply(Reply reply) {
 		return session.insert("board.insertReply",reply);
+	}
+	
+	@Override
+	public int deleteReply(Map<String, Object> paramMap) {
+	    return session.update("board.deleteReply", paramMap);
+	}
+
+	@Override
+	public int selectCategoryNoByName(Map<String, Object> map) {
+		return session.selectOne("board.selectCategoryNoByName", map);
+	}
+
+	@Override
+	public int selectGalleryCount(String game) {
+		return session.selectOne("board.selectGalleryCount", game);
+	}
+
+	@Override
+	public List<BoardExt> selectGalleryList(Map<String, Object> map) {
+		return session.selectList("board.selectGalleryList", map);
+	}
+
+	@Override
+	public int insertInquiry(Inquiry inquiry) {
+		return session.insert("board.insertInquiry", inquiry);
 	}
 }

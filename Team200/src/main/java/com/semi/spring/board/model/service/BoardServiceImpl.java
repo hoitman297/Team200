@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +20,9 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
+import com.semi.spring.common.model.vo.PageInfo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -148,7 +152,78 @@ public class BoardServiceImpl implements BoardService {
 	public int insertReply(Reply reply) {
 		return boardDao.insertReply(reply);
 	}
-	
 
+	@Override
+	public int deleteReply(Map<String, Object> paramMap) {
+		return boardDao.deleteReply(paramMap);
+	}
+
+	@Override
+	public int selectGalleryCount(String game) {
+		return boardDao.selectGalleryCount(game);
+	}
+
+	@Override
+	public List<BoardExt> selectGalleryList(PageInfo pi, String game) {
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("gameCode", game);
+	    map.put("offset", (pi.getCurrentPage() - 1) * pi.getBoardLimit() + 1);
+	    map.put("limit", pi.getCurrentPage() * pi.getBoardLimit());
+	    
+	    return boardDao.selectGalleryList(map);
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int insertGallery(BoardExt board, List<MultipartFile> upFiles, String savePath) {
+	    
+	    // ✨ 1. 소프트 코딩: DB에서 게임코드와 '갤러리' 명칭으로 카테고리 번호 조회
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("gameCode", board.getGameCode().toUpperCase());
+	    map.put("categoryName", "갤러리");
+	    
+	    // boardDao에 selectCategoryNoByName 쿼리 호출 (아래 3번 참고)
+	    int categoryNo = boardDao.selectCategoryNoByName(map);
+	    board.setCategoryNo(categoryNo);
+
+	    // 2. 기존의 훌륭한 로직 그대로 사용 (메서드 추출해서 공통으로 써도 좋고, 여기선 흐름대로 작성)
+	    int result = boardDao.insertBoard(board);
+
+	    if (result > 0 && upFiles != null) {
+	        List<AttachFile> attachFileList = new ArrayList<>();
+	        for (MultipartFile f : upFiles) {
+	            if (f != null && !f.getOriginalFilename().equals("")) {
+	                String originName = f.getOriginalFilename();
+	                String changeName = FileRename(originName); // 후배님이 만든 메서드
+
+	                AttachFile at = new AttachFile();
+	                at.setBoardNo(board.getBoardNo());
+	                at.setGameCode(board.getGameCode());
+	                at.setOriginName(originName);
+	                at.setChangeName(changeName);
+	                at.setFilePath("/resources/upload/board/");
+	                at.setFileSize(f.getSize());
+	                at.setFileExt(originName.substring(originName.lastIndexOf(".")));
+
+	                attachFileList.add(at);
+
+	                try {
+	                    f.transferTo(new File(savePath + changeName));
+	                } catch (IOException e) {
+	                    throw new RuntimeException("갤러리 파일 저장 중 에러 발생", e);
+	                }
+	            }
+	        }
+	        if (!attachFileList.isEmpty()) {
+	            result = boardDao.insertAttachFileList(attachFileList);
+	        }
+	    }
+	    return result;
+	}
+
+	@Override
+	public int insertInquiry(Inquiry inquiry) {
+		return boardDao.insertInquiry(inquiry);
+	}
 
 }

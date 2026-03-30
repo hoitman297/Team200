@@ -91,7 +91,17 @@
                             <tr class="board-row-item">
                                 <td>${post.id}</td>
                                 <td class="td-title">
-                                <a href="<c:url value='/board/view?boardNo=${post.boardNo}' />">${post.boardTitle}</a></td>
+								    <a href="<c:url value='/board/view?boardNo=${post.boardNo}' />" style="text-decoration: none; color: inherit;">
+								        ${post.boardTitle}
+								        
+								        <%-- ✨ 댓글이 1개 이상일 때만 제목 옆에 파란색으로 개수 표시! ✨ --%>
+								        <c:if test="${post.replyCount > 0}">
+								            <span style="color: var(--accent-blue); font-weight: bold; font-size: 13px; margin-left: 5px;">
+								                [${post.replyCount}]
+								            </span>
+								        </c:if>
+								    </a>
+								</td>
                                 <td>${post.userName}</td>
                                 <td><fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd"/></td>
                                 <td>${post.readCount}</td>
