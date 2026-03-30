@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/bg")
 public class BattlegroundController {
 	
-	@GetMapping("/main")
-	public String battleground_main() {
-		return "battleground/battle_main";
-	}
+//	@GetMapping("/main")
+//	public String battleground_main() {
+//		return "battleground/battle_main";
+//	}
 	
 	@GetMapping("/item")
 	public String battleground_item() {

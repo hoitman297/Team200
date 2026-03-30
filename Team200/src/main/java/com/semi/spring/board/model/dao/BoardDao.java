@@ -3,12 +3,15 @@ package com.semi.spring.board.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.semi.spring.board.model.vo.AttachFile;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
+import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Reply;
 
 public interface BoardDao {
 
@@ -31,6 +34,18 @@ public interface BoardDao {
 	public BoardType getBoardTypeMap(String dbGameCode , String boardType);
 	
 	public int insertAttachFileList(List<AttachFile> attachFileList);
+
+	public int checkBoardLike(BoardLike boardLike);
+
+	public void insertBoardLike(BoardLike boardLike);
+
+	public int selectBoardLikeCount(int boardNo);
+
+	public List<BoardExt> selectBestBoards(@Param("gameCode") String string);
+
+	public List<Reply> selectReplyList(int boardNo);
+
+	public int insertReply(Reply reply);
 
 	
 }

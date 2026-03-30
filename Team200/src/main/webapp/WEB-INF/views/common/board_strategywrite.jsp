@@ -1,4 +1,5 @@
-<%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -36,7 +37,10 @@
                     <h2>새 글 작성하기</h2>
                 </div>
 
-                <form id="writeForm" action="<c:url value='${writeUrl}'/>" method="POST">
+                <form id="writeForm" action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>" method="POST" 
+                enctype="multipart/form-data">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                
                     <div class="form-group">
                         <label>제목</label>
                         <input type="text" name="title" placeholder="제목을 입력해 주세요" required>
@@ -45,7 +49,10 @@
                     <div class="form-group">
                         <label>내용</label>
                         <textarea class="editor-area" name="content" placeholder="커뮤니티 가이드라인을 준수하여 내용을 작성해 주세요."></textarea>
-                        <div class="file-upload">📎 사진이나 파일을 드래그하여 첨부할 수 있습니다.</div>
+                        <div class="file-upload">
+                        📎 사진이나 파일을 첨부할 수 있습니다.<br>
+                        <input type="file" name="upFile" multiple style="margin-top: 10px;">
+                        </div>
                     </div>
 
                     <div class="write-footer">
