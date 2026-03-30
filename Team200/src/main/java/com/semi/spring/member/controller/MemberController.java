@@ -4,12 +4,15 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
@@ -18,11 +21,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.semi.spring.member.model.vo.Member;
 import com.semi.spring.member.service.MemberService;
+import com.semi.spring.security.model.vo.MemberExt;
 
 @Controller
 @RequestMapping("/member")
 @SessionAttributes({"loginUser"})
 public class MemberController {
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired 
 	private MemberService memberService;
@@ -35,7 +42,8 @@ public class MemberController {
 	
 	// 회원정보 수정
 	@GetMapping("/update")
-	public String MemberUpdate() {
+	public String MemberUpdate(Model model) {
+		model.addAttribute("member", new Member());
 		return "member/user_update";
 	}
 	
@@ -59,8 +67,15 @@ public class MemberController {
 	
 	// 회원탈퇴
 	@GetMapping("/delete")
-	public String MemberDelete() {
+	public String MemberDelete(Model model) {
+		model.addAttribute("member", new Member());
 		return "member/user_delete";
+	}
+	
+	@PostMapping("/delete")
+	public String MemberDeletePost(Model model, RedirectAttributes ra) {
+		
+		return "redirect:/";
 	}
 	
 	// 회원가입
@@ -132,6 +147,32 @@ public class MemberController {
 		int result = memberService.idCheck(userId);
 		
 		return result;
+	}
+	
+	@GetMapping("/pwCheck")
+	@ResponseBody
+	public int pwCheck(@RequestParam String userPw, Authentication auth) {
+
+	    MemberExt loginUser = (MemberExt) auth.getPrincipal();
+
+	    if(passwordEncoder.matches(userPw, loginUser.getUserPw())) {
+	        return 1;
+	    } else {
+	        return 0;
+	    }
+	}
+	
+	@PostMapping("/pwCheck")
+	@ResponseBody
+	public int pwCheckPost(@RequestParam String userPw, Authentication auth) {
+
+	    MemberExt loginUser = (MemberExt) auth.getPrincipal();
+
+	    if(passwordEncoder.matches(userPw, loginUser.getUserPw())) {
+	        return 1; // 일치
+	    } else {
+	        return 0; // 불일치
+	    }
 	}
 	
 	//회원가입 닉네임 중복확인

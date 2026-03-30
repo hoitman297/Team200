@@ -49,10 +49,21 @@ public class MemberDaoImpl implements MemberDao{
 	public Member selectOne(String userId) {
 		return session.selectOne("member.selectOne",userId);
 	}
+	
+	@Override
+	public int pwCheck(String userPw) {
+		return session.selectOne("member.pwCheck",userPw);
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String userName) {
 		return session.selectOne("security.loadUserByUsername", userName);
 	}
+
+	@Override
+	public int deleteMember(String userId) {
+		return session.delete("member.deleteMember", userId);
+	}
+
 
 }

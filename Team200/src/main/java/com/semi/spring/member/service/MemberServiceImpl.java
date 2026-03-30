@@ -20,8 +20,6 @@ public class MemberServiceImpl implements MemberService{
 		// mapper에서는 무조건 ROLE_USER 권한으로 설정
 		
 		// ROLE_ADMIN은 oracle Developer에서 변경
-		// memberDao.insertAuthority(member); 
-		// 따로 Dao 메서드를 만들어서 권한만 설정하면 오류 우려되므로 일단 주석처리
 		return result;
 	}
 
@@ -32,7 +30,6 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public Member loginMember(Member member) {
-		System.out.println("loginMember method from MemberServiceImpl");
 		return memberDao.loginMember(member);
 	}
 
@@ -40,6 +37,12 @@ public class MemberServiceImpl implements MemberService{
 	public int idCheck(String userId) {
 		return memberDao.idCheck(userId);
 	}
+	
+	@Override
+	public int pwCheck(String userPw) {
+		return memberDao.pwCheck(userPw);
+	}
+
 	
 	@Override
 	public int nameCheck(String userName) {
@@ -51,5 +54,11 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectOne(userId);
 	}
 
+	@Override
+	public int deleteMember(String userId) {
+		return memberDao.deleteMember(userId);
+	}
+
+	
 
 }

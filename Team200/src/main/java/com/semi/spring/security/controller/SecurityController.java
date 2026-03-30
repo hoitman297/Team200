@@ -2,6 +2,9 @@ package com.semi.spring.security.controller;
 
 import java.security.Principal;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.semi.spring.member.model.validator.MemberValidator;
@@ -32,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class SecurityController {
 
-	private final MemberService mService;
+	private final MemberService memberService;
 	private final BCryptPasswordEncoder passwordEncoder;
 	
 	@InitBinder
@@ -57,19 +61,104 @@ public class SecurityController {
 		BindingResult bindingResult, // 유효성검사결과.
 		RedirectAttributes ra
 	) {
-		// 유효성 검사 실패
 		if(bindingResult.hasErrors()) {
 			return "member/user_join";
 		}
 		
-		// 유효성 검사 성공시 비밀번호 암호화하여 회원가입 진행
 		String rawPwd = member.getUserPw();
 		String encryptedPassword
 			= passwordEncoder.encode(member.getUserPw());
 		member.setUserPw(encryptedPassword); 
 		
-		mService.insertMember(member);
+		memberService.insertMember(member);
 		return "redirect:/member/login";
+	}
+	
+	@GetMapping("/update")
+	public String update(@ModelAttribute Member member) {
+		return "member/update";
+	}
+	
+	@PostMapping("/update")
+	public String updatePost(
+			@ModelAttribute MemberExt loginUser,
+			Authentication auth ,
+			RedirectAttributes ra
+			) {
+		
+	    if(loginUser.getUserPw() != null && !loginUser.getUserPw().isEmpty()) {
+	        loginUser.setUserPw(passwordEncoder.encode(loginUser.getUserPw()));
+	    }else {
+	    	loginUser.setUserPw(null);
+	    }
+		
+		// 비지니스 로직
+		// 1. 전달받은 member데이터를 바탕으로 DB수정요청
+		int result = memberService.updateMember(loginUser);
+		
+		// 2. 내 정보 수정이 성공했다면, 변경된 회원 정보를 DB에서 다시 조회한 후
+	    // 	  새로운 인증정보를 생성하여 SecurityContext에 저장
+		if(result > 0) { 
+			
+			MemberExt principal = (MemberExt)auth.getPrincipal();
+		    loginUser.setUserId(principal.getUserId());
+			
+			Authentication newAuth = new UsernamePasswordAuthenticationToken(
+					principal , 
+					auth.getCredentials() ,
+					auth.getAuthorities());
+			
+			SecurityContextHolder.getContext().setAuthentication(newAuth);
+			
+			ra.addFlashAttribute("alertMsg","회원정보 수정 완료");
+			return "redirect:/";
+		}else{
+			throw new RuntimeException("회원정보 수정 오류.");
+		}
+	}
+
+	@GetMapping("/delete")
+	public String delete(@ModelAttribute Member member) {
+		return "member/user_delete";
+	}
+	
+	// WITHDRAW = 'Y' STATUS = 'Y'
+	@PostMapping("/delete")
+	public String deletePost(
+			@ModelAttribute Member member,
+			@RequestParam("userPw") String userPw,
+			HttpServletRequest request,
+	        Authentication auth,
+	        RedirectAttributes ra,
+	        Model model)
+	{
+		
+		MemberExt loginUser = (MemberExt)auth.getPrincipal();
+		
+		if(!passwordEncoder.matches(userPw, loginUser.getUserPw())) {
+	        model.addAttribute("errorMsg", "비밀번호가 일치하지 않습니다.");
+	        return "common/errorPage";
+	    }
+		
+		// 유효성 검사 성공시 탈퇴 진행
+		int result = memberService.deleteMember(loginUser.getUserId());
+		if(result > 0) {
+			
+			// 1. SecurityContext 제거
+	        SecurityContextHolder.clearContext();
+
+	        // 2. HttpSession 무효화 
+	        HttpSession session = request.getSession(false);
+	        if(session != null) {
+	            session.invalidate();
+	        }
+		
+			ra.addFlashAttribute("alertMsg","삭제 성공");
+			return "redirect:/";
+		}else {
+			model.addAttribute("errorMsg","오류로 인해 삭제 실패");
+			return "common/errorPage";
+		}
 	}
 	/*
 	 * Authentication
@@ -87,46 +176,12 @@ public class SecurityController {
 		log.debug("principal = {}",principal);
 		
 		// SecurityContextHolder를 이용해서 사용자 정보 바인딩
-		Authentication auth2 = SecurityContextHolder.getContext().getAuthentication();
+		Authentication userAuth = SecurityContextHolder.getContext().getAuthentication();
 		
-		MemberExt loginUser = (MemberExt)auth2.getPrincipal();
+		MemberExt loginUser = (MemberExt)userAuth.getPrincipal();
 		
 		model.addAttribute("loginUser", loginUser);
 		return "member/mypage";
-	}
-	
-	@PostMapping("/update")
-	public String update(
-			@Validated @ModelAttribute MemberExt loginUser,
-			BindingResult bindResult,
-			Authentication auth , // 로그인한 사용자 인증정보
-			RedirectAttributes ra
-			) {
-		if(bindResult.hasErrors()) {
-			return "redirect:/security/myPage";
-		}
-		
-		// 비지니스 로직
-		// 1. 전달받은 member데이터를 바탕으로 DB수정요청
-		int result = mService.updateMember(loginUser);
-		
-		// 2. 내 정보 수정이 성공했다면, 변경된 회원 정보를 DB에서 다시 조회한 후
-	    // 	  새로운 인증정보를 생성하여 SecurityContext에 저장
-		if(result > 0) {  // (principal, credentails, authorities)
-			Authentication newAuth = 
-				new UsernamePasswordAuthenticationToken(
-						loginUser , auth.getCredentials() ,
-						auth.getAuthorities());
-			SecurityContextHolder
-				.getContext()
-				.setAuthentication(newAuth);
-			ra.addFlashAttribute("alertMsg","회원정보 수정 완료");
-			
-			return "redirect:/security/myPage";
-		}else{
-			throw new RuntimeException("회원정보 수정 오류.");
-		}
-		
 	}
 }
 
