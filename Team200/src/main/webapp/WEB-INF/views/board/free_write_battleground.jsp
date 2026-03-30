@@ -12,4 +12,4 @@
 <c:set var="boardNotice" value="욕설 및 비방글은 금지됩니다.<br>게시판 성격에 맞는 글을 작성해 주세요.<br>도배 시 이용 제한이 있을 수 있습니다." />
 
 <%-- 2. 공통 뼈대 파일 불러오기 --%>
-<%@ include file="../common/board_free.jsp" %>
+<%@ include file="../common/board_freewrite.jsp" %>

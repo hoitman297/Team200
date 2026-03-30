@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.semi.spring.board.model.vo.AttachFile;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
+import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
 
 import lombok.RequiredArgsConstructor;
@@ -92,5 +94,33 @@ public class BoardDaoImpl implements BoardDao {
 	    return session.selectOne("board.getBoardTypeMap", paramMap);
 	}
 
+	@Override
+	public int checkBoardLike(BoardLike boardLike) {
+		return session.selectOne("board.checkBoardLike", boardLike);
+	}
 
+	@Override
+	public void insertBoardLike(BoardLike boardLike) {
+		session.insert("board.insertBoardLike", boardLike);
+	}
+
+	@Override
+	public int selectBoardLikeCount(int boardNo) {
+		return session.selectOne("board.selectBoardLikeCount", boardNo);
+	}
+
+	@Override
+	public List<BoardExt> selectBestBoards(String gameCode) {
+	    return session.selectList("board.selectBestBoards",gameCode); 
+	}
+
+	@Override
+	public List<Reply> selectReplyList(int boardNo) {
+		return session.selectList("board.selectReplyList",boardNo);
+	}
+
+	@Override
+	public int insertReply(Reply reply) {
+		return session.insert("board.insertReply",reply);
+	}
 }

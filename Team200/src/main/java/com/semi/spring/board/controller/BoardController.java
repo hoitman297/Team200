@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,6 +24,7 @@ import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
 import com.semi.spring.security.model.vo.MemberExt;
@@ -272,4 +274,63 @@ public class BoardController {
 		        return "redirect:/";
 		    }
 		}
+		@PostMapping("/addLike")
+		@ResponseBody
+		public Map<String, Object> addLike(
+		        @RequestParam("boardNo") int boardNo, 
+		        Authentication auth) {
+		    
+		    Map<String, Object> response = new HashMap<>();
+
+		    if (auth == null || !auth.isAuthenticated()) {
+		        response.put("status", "error");
+		        response.put("message", "로그인 후 이용 가능합니다.");
+		        return response;
+		    }
+
+		    MemberExt loginUser = (MemberExt) auth.getPrincipal();
+		    int userNo = loginUser.getUserNo();
+
+		    // 서비스 호출!
+		    int result = boardService.insertBoardLike(boardNo, userNo);
+
+		    if (result == -1) {
+		        // 이미 공감한 경우
+		        response.put("status", "already");
+		        response.put("message", "이미 공감한 게시글입니다.");
+		    } else {
+		        // 성공적으로 공감된 경우
+		        response.put("status", "success");
+		        response.put("newLikeCount", result);
+		    }
+		    
+		    return response;
+		}
+		// 1. 댓글 목록 불러오기 (화면 이동 없음!)
+		@ResponseBody
+		@GetMapping(value = "/reply/list", produces = "application/json; charset=UTF-8")
+		public List<Reply> selectReplyList(int boardNo) {
+		    // 매퍼의 selectReplyList 호출
+		    return boardService.selectReplyList(boardNo);
+		}
+
+		// 2. 댓글 작성하기 (화면 이동 없음!)
+		@ResponseBody
+		@PostMapping("/reply/insert")
+		public String insertReply(Reply reply, Authentication auth) {
+		    // 비로그인 사용자가 댓글 달려고 할 때 방어
+		    if (auth == null || !auth.isAuthenticated()) {
+		        return "login"; 
+		    }
+		    
+		    // 로그인한 유저 정보 꺼내서 세팅
+		    MemberExt loginUser = (MemberExt)auth.getPrincipal();
+		    reply.setUserNo(loginUser.getUserNo());
+		    
+		    // 매퍼의 insertReply 호출
+		    int result = boardService.insertReply(reply);
+		    
+		    return result > 0 ? "success" : "fail";
+		}	
+
 }
