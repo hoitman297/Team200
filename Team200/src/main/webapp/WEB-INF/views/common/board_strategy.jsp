@@ -52,33 +52,6 @@
                         <th style="width: 60px;">공감</th>
                     </tr>
                 </thead>
-                <tbody id="boardTableBody">
-                    <%-- 💖 임시 테스트용 가짜 데이터 시작 💖 --%>
-                    <tr class="board-row-item">
-                        <td>999</td>
-                        <td class="td-title">로그지지 테스트 글입니다</td>
-                        <td>류수정</td>
-                        <td>2026-03-26</td>
-                        <td>150</td>
-                        <td>30</td>
-                    </tr>
-                    <tr class="board-row-item">
-                        <td>998</td>
-                        <td class="td-title">안녕하세요 가입인사 드립니다</td>
-                        <td>노예1호</td>
-                        <td>2026-03-26</td>
-                        <td>12</td>
-                        <td>1</td>
-                    </tr>
-                    <tr class="board-row-item">
-                        <td>997</td>
-                        <td class="td-title">검색 기능 진짜 잘 되나요?</td>
-                        <td>지나가는사람</td>
-                        <td>2026-03-25</td>
-                        <td>42</td>
-                        <td>5</td>
-                    </tr>
-                    <%-- 💖 임시 테스트용 가짜 데이터 끝 💖 --%>
 
                     <%-- 🚨 깐깐한 c:choose 블록 (공백 완전 제거) 🚨 --%>
                     <c:choose><c:when test="${empty boardList}">
@@ -89,7 +62,13 @@
                         <c:forEach var="post" items="${boardList}">
                             <tr class="board-row-item">
                                 <td>${post.id}</td>
-                                <td class="td-title">${post.title}</td>
+                                <td class="td-title">
+                                    ${post.title}
+                                    <%-- 💖 내가 쓴 글이면 제목 옆에 '[내 글]' 표시 추가 💖 --%>
+                                    <c:if test="${not empty sessionScope.loginUser and sessionScope.loginUser.userNo == post.userNo}">
+                                        <span class="my-post-tag" style="color: #3b82f6; font-size: 11px; font-weight: bold; margin-left: 5px;">[내 글]</span>
+                                    </c:if>
+                                </td>
                                 <td>${post.writer}</td>
                                 <td>${post.date}</td>
                                 <td>${post.views}</td>

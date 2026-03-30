@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -19,7 +20,7 @@
         <form action="#" method="POST">
             <div class="form-group">
                 <div class="label-row"><span class="label">아이디</span></div>
-                <input type="text" value="user_id_sample" readonly>
+                <input type="text" name="userId" value="${loginUser.userId}" readonly>
                 <div class="notice">* 아이디는 변경할 수 없습니다.</div>
             </div>
 
@@ -44,7 +45,7 @@
                     <span class="label">인증 이메일 변경</span>
                     <button type="button" class="inner-btn">인증</button>
                 </div>
-                <input type="email" value="old_email@log.gg">
+                <input type="text" name="userId" value="">
             </div>
 
             <div class="form-group">

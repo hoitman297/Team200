@@ -1,11 +1,11 @@
-<%@ page session="false" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%-- 💖 [핵심 수정] 사이드바와 헤더가 길을 잃지 않도록 맨 위에서 쾅쾅! 선언해 줍니다 💖 --%>
 <c:set var="gameId" value="lol" />
 <c:set var="currentGameName" value="리그 오브 레전드" />
 <c:set var="headerTitle" value="리그 오브 레전드" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="sec"
@@ -20,20 +20,13 @@
 	href="${pageContext.request.contextPath}/resources/lol/style.css">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/main/style.css">
-<%-- 🔍 검색창 드롭다운 디자인을 위해 추가 --%>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/search/style_main.css">
-
+	
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/lol/script.js"
 	defer></script>
 <script
 	src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-<%-- 🔍 모든 페이지 공통 검색 로직 --%>
-<script
-	src="${pageContext.request.contextPath}/resources/search/script_main.js"
-	defer></script>
 
 <title>리그 오브 레전드 - LOG.GG</title>
 </head>
