@@ -1,5 +1,9 @@
 package com.semi.spring.member.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +40,7 @@ public class MemberController {
 	
 	// 마이페이지
 	@GetMapping("/mypage")
-	public String MemberMypage() {
+	public String MemberMypage(@ModelAttribute Member member) {
 		return "member/user_mypage";
 	}
 	
@@ -100,8 +104,52 @@ public class MemberController {
 
 	// 아이디비밀번호 찾기
 	@GetMapping("/idpw")
-	public String memberIdpw() {
+	public String memberIdPw(Model model) {
+		model.addAttribute("member", new Member());
 		return "member/user_idpw";
+	}
+	
+	@PostMapping("/idpw_id")
+	@ResponseBody
+	public String memberIdPost(@ModelAttribute Member member,
+			ModelAndView mv,
+			Model model,
+			HttpSession session,
+			RedirectAttributes ra) {
+		
+		Member FindId = memberService.findId(member);
+		
+		return (FindId != null) ? FindId.getUserId() : "";
+	}
+	
+	@PostMapping("/idpw_pw")
+	@ResponseBody
+	public String memberPwPost(@ModelAttribute Member member,
+			ModelAndView mv,
+			Model model,
+			HttpSession session,
+			RedirectAttributes ra) {
+		
+		Member findMember = memberService.findPw(member);
+		findMember.setUserId(member.getUserId());
+		findMember.setUserName(member.getUserName());
+		findMember.setEmail(member.getEmail());
+		
+	    if(findMember != null) {
+	        // 1. 임시 비밀번호 생성 (8자리 랜덤 + "!")
+	        String tempPw = "a" + UUID.randomUUID().toString().substring(0, 8) +"!";
+	        // 2. 임시 비밀번호 암호화 후 DB 업데이트
+	        // (BCryptPasswordEncoder 등을 사용하여 findMember의 비번을 tempPw로 변경하는 서비스 호출)
+	        int result = memberService.updateTempPw(findMember.getUserId(),tempPw);
+	        
+	        // 3. 사용자에게는 암호화 안 된 "임시 번호"를 리턴
+	        if (result == 1) {
+	            return tempPw; // 성공 시 임시 비번 리턴
+	        } else {
+	            return "FAIL"; // 실패 시 처리
+	        }
+	    }
+	    return "";
 	}
 	
 	// 로그인

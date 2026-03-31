@@ -75,7 +75,7 @@ public class SecurityController {
 	}
 	
 	@GetMapping("/update")
-	public String update(@ModelAttribute Member member) {
+	public String update() {
 		return "member/update";
 	}
 	
@@ -86,22 +86,21 @@ public class SecurityController {
 			RedirectAttributes ra
 			) {
 		
+		MemberExt principal = (MemberExt)auth.getPrincipal();
+		
 	    if(loginUser.getUserPw() != null && !loginUser.getUserPw().isEmpty()) {
 	        loginUser.setUserPw(passwordEncoder.encode(loginUser.getUserPw()));
 	    }else {
 	    	loginUser.setUserPw(null);
 	    }
 		
-		// 비지니스 로직
-		// 1. 전달받은 member데이터를 바탕으로 DB수정요청
+		// DB수정요청
 		int result = memberService.updateMember(loginUser);
 		
-		// 2. 내 정보 수정이 성공했다면, 변경된 회원 정보를 DB에서 다시 조회한 후
-	    // 	  새로운 인증정보를 생성하여 SecurityContext에 저장
+	    // 새로운 인증정보를 생성하여 SecurityContext에 저장
 		if(result > 0) { 
-			
-			MemberExt principal = (MemberExt)auth.getPrincipal();
-		    loginUser.setUserId(principal.getUserId());
+			principal.setUserName(loginUser.getUserName());
+	        principal.setEmail(loginUser.getEmail());
 			
 			Authentication newAuth = new UsernamePasswordAuthenticationToken(
 					principal , 
@@ -166,8 +165,21 @@ public class SecurityController {
 	 *  - Credentials : 인증에 필요한 비밀번호에 대한 정보를 가진 객체
 	 *  - Authorities : 사용자가 가진 권한을 저장하는 객체
 	 */
+//	@GetMapping("/idpw")
+//	public String idpw(@ModelAttribute Member member) {
+//	
+//		return "member/user_join";
+//	}
+	
+//	@PostMapping("/idpw")
+//	public String idpwPost() {
+//		
+//		return null;
+//	}
+	
 	@GetMapping("/mypage")
 	public String myPage(
+			@ModelAttribute Member member,
 			Authentication auth ,
 			Principal principal ,
 			Model model

@@ -31,7 +31,6 @@ public class MemberDaoImpl implements MemberDao{
 
 	@Override
 	public Member loginMember(Member member) {
-		System.out.println("loginMember : MemberDaoImpl");
 		return session.selectOne("member.loginMember", member);
 	}
 
@@ -64,6 +63,23 @@ public class MemberDaoImpl implements MemberDao{
 	public int deleteMember(String userId) {
 		return session.delete("member.deleteMember", userId);
 	}
+
+	@Override
+	public Member selectId(Member member) {
+		return session.selectOne("member.findId", member);
+	}
+	
+	@Override
+	public Member selectPw(Member member) {
+		return session.selectOne("member.findPw",member);
+	}
+
+	@Override
+	public int updateTempPw(Member member) {
+		return session.update("member.updateTempPw", member);
+	}
+
+	
 
 
 }

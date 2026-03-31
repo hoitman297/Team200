@@ -6,10 +6,15 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import com.semi.spring.member.model.vo.Member;
+
+import lombok.Getter;
 
 public class MemberExt extends Member implements UserDetails{
 
+	private static final long serialVersionUID = 1L;
+	
 	// SimpleGrantedAuthority
 	//  - 문자열 형태의 권한
 	//  - "ROLE_USER", "ROLE_ADMIN" , "ROLE_MANAGER"...
@@ -31,6 +36,11 @@ public class MemberExt extends Member implements UserDetails{
 	@Override
 	public String getUsername() {
 		return getUserId();
+	}
+	
+	@Override
+	public String getEmail() {
+		return super.getEmail();
 	}
 
 	@Override

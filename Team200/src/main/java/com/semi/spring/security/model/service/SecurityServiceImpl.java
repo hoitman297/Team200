@@ -18,17 +18,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		System.out.println("loadUserByUsername실행");
 		UserDetails member = dao.loadUserByUsername(username);
-//		System.out.println("password from DB = " + member.getPassword());
-//		System.out.println("username from DB = " + member.getUsername());
-//		System.out.println("authorities = " + member.getAuthorities());
-//		System.out.println(
-//			    encoder.matches(
-//		    		username,
-//			        member.getPassword()
-//			    )
-//			);
 		if(member == null){
 			throw new UsernameNotFoundException(username);
 		}

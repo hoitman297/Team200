@@ -11,6 +11,31 @@
 		)
 	</insert>
 	
+	<select id="findId" resultType="member">
+		SELECT USER_ID
+		FROM LOG_GG_USER
+		WHERE EMAIL = #{email}
+		AND USER_NAME = #{userName}
+		AND WITHDRAW = 'N'
+	</select>
+	
+	<select id="findPw" resultType="member">
+		SELECT USER_PW
+		FROM LOG_GG_USER
+		WHERE USER_ID = #{userId} 
+		AND EMAIL = #{email}
+		AND USER_NAME = #{userName}
+		AND WITHDRAW = 'N'
+	</select>
+	
+	<update id="updateTempPw">
+		UPDATE LOG_GG_USER
+		SET
+			USER_PW = #{userPw}
+		WHERE USER_ID = #{userId}
+			AND WITHDRAW = 'N'
+	</update>
+	
 	<!-- 아이디중복체크 -->
 	<select id="idCheck" resultType="int">
 		SELECT COUNT(*)
@@ -70,13 +95,6 @@
 			WITHDRAW = 'Y'
 		WHERE USER_ID = #{userId}
 	</update>
-
-	<!-- ID찾기 -->
-	<select id="findUserId" resultType="string">
-    SELECT USER_ID FROM LOG_GG_USER
-    WHERE USER_NAME = #{userName}
-    AND STATUS = 'Y' AND WITHDRAW = 'N'
-	</select>
 	
 	<!-- 내 글,댓글 갯수 -->
 	<select id="getMemberActivitySummary" resultType="map">

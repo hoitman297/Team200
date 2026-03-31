@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_update/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="${pageContext.request.contextPath}/resources/member/user_update/script.js"></script>
+	<sec:authentication property="principal" var="loginUser"/>
 	
     <title>LOG.GG - 개인정보 수정</title>
 </head>
@@ -22,8 +23,7 @@
 		 <form:form modelAttribute="member" action="${pageContext.request.contextPath}/security/update" method="POST">        
             <div class="form-group">
                 <div class="label-row"><span class="label">아이디</span></div>
-                <sec:authentication property="principal" var="loginUser"/>
-                <form:input path="userId" type="text" value="${loginUser.userId}" readonly="readonly" />
+                <form:hidden path="userId" value="${loginUser.userId}" />
                 <div class="notice">* 아이디는 변경할 수 없습니다.</div>
             </div>
 
@@ -40,7 +40,7 @@
                     <span class="label">닉네임 변경</span>
                     <button type="button" class="inner-btn" onclick="nameCheck()">중복확인</button>
                 </div>
-                <form:input id="newUsername" path="userName" type="text" placeholder="새로운 닉네임 입력" />
+                <form:input id="newUsername" path="userName" type="text" value="${loginUser.userName}" />
             </div>
 
             <div class="form-group">
@@ -48,7 +48,7 @@
                     <span class="label">인증 이메일 변경</span>
                     <button type="button" class="inner-btn">인증</button>
                 </div>
-                <form:input id="email" path="email" type="email" value="old_email@log.gg"/>
+                <form:input id="email" path="email" type="email" value="${loginUser.email}" />
             </div>
 
             <div class="form-group">
@@ -59,8 +59,14 @@
             <button type="submit" class="btn-submit">정보 수정 완료</button>
         </form:form>
         
+        <a href="javascript:history.back();">
+		    <span class="withdraw-link">뒤로 가기</span>
+		</a>
+		
+		<a><span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span></a>
+		
         <a href="<c:url value='/member/delete'/>" >
-		    <div class="withdraw-link">회원 탈퇴하기</div>
+		    <span class="withdraw-link">회원 탈퇴하기</span>
 		</a>
     </div>
     
@@ -77,7 +83,6 @@
 				success : function(result){
 					if(result == 1){
 						alert("이미 사용중인 닉네임입니다.")
-						$userName.val("");
 						$userName.focus();
 					}else{
 						alert("사용해도 됩니다.")

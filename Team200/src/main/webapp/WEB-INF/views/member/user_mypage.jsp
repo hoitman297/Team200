@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
@@ -7,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_mypage/style.css">
 	<script src="${pageContext.request.contextPath}/resources/member/user_mypage/script.js"></script>
+    <sec:authentication property="principal" var="loginUser"/>
     
     <title>마이페이지 - Desktop Dashboard</title>
 </head>
@@ -15,10 +17,16 @@
     <div class="dashboard-container">
         <aside class="sidebar">
             <div class="profile-img" onclick="changeImage()">프로필 변경</div>
-            <div class="user-info">
-                <h1>닉네임</h1>
-                <p>일반 회원<br>email@naver.com</p>
-            </div>
+	            <div class="user-info">
+	                <h1>${loginUser.userName}</h1>
+	                <sec:authorize access="hasRole('ROLE_USER')">
+	                	<p>일반 회원</p>
+	                </sec:authorize>
+	                <sec:authorize access="hasRole('ROLE_ADMIN')">
+	                	<p>관리자</p>
+	                </sec:authorize>	
+	                <p>${loginUser.email}</p>
+	            </div>
             
             <a href="<c:url value = '/member/login' />"><button class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
             
