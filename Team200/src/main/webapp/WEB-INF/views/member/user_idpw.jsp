@@ -21,10 +21,10 @@
         </div>
 
         <div id="section-id" class="find-section active">
-            <p class="info-text">가입 시 등록한 이름과 이메일을 입력하세요.</p>
+            <p class="info-text">가입 시 등록한 닉네임과 이메일을 입력하세요.</p>
             <div class="form-group">
-                <label>이름</label>
-                <input type="text" placeholder="성함을 입력하세요">
+                <label>닉네임</label>
+                <input type="text" placeholder="닉네임을 입력하세요">
             </div>
             <div class="form-group">
                 <label>이메일</label>
@@ -40,8 +40,8 @@
                 <input type="text" placeholder="아이디를 입력하세요">
             </div>
             <div class="form-group">
-                <label>이름</label>
-                <input type="text" placeholder="성함을 입력하세요">
+                <label>닉네임</label>
+                <input type="text" placeholder="닉네임을 입력하세요">
             </div>
             <div class="form-group">
                 <label>가입 이메일</label>
