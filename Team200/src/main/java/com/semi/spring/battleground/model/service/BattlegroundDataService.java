@@ -141,26 +141,61 @@ public class BattlegroundDataService {
     }
 
     private String generateImageUrl(String itemKey) {
+        // 깃허브 원본 이미지 최상위 경로 (Item 폴더까지)
         String imageBaseUrl = "https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Item/";
         String folderPath = "";
         String keyLower = itemKey.toLowerCase();
 
-        if (keyLower.contains("weapon")) {
-            folderPath = "Weapon/"; 
-        } else if (keyLower.contains("attach")) {
-            folderPath = "Weapon/Attachment/"; 
-        } else if (keyLower.contains("ammo")) {
-            folderPath = "Ammo/"; 
-        } else if (keyLower.contains("armor") || keyLower.contains("head") || keyLower.contains("equip")) {
-            folderPath = "Equipment/"; 
-        } else if (keyLower.contains("boost")) {
-            folderPath = "Use/Boost/"; 
-        } else if (keyLower.contains("heal")) {
-            folderPath = "Use/Heal/"; 
-        } else {
-            folderPath = "Etc/"; 
+        // 1. 탄약 (Ammunition)
+        if (keyLower.contains("ammo")) {
+            folderPath = "Ammunition/None/";
+        } 
+        // 2. 부착물 (Attachment)
+        else if (keyLower.contains("attach") || keyLower.contains("scope") || keyLower.contains("muzzle") || 
+                 keyLower.contains("grip") || keyLower.contains("stock") || keyLower.contains("magazine")) {
+            folderPath = "Attachment/";
+        } 
+        // 3. 장비 (Equipment)
+        else if (keyLower.contains("backpack")) {
+            folderPath = "Equipment/Backpack/";
+        } else if (keyLower.contains("head") || keyLower.contains("helmet")) {
+            folderPath = "Equipment/Headgear/";
+        } else if (keyLower.contains("vest") || keyLower.contains("armor")) {
+            folderPath = "Equipment/Vest/";
+        } else if (keyLower.contains("grenade") || keyLower.contains("smoke") || 
+                   keyLower.contains("flashbang") || keyLower.contains("molotov") || 
+                   keyLower.contains("c4") || keyLower.contains("sticky")) {
+            folderPath = "Equipment/Throwable/";
+        } 
+        // 4. 소모품 (Use)
+        else if (keyLower.contains("boost") || keyLower.contains("energy") || 
+                 keyLower.contains("painkiller") || keyLower.contains("adrenaline")) {
+            folderPath = "Use/Boost/";
+        } else if (keyLower.contains("heal") || keyLower.contains("bandage") || 
+                   keyLower.contains("firstaid") || keyLower.contains("medkit")) {
+            folderPath = "Use/Heal/";
+        } else if (keyLower.contains("gascan") || keyLower.contains("jerrycan")) {
+            folderPath = "Use/Fuel/";
+        } else if (keyLower.contains("drone") || keyLower.contains("parachute")) {
+            folderPath = "Use/Gadget/";
         }
-        
+        // 5. 무기 (Weapon)
+        else if (keyLower.contains("weapon") || keyLower.contains("weap")) {
+            if (keyLower.contains("handgun") || keyLower.contains("pistol") || keyLower.contains("revolver")) {
+                folderPath = "Weapon/Handgun/";
+            } else if (keyLower.contains("melee") || keyLower.contains("pan") || 
+                       keyLower.contains("sickle") || keyLower.contains("machete") || keyLower.contains("crowbar")) {
+                folderPath = "Weapon/Melee/";
+            } else {
+                folderPath = "Weapon/Main/";
+            }
+        } 
+        // 기타 예외 처리
+        else {
+            folderPath = "Use/Gadget/"; 
+        }
+
+        // 최종 URL 조합: 기본주소 + 세부폴더경로 + 아이템키 + 확장자
         return imageBaseUrl + folderPath + itemKey + ".png";
     }
 }
