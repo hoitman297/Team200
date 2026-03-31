@@ -42,6 +42,7 @@
                 </div>
 
                 <%-- 💖 action 경로에 들어가는 변수들이 컨트롤러와 일치하는지 확인 완료! 💖 --%>
+<<<<<<< HEAD
                 <form id="writeForm" action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>" method="POST" enctype="multipart/form-data">
                     
                     <%-- ✅ Spring Security 필수 방패! 이미 잘 들어가 있었습니다! --%>
@@ -52,6 +53,15 @@
                         <%-- ✅ name="title" 확인 완료 --%>
                         <input type="text" name="title" placeholder="제목을 입력해 주세요" required>
                     </div>
+=======
+				<form id="writeForm"
+					action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>"
+					method="POST" enctype="multipart/form-data">
+					<%-- ✅ Spring Security 필수 방패! 이미 잘 들어가 있었습니다! --%>
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
+
+>>>>>>> main
 
                     <div class="form-group">
                         <label>내용</label>

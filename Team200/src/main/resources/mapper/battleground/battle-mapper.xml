@@ -5,14 +5,53 @@
 	<insert id="insertBagItem" parameterType="bagItemInfoVO">
 		INSERT INTO
 		BAG_ITEM_INFO (
-		ITEM_NO, CATEGORY_NO, ITEM_NAME, ITEM_INFO, ITEM_IMG, ITEM_TYPE
+		ITEM_NO, CATEGORY_NO, ITEM_NAME, ITEM_INFO, ITEM_IMG,
+		ITEM_TYPE
 		) VALUES (
-		SEQ_ITEM_NO.NEXTVAL, #{categoryNo}, #{itemName}, #{itemInfo},
+		SEQ_ITEM_NO.NEXTVAL, #{categoryNo}, #{itemName},
+		#{itemInfo},
 		#{itemImg}, #{itemType}
 		)
 	</insert>
 
 	<select id="checkItemCount" resultType="int">
-		SELECT COUNT(*) FROM BAG_ITEM_INFO
+		SELECT COUNT(*) FROM
+		BAG_ITEM_INFO
+	</select>
+
+	<select id="selectCategoryList" resultType="map">
+		SELECT
+		CATEGORY_NO as "categoryNo",
+		CATEGORY_NAME as "categoryName",
+		CATEGORY_IMG as "categoryImg"
+		FROM BAG_ITEM_CATEGORY
+		ORDER BY CATEGORY_NO ASC
+	</select>
+
+	<select id="selectAllItemList"
+		resultType="bagItemInfoVO">
+		SELECT
+		ITEM_NO as itemNo,
+		CATEGORY_NO as categoryNo,
+		ITEM_NAME as itemName,
+		ITEM_INFO as itemInfo,
+		ITEM_IMG as itemImg,
+		ITEM_TYPE as itemType
+		FROM BAG_ITEM_INFO
+		ORDER BY ITEM_NO DESC
+	</select>
+
+	<select id="selectItemListByCategory" parameterType="_int"
+		resultType="bagItemInfoVO">
+		SELECT
+		ITEM_NO as itemNo,
+		CATEGORY_NO as categoryNo,
+		ITEM_NAME as itemName,
+		ITEM_INFO as itemInfo,
+		ITEM_IMG as itemImg,
+		ITEM_TYPE as itemType
+		FROM BAG_ITEM_INFO
+		WHERE CATEGORY_NO = #{categoryNo}
+		ORDER BY ITEM_NO DESC
 	</select>
 </mapper>
