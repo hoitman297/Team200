@@ -52,6 +52,7 @@ public class BoardController {
         return "board/user_inquiry_view";
     }
 
+<<<<<<< HEAD
     // 게시글 상세보기
     @GetMapping("/view")
     public String board_view(
@@ -93,6 +94,48 @@ public class BoardController {
     }
         
     // [헬퍼] 게임코드 -> DB용 코드
+=======
+	@GetMapping("/view")
+	public String board_view(
+	        @RequestParam("boardNo") int boardNo,
+	        HttpServletRequest request,
+	        HttpServletResponse response,
+	        Model model) {
+	    
+		Cookie[] cookies = request.getCookies();
+	    boolean isViewed = false;
+	    
+	    if (cookies != null) {
+	        for (Cookie cookie : cookies) {
+	            if (cookie.getName().equals("viewed_board_" + boardNo)) {
+	                isViewed = true;
+	                break; 
+	            }
+	        }
+	    }
+	    
+	    if (!isViewed) {
+	        boardService.increaseCount(boardNo); // DB 레벨 조회수 +1
+	        
+	        Cookie newCookie = new Cookie("viewed_board_" + boardNo, "true");
+	        newCookie.setMaxAge(60 * 60); 
+	        newCookie.setPath("/"); 
+	        
+	        response.addCookie(newCookie);
+	    }
+	    
+	    BoardExt board = boardService.selectBoard(boardNo);
+	    
+	    if (board == null) {
+	        return "redirect:/";
+	    }	
+	    
+	    model.addAttribute("board", board);
+	    return "board/board_view";
+	}
+        
+	// 게임코드 변환 헬퍼 메서드
+>>>>>>> main
     private String getDbGameCode(String gameCode) {
         switch(gameCode.toLowerCase()) {
             case "battleground": return "BG";
@@ -101,6 +144,7 @@ public class BoardController {
             default: return gameCode.toUpperCase();
         }
     }
+<<<<<<< HEAD
 
     // [헬퍼] DB용 코드 -> 경로용 소문자 ID
     private String getPathGameId(String dbGameCode) {
@@ -112,6 +156,9 @@ public class BoardController {
         }
     }
     
+=======
+	
+>>>>>>> main
     // 공통 목록 조회 로직
     private void addBoardListToModel(Map<String, Object> paramMap, int cp, Model model) {
         int listCount = boardService.selectListCount(paramMap);
@@ -255,6 +302,7 @@ public class BoardController {
         return "board/" + type + "_write_" + gameId; 
     }
 
+<<<<<<< HEAD
     // ================= [수정 완료] 게시글 업데이트 처리 =================
     @PostMapping("/update") 
     public String updateBoard(Board board, 
@@ -280,6 +328,18 @@ public class BoardController {
         session.removeAttribute("tempCategoryNo");
         session.removeAttribute("tempBoardType");
         
+=======
+    // 게시글 수정 처리
+    @PostMapping("/edit")
+    public String updateBoard(Board board, 
+    						 @RequestParam(value="upFile", required=false) List<MultipartFile> upFiles,
+    						 @RequestParam(value="deleteFileNos", required=false) List<Integer> deleteFileNos,
+                             Authentication auth, HttpSession session, RedirectAttributes ra) {
+    	
+        String savePath = session.getServletContext().getRealPath("/resources/upload/board/");
+        int result = boardService.updateBoard(board, upFiles, deleteFileNos, savePath);
+        ra.addFlashAttribute("message", result > 0 ? "수정되었습니다." : "수정 실패");
+>>>>>>> main
         return "redirect:/board/view?boardNo=" + board.getBoardNo();
     }
 
@@ -346,6 +406,7 @@ public class BoardController {
         reply.setUserNo(((MemberExt)auth.getPrincipal()).getUserNo());
         return boardService.insertReply(reply) > 0 ? "success" : "fail";
     }
+<<<<<<< HEAD
         
     // 댓글 삭제
     @ResponseBody
@@ -413,4 +474,77 @@ public class BoardController {
             return "redirect:/board/inquiryWrite";
         }
     }    
+=======
+		
+	// 댓글 삭제
+	@ResponseBody
+	@PostMapping("/reply/delete")
+	public String deleteReply(int replyNo, Authentication auth) {
+	    if (auth == null || !auth.isAuthenticated()) {
+	        return "login"; 
+	    }
+	    int userNo = ((MemberExt)auth.getPrincipal()).getUserNo();
+	    Map<String, Object> paramMap = new HashMap<>();
+	    paramMap.put("replyNo", replyNo);
+	    paramMap.put("userNo", userNo);
+	    
+	    int result = boardService.deleteReply(paramMap);
+	    
+	    return result > 0 ? "success" : "fail";
+	}
+		
+		// 1:1문의 메인
+	    @GetMapping("/inquiry")
+	    public String inquiry(@RequestParam(value="game", defaultValue="all") String game,
+	            @RequestParam(value="cp", defaultValue="1") int cp, 
+	            Authentication auth, 
+	            Model model) {
+	    	MemberExt loginUser = (MemberExt) auth.getPrincipal();
+	        int userNo = loginUser.getUserNo();
+	        
+	        // 2. 전체 문의 개수 조회 (페이지네이션용)
+	        // Map에 담아서 보내면 나중에 게임별 필터링 추가하기 편합니다!
+	        Map<String, Object> paramMap = new HashMap<>();
+	        paramMap.put("userNo", userNo);
+	        paramMap.put("game", game);
+	        
+	        int listCount = boardService.selectInquiryCount(paramMap);
+	        
+	        // 3. 페이지네이션 객체 생성
+	        PageInfo pi = Pagination.getPageInfo(cp, listCount, 10, 10);
+	        
+	        // 4. 리스트 조회
+	        List<Inquiry> inquiryList = boardService.selectInquiryList(pi, paramMap);
+	        
+	        model.addAttribute("inquiryList", inquiryList);
+	        model.addAttribute("pi", pi);
+	        model.addAttribute("currentGame", game);
+	        
+	        return "board/user_inquiry";
+	    }
+	    
+		// 1:1 문의 작성 페이지 이동
+	    @GetMapping("/inquiryWrite")
+	    public String inquiryWrite() {
+	    	return "board/user_inquiry_write";
+	    }
+	    
+	    @PostMapping("/inquiry/insert")
+	    public String insertInquiry(Inquiry inquiry, Authentication auth, RedirectAttributes ra) {
+	        
+	        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+	        inquiry.setUserNo(loginUser.getUserNo());
+	        inquiry.setUserName(loginUser.getUserName());
+	        
+	        int result = boardService.insertInquiry(inquiry);
+	        
+	        if(result > 0) {
+	            ra.addFlashAttribute("message", "문의가 성공적으로 접수되었습니다.");
+	            return "redirect:/board/inquiry"; 
+	        } else {
+	            ra.addFlashAttribute("message", "문의 접수에 실패했습니다.");
+	            return "redirect:/board/inquiryWrite";
+	        }
+	    }	
+>>>>>>> main
 }
