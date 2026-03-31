@@ -11,7 +11,9 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
+import com.semi.spring.common.model.vo.PageInfo;
 
 public interface BoardDao {
 
@@ -23,8 +25,6 @@ public interface BoardDao {
 	
 	public int insertBoard(Board board);
 	
-	public int updateBoard(Board board);
-
 	public int increaseCount(int boardNo);
 
 	public BoardExt selectBoard(int boardNo);
@@ -46,6 +46,26 @@ public interface BoardDao {
 	public List<Reply> selectReplyList(int boardNo);
 
 	public int insertReply(Reply reply);
+
+	public int deleteReply(Map<String, Object> paramMap);
+
+	public int selectCategoryNoByName(Map<String, Object> map);
+
+	public int selectGalleryCount(String game);
+
+	public List<BoardExt> selectGalleryList(Map<String, Object> map);
+
+	public int insertInquiry(Inquiry inquiry);
+
+	public int selectInquiryCount(Map<String, Object> paramMap);
+
+	public List<Inquiry> selectInquiryList(PageInfo pi, Map<String, Object> paramMap);
+
+	public int deleteBoard(int boardNo);
+
+	public int updateBoard(Board board);
+
+	public void deleteSelectedFile(int fileNo);
 
 	
 }
