@@ -127,6 +127,13 @@
 
                 <%-- 댓글 섹션 --%>
                 <section class="comment-section">
+<<<<<<< HEAD
+
+                    <div class="comment-list">
+                        <%-- 댓글 리스트 생략 --%>
+                    </div>
+=======
+>>>>>>> main
 				    <div class="comment-count" id="reply-count-display">댓글 0</div>
 				    
 				    <div class="comment-form">
@@ -182,11 +189,36 @@
 				            </c:otherwise>
 				        </c:choose>
 				        </div>
+<<<<<<< HEAD
+
+<!--                     <div class="comment-list"> -->
+<!--                         <div class="comment-item"> -->
+<!--                             <div class="comment-author">배그초보</div> -->
+<!--                             <div class="comment-text">보통 수요일 오전 9시부터 오후 1시까지 하더라고요!</div> -->
+<!--                             <div class="comment-utils"> -->
+<!--                                 <span>답글</span> | <span>신고</span> | <span>공감</span> -->
+<!--                             </div> -->
+<!--                         </div> -->
+
+<!--                         <div class="comment-item reply"> -->
+<!--                             <div class="comment-author">ㄴ 글쓴이</div> -->
+<!--                             <div class="comment-text">아하 그렇군요! 답변 감사합니다 :)</div> -->
+<!--                             <div class="comment-utils"> -->
+<!--                                 <span>신고</span> | <span>공감</span> -->
+<!--                             </div> -->
+<!--                         </div> -->
+<!--                     </div> -->
+=======
+>>>>>>> main
                 </section>
             </article>
         </main>
     </div>
+<<<<<<< HEAD
+
+=======
     
+>>>>>>> main
     <footer>© 2026 LOG.GG 배틀그라운드 서비스. 모든 권리 보유.</footer>
 		<script>
 	    const loginUserNo = "${secUserNo}";
