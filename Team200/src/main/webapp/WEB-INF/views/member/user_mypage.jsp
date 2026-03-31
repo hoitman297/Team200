@@ -1,6 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
-<%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -15,32 +16,38 @@
 <body>
 
     <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="profile-img" onclick="changeImage()">프로필 변경</div>
-	            <div class="user-info">
-	                <h1>${loginUser.userName}</h1>
-	                <sec:authorize access="hasRole('ROLE_USER')">
-	                	<p>일반 회원</p>
-	                </sec:authorize>
-	                <sec:authorize access="hasRole('ROLE_ADMIN')">
-	                	<p>관리자</p>
-	                </sec:authorize>	
-	                <p>${loginUser.email}</p>
-	            </div>
-            
-            <a href="<c:url value = '/member/login' />"><button class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
-            
-            <div class="logo-bottom">LOG.GG</div>
-        </aside>
+		<aside class="sidebar">
+			<div class="profile-img"
+				onclick="document.getElementById('profileInput').click()">
+				<img id="profilePreview"
+					src="${pageContext.request.contextPath}${not empty secUser.profilePath ? secUser.profilePath : '/resources/img/default_profile.png'}"
+					alt="프로필">
+				<div class="overlay">변경</div>
+			</div>
+			<input type="file" id="profileInput" accept="image/*"
+				style="display: none;" onchange="uploadProfile(event)">
 
-        <main class="main-content">
+			<div class="user-info">
+				<sec:authentication property="principal" var="secUser" />
+				<h1>${secUser.userName}</h1>
+				<p>
+					일반 회원<br>${secUser.email}</p>
+			</div>
+
+			<a href="<c:url value = '/member/login' />"><button
+					class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
+
+			<div class="logo-bottom">LOG.GG</div>
+		</aside>
+
+		<main class="main-content">
             <section class="card">
                 <h2>⚙️ <span style="color: #475569;">계정 설정</span></h2>
                 <div class="menu-grid">
                 	<a href="<c:url value = '/member/update' />">
                     <div class="menu-item" onclick="msg('회원 정보 및 비밀번호 수정')">
                         <strong>회원 정보 수정</strong>
-                        <span>이메일, 연락처 및 비밀번호를 변경합니다.</span>
+                        <span>이메일, 비밀번호 및 닉네임을 변경합니다.</span>
                     </div>
                     </a>
                 </div>
@@ -52,7 +59,7 @@
                 	<a href="<c:url value = '/member/activity' />">
                     <div class="menu-item" onclick="msg('게시글 조회')">
                         <strong>작성한 게시글 / 댓글 조회</strong>
-                        <span style="color: #ff5454; font-weight: bold;">내가 쓴 글 총 12개</span> 
+                        <span style="color: #ff5454; font-weight: bold;">내가 쓴 글 총 0개</span> 
                     </div>
                     
                     </a>

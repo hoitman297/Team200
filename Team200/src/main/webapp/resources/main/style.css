@@ -2,8 +2,8 @@
 
 :root {
     --primary-navy: #475569;
-    --accent-blue: #3b82f6;
-    --bg-soft: #f8fafc;
+    --accent-blue: #3B82F6;
+    --bg-soft: #F8FAFC;
     --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --container-width: 1440px;
@@ -51,7 +51,7 @@ header {
     gap: 20px;
     font-weight: 600;
     cursor: pointer;
-    color: #ecf0f5;
+    color: #ECF0F5;
     padding: 10px 0;
 }
 
@@ -80,7 +80,7 @@ header {
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f5f9;
+    background-color: #F1F5F9;
     color: var(--accent-blue);
 }
 
@@ -94,7 +94,7 @@ header {
     gap: 20px;
     align-items: center;
     font-size: 14px;
-    color: #ecf0f5;
+    color: #ECF0F5;
 }
 
 .user-nav span {
@@ -106,7 +106,7 @@ header {
     color: var(--accent-blue);
 }
 
-/* ✨ [수정] 로그인 버튼: 로그아웃 버튼과 동일한 밝은 스타일 적용 */
+/* :sparkles: [수정] 로그인 버튼: 로그아웃 버튼과 동일한 밝은 스타일 적용 */
 .btn-login {
     padding: 8px 18px;
     background: var(--bg-soft); /* 밝은 회색/흰색 계열 */
@@ -158,29 +158,29 @@ header {
 .menu-item { font-weight: 700; color: var(--primary-navy); padding: 10px 0; cursor: pointer; }
 
 /* 하위 메뉴 구현 */
-.menu-item-group { position: relative; } 
+.menu-item-group { position: relative; }
 
-.sub-menu-container { 
-    display: none; 
+.sub-menu-container {
+    display: none;
     flex-direction: column;
-    padding-left: 20px; 
+    padding-left: 20px;
 }
 
 .menu-item-group:hover .sub-menu-container {
     display: flex;
 }
 
-.sub-item { 
-    padding: 8px 0; 
-    font-size: 14px; 
-    color: #64748b; 
-    cursor: pointer; 
+.sub-item {
+    padding: 8px 0;
+    font-size: 14px;
+    color: #64748B;
+    cursor: pointer;
     transition: var(--transition);
 }
 
-.sub-item:hover { 
-    color: var(--accent-blue); 
-    font-weight: 700; 
+.sub-item:hover {
+    color: var(--accent-blue);
+    font-weight: 700;
 }
 
 .list-item {
@@ -189,7 +189,7 @@ header {
     color: #475569;
     cursor: pointer;
     transition: var(--transition);
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #F1F5F9;
 }
 
 .list-item:last-child {
@@ -202,7 +202,7 @@ header {
     font-weight: 600;
 }
 .sidebar-right {
-    background: #cbd5e1;
+    background: #CBD5E1;
     border-radius: 20px;
     padding: 25px;
     height: fit-content;
@@ -291,12 +291,14 @@ header {
     content: attr(data-title);
     position: absolute;
     bottom: 25px;
-    left: 25px;
+    left: 50%; /* 1단계: 카드 가로 길이의 딱 절반(50%) 위치로 이동! */
+    transform: translateX(-50%); /* 2단계: 텍스트 너비의 절반만큼 왼쪽으로 다시 당겨오기! */
     color: white;
     font-weight: 800;
     font-size: 20px;
+    text-align: center;
+    white-space: nowrap; /* 글자가 부모 요소 너비에 막혀 두 줄로 깨지는 것을 방지해요! */
 }
-
 /* 게시판 섹션 */
 .board-card {
     background: white;
@@ -307,7 +309,7 @@ header {
 
 .tab-menu {
     display: flex;
-    background: #f4f4f4;
+    background: #F4F4F4;
     padding: 5px 12px 0 12px;
     gap: 8px;
 }
@@ -317,18 +319,18 @@ header {
     cursor: pointer;
     font-size: 15px;
     font-weight: 700;
-    color: #94a3b8;
+    color: #94A3B8;
     border-radius: 14px 14px 0 0;
     transition: var(--transition);
-    background: transparent; 
+    background: transparent;
     border: 1px solid transparent;
     margin-bottom: -1px;
 }
 
 .tab-item:not(.active):hover {
-    background-color: white !important; 
+    background-color: white !important;
     color: var(--accent-blue);
-    border-bottom: 1px solid white; 
+    border-bottom: 1px solid white;
 }
 
 .tab-content {
@@ -338,7 +340,7 @@ header {
 .board-row {
     display: flex;
     padding: 18px 0;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #F1F5F9;
     font-size: 15px;
     align-items: center;
     transition: var(--transition);
@@ -346,12 +348,12 @@ header {
 
 .board-row.header-row {
     font-weight: 700;
-    color: #94a3b8;
-    border-bottom: 2px solid #f1f5f9;
+    color: #94A3B8;
+    border-bottom: 2px solid #F1F5F9;
 }
 
 .board-row:not(.header-row):hover {
-    background-color: #f8fafc;
+    background-color: #F8FAFC;
     cursor: pointer;
 }
 
@@ -370,14 +372,14 @@ header {
 
 .col-author {
     width: 120px;
-    color: #64748b;
+    color: #64748B;
     text-align: center;
 }
 
 .col-date {
     width: 100px;
     text-align: right;
-    color: #94a3b8;
+    color: #94A3B8;
 }
 
 .bottom-grid {
@@ -401,7 +403,7 @@ header {
 .thumb {
     width: 120px;
     height: 120px;
-    background: #e2e8f0;
+    background: #E2E8F0;
     border-radius: 12px;
 }
 
@@ -409,7 +411,7 @@ footer {
     padding: 60px 40px;
     text-align: center;
     font-size: 14px;
-    color: #94a3b8;
-    background: #f1f5f9;
+    color: #94A3B8;
+    background: #F1F5F9;
     margin-top: 40px;
 }

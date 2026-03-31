@@ -1,94 +1,263 @@
 /* [공통 스타일: 기존 코드 유지] */
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        :root {
-            --primary-navy: #475569;
-            --accent-blue: #3b82f6;
-            --bg-soft: #f8fafc;
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --container-width: 1440px;
-            --sidebar-width: 280px;
-        }
+@import
+	url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css')
+	;
 
-        body {
-            margin: 0; padding: 0;
-            font-family: 'Pretendard', sans-serif;
-            background-color: var(--bg-soft);
-            width: var(--container-width);
-            margin: 0 auto;
-        }
+:root { -
+	-primary-navy: #475569; -
+	-accent-blue: #3b82f6; -
+	-bg-soft: #f8fafc; -
+	-card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); -
+	-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); -
+	-container-width: 1440px; -
+	-sidebar-width: 280px;
+}
 
-        header {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--primary-navy);
-            padding: 15px 40px;
-            display: flex; justify-content: space-between; align-items: center;
-            height: 40px;
-        }
+body {
+	margin: 0;
+	padding: 0;
+	font-family: 'Pretendard', sans-serif;
+	background-color: var(- -bg-soft);
+	width: var(- -container-width);
+	margin: 0 auto;
+}
 
-        .header-left { color: #ecf0f5; font-weight: 600; cursor: pointer; }
-        .user-nav { display: flex; gap: 20px; align-items: center; font-size: 14px; color: #ecf0f5; }
-        .btn-logout { padding: 8px 18px; background: var(--bg-soft); border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+header {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background: var(- -primary-navy);
+	padding: 15px 40px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 40px;
+}
 
-        .main-layout {
-            display: grid;
-            grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
-            gap: 30px; padding: 40px;
-        }
+.header-left {
+	color: #ecf0f5;
+	font-weight: 600;
+	cursor: pointer;
+}
 
-        /* [사이드바 관련 기존 스타일 유지] */
-        .side-card { background: white; padding: 24px; border-radius: 20px; box-shadow: var(--card-shadow); margin-bottom: 25px; }
-        .side-card h3 { font-size: 16px; font-weight: 800; margin: 0 0 18px 0; color: var(--primary-navy); display: flex; align-items: center; gap: 10px; }
-        .side-card h3::before { content: ''; width: 4px; height: 16px; background: var(--accent-blue); border-radius: 2px; }
-        .menu-item { font-weight: 700; color: var(--primary-navy); padding: 10px 0; cursor: pointer; }
+.user-nav {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	font-size: 14px;
+	color: #ecf0f5;
+}
 
-        /* [수정 및 추가된 스타일: 하위 메뉴 구현] */
-        .menu-item-group { position: relative; } /* 그룹화를 위한 설정 */
-        
-        .sub-menu-container { 
-            display: none; /* 평소에는 안 보이게 설정 */
-            flex-direction: column;
-            padding-left: 20px; /* 이미지처럼 들여쓰기 효과 */
-        }
+.btn-logout {
+	padding: 8px 18px;
+	background: var(- -bg-soft);
+	border: none;
+	border-radius: 10px;
+	font-weight: 600;
+	cursor: pointer;
+}
 
-        /* '게시판' 그룹에 마우스가 올라가면(hover) 하위 메뉴를 보여줌 */
-        .menu-item-group:hover .sub-menu-container {
-            display: flex;
-        }
+.main-layout {
+	display: grid;
+	grid-template-columns: var(- -sidebar-width) 1fr var(- -sidebar-width);
+	gap: 30px;
+	padding: 40px;
+}
 
-        .sub-item { 
-            padding: 8px 0; 
-            font-size: 14px; 
-            color: #64748b; 
-            cursor: pointer; 
-            transition: var(--transition);
-        }
-        
-        .sub-item:hover { 
-            color: var(--accent-blue); 
-            font-weight: 700; 
-        }
+/* [사이드바 관련 기존 스타일 유지] */
+.side-card {
+	background: white;
+	padding: 24px;
+	border-radius: 20px;
+	box-shadow: var(- -card-shadow);
+	margin-bottom: 25px;
+}
 
-        /* [게시판 및 검색바 영역: 기존 유지] */
-        .content-area { display: flex; flex-direction: column; gap: 20px; }
-        .board-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .logo { font-size: 32px; font-weight: 900; color: var(--primary-navy); letter-spacing: -1.5px; }
-        .search-bar { background: white; border-radius: 15px; padding: 10px 20px; width: 320px; display: flex; align-items: center; box-shadow: var(--card-shadow); border: 1px solid #e2e8f0; transition: var(--transition); }
-        .search-bar:focus-within { border-color: var(--accent-blue); }
-        .search-bar input { border: none; outline: none; width: 100%; font-size: 14px; }
-        .board-header { display: flex; justify-content: space-between; align-items: center; padding: 0 5px; }
-        .board-title { font-size: 24px; font-weight: 800; color: var(--primary-navy); }
-        .btn-write { padding: 9px 22px; background: #e2e8f0; color: #475569; border: none; border-radius: 20px; font-weight: 700; cursor: pointer; transition: var(--transition); }
-        .btn-write:hover { background: var(--accent-blue); color: white; }
+.side-card h3 {
+	font-size: 16px;
+	font-weight: 800;
+	margin: 0 0 18px 0;
+	color: var(- -primary-navy);
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
 
-        /* [테이블 및 페이징: 기존 유지] */
-        .list-table { width: 100%; border-collapse: collapse; background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--card-shadow); }
-        .list-table th { background: #f1f5f9; padding: 15px; font-size: 14px; color: var(--primary-navy); border-bottom: 2px solid #e2e8f0; }
-        .list-table td { padding: 16px 15px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-        .td-title { text-align: left !important; font-weight: 600; }
-        .list-table tr:hover { background: #f8fafc; cursor: pointer; }
-        .pagination { display: flex; justify-content: center; gap: 12px; margin-top: 25px; font-size: 14px; font-weight: 600; color: #64748b; }
-        .page-num { cursor: pointer; }
-        .page-num.active { color: var(--accent-blue); text-decoration: underline; }
+.side-card h3::before {
+	content: '';
+	width: 4px;
+	height: 16px;
+	background: var(- -accent-blue);
+	border-radius: 2px;
+}
 
-        footer { padding: 40px; text-align: center; font-size: 13px; color: #94a3b8; background: #f1f5f9; margin-top: 50px; }
+.menu-item {
+	font-weight: 700;
+	color: var(- -primary-navy);
+	padding: 10px 0;
+	cursor: pointer;
+}
+
+/* [수정 및 추가된 스타일: 하위 메뉴 구현] */
+.menu-item-group {
+	position: relative;
+} /* 그룹화를 위한 설정 */
+.sub-menu-container {
+	display: none; /* 평소에는 안 보이게 설정 */
+	flex-direction: column;
+	padding-left: 20px; /* 이미지처럼 들여쓰기 효과 */
+}
+
+/* '게시판' 그룹에 마우스가 올라가면(hover) 하위 메뉴를 보여줌 */
+.menu-item-group:hover .sub-menu-container {
+	display: flex;
+}
+
+.sub-item {
+	padding: 8px 0;
+	font-size: 14px;
+	color: #64748b;
+	cursor: pointer;
+	transition: var(- -transition);
+}
+
+.sub-item:hover {
+	color: var(- -accent-blue);
+	font-weight: 700;
+}
+
+/* [게시판 및 검색바 영역: 기존 유지] */
+.content-area {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.board-top-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.logo {
+	font-size: 32px;
+	font-weight: 900;
+	color: var(- -primary-navy);
+	letter-spacing: -1.5px;
+}
+
+.search-bar {
+	background: white;
+	border-radius: 15px;
+	padding: 10px 20px;
+	width: 320px;
+	display: flex;
+	align-items: center;
+	box-shadow: var(- -card-shadow);
+	border: 1px solid #e2e8f0;
+	transition: var(- -transition);
+}
+
+.search-bar:focus-within {
+	border-color: var(- -accent-blue);
+}
+
+.search-bar input {
+	border: none;
+	outline: none;
+	width: 100%;
+	font-size: 14px;
+}
+
+.board-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 5px;
+}
+
+.board-title {
+	font-size: 24px;
+	font-weight: 800;
+	color: var(- -primary-navy);
+}
+
+.btn-write {
+	padding: 9px 22px;
+	background: #e2e8f0;
+	color: #475569;
+	border: none;
+	border-radius: 20px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: var(- -transition);
+}
+
+.btn-write:hover {
+	background: var(- -accent-blue);
+	color: white;
+}
+
+/* [테이블 및 페이징: 기존 유지] */
+.list-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: white;
+	border-radius: 20px;
+	overflow: hidden;
+	box-shadow: var(- -card-shadow);
+}
+
+.list-table th {
+	background: #f1f5f9;
+	padding: 15px;
+	font-size: 14px;
+	color: var(- -primary-navy);
+	border-bottom: 2px solid #e2e8f0;
+}
+
+.list-table td {
+	padding: 16px 15px;
+	text-align: center;
+	border-bottom: 1px solid #f1f5f9;
+	font-size: 14px;
+}
+
+.td-title {
+	text-align: left !important;
+	font-weight: 600;
+}
+
+.list-table tr:hover {
+	background: #f8fafc;
+	cursor: pointer;
+}
+
+.pagination {
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+	margin-top: 25px;
+	font-size: 14px;
+	font-weight: 600;
+	color: #64748b;
+}
+
+.page-num {
+	cursor: pointer;
+}
+
+.page-num.active {
+	color: var(- -accent-blue);
+	text-decoration: underline;
+}
+
+footer {
+	padding: 40px;
+	text-align: center;
+	font-size: 13px;
+	color: #94a3b8;
+	background: #f1f5f9;
+	margin-top: 50px;
+}

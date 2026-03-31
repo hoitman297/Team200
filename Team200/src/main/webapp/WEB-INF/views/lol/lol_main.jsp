@@ -1,11 +1,12 @@
-<%@ page session="false" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%-- 💖 [핵심 수정] 사이드바와 헤더가 길을 잃지 않도록 맨 위에서 쾅쾅! 선언해 줍니다 💖 --%>
 <c:set var="gameId" value="lol" />
 <c:set var="currentGameName" value="리그 오브 레전드" />
 <c:set var="headerTitle" value="리그 오브 레전드" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="sec"
@@ -20,20 +21,13 @@
 	href="${pageContext.request.contextPath}/resources/lol/style.css">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/main/style.css">
-<%-- 🔍 검색창 드롭다운 디자인을 위해 추가 --%>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/search/style_main.css">
-
+	
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/lol/script.js"
 	defer></script>
 <script
 	src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-<%-- 🔍 모든 페이지 공통 검색 로직 --%>
-<script
-	src="${pageContext.request.contextPath}/resources/search/script_main.js"
-	defer></script>
 
 <title>리그 오브 레전드 - LOG.GG</title>
 </head>
@@ -75,12 +69,41 @@
 						<div class="col-author">작성자</div>
 						<div class="col-date">날짜</div>
 					</div>
-					<div class="board-row">
-						<div class="col-likes">150</div>
-						<div class="col-title">롤 인게임 최근 소식 및 패치노트 안내</div>
-						<div class="col-author">관리자</div>
-						<div class="col-date">03.01</div>
-					</div>
+					<c:choose>
+				        <c:when test="${empty bestList}">
+				            <div class="board-row" style="justify-content: center; color: #94a3b8;">
+				                인기 게시글이 없습니다.
+				            </div>
+				        </c:when>
+				        <c:otherwise>
+				            <c:forEach var="best" items="${bestList}">
+				                <div class="board-row">
+				                    <div class="col-likes">
+				                        ${best.likeCount}
+				                    </div>
+				                    
+				                    <div class="col-title">
+									
+									    <a href="<c:url value='/board/view?boardNo=${best.boardNo}' />" style="text-decoration: none; color: inherit; vertical-align: middle;">
+									        ${best.boardTitle}
+									        
+									        <c:if test="${best.replyCount > 0}">
+									            <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px; margin-left: 4px;">[${best.replyCount}]</span>
+									        </c:if>
+									    </a>
+									</div>
+				                    
+				                    <div class="col-author">
+				                        ${best.userName}
+				                    </div>
+				                    
+				                    <div class="col-date">
+				                        <fmt:formatDate value="${best.postDate}" pattern="MM.dd"/>
+				                    </div>
+				                </div>
+				            </c:forEach>
+				        </c:otherwise>
+				    </c:choose>
 				</div>
 			</div>
 

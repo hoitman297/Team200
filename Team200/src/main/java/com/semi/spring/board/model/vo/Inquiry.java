@@ -16,5 +16,6 @@ public class Inquiry {
 	private Date postDate;
 	private String answerStatus; // 'W' or 'C'
 	private String reason;
-	private String answer;       
+	private String answer;     
+	private String gameCode;
 }

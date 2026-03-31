@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%-- 💖 [핵심 수정] 파일 최상단에서 변수를 미리 선언합니다! 💖 --%>
 <c:set var="headerTitle" value="오버워치" />
@@ -44,11 +45,6 @@
                 
                 <c:set var="currentGameName" value="오버워치" />
                 <c:set var="currentGameCode" value="overwatch" />
-                
-                <%-- 공통 검색바 파일 호출 (파일 경로를 확인하세요!) --%>
-                <%-- 💖 통합 검색(global) 모드로 검색창 호출! 💖 --%>
-                <c:set var="searchType" value="global" />
-                <%@ include file="../common/search_bar.jsp" %>
             </div>
 
             <div class="board-card">
@@ -65,12 +61,43 @@
                         <div class="col-date">날짜</div>
                     </div>
                     <%-- 실제 데이터가 들어오는 곳 (예시 데이터) --%>
-                    <div class="board-row">
-                        <div class="col-likes">150</div>
-                        <div class="col-title">오버워치 인게임 최근 소식 및 패치노트 안내</div>
-                        <div class="col-author">관리자</div>
-                        <div class="col-date">03.01</div>
-                    </div>
+                    
+                        <c:choose>
+					        <c:when test="${empty bestList}">
+					            <div class="board-row" style="justify-content: center; color: #94a3b8;">
+					                인기 게시글이 없습니다.
+					            </div>
+					        </c:when>
+					        <c:otherwise>
+					            <c:forEach var="best" items="${bestList}">
+					                <div class="board-row">
+					                    <div class="col-likes">
+					                        ${best.likeCount}
+					                    </div>
+					                    
+					                    <div class="col-title">
+									
+										    <a href="<c:url value='/board/view?boardNo=${best.boardNo}' />" style="text-decoration: none; color: inherit; vertical-align: middle;">
+										        ${best.boardTitle}
+										        
+										        <c:if test="${best.replyCount > 0}">
+										            <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px; margin-left: 4px;">[${best.replyCount}]</span>
+										        </c:if>
+										    </a>
+										</div>
+					                    
+					                    <div class="col-author">
+					                        ${best.userName}
+					                    </div>
+					                    
+					                    <div class="col-date">
+					                        <fmt:formatDate value="${best.postDate}" pattern="MM.dd"/>
+					                    </div>
+					                </div>
+					            </c:forEach>
+					        </c:otherwise>
+					    </c:choose>
+                    
                 </div>
             </div>
 

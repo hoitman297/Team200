@@ -1,5 +1,6 @@
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%-- 💖 [핵심 수정] 사이드바와 헤더가 길을 잃지 않도록 맨 위에서 쾅쾅! 선언해 줍니다 💖 --%>
 <c:set var="gameId" value="battleground" />
@@ -37,24 +38,20 @@
 
         <main class="content-area">
             <div class="top-row">
-                <a href="<c:url value='/battleground/main'/>" style="text-decoration: none;">
-                    <div class="logo">LOG.GG</div>
-                </a>
-                
-                <%-- 💖 공통 검색바 삽입 (변수 세팅은 위로 올렸으니 여기는 검색바만!) 💖 --%>
-                <%@ include file="../common/search_bar.jsp" %>
+                <a href="<c:url value ='/bg/main'/>"><div class="logo">LOG.GG</div></a>
+
             </div>
 
             <div class="board-card">
                 <div class="tab-menu">
                     <div class="tab-item active">실시간 인기글</div>
-                    <a href="<c:url value='/battleground/item'/>">
+                    <a href="<c:url value='/bg/item'/>">
                         <div class="tab-item">아이템</div>
                     </a>
-                    <a href="<c:url value='/battleground/map'/>">
+                    <a href="<c:url value='/bg/map'/>">
                         <div class="tab-item">지도</div>
                     </a>
-                    <a href="<c:url value='/battleground/box'/>">
+                    <a href="<c:url value='/bg/box'/>">
                         <div class="tab-item">상자 시뮬레이터</div>
                     </a>
                 </div>
@@ -65,12 +62,43 @@
                         <div class="col-author">작성자</div>
                         <div class="col-date">날짜</div>
                     </div>
-                    <div class="board-row">
-                        <div class="col-likes">150</div>
-                        <div class="col-title">배틀그라운드 인게임 최근 소식 및 패치노트 안내</div>
-                        <div class="col-author">관리자</div>
-                        <div class="col-date">03.01</div>
-                    </div>
+                    
+                        <c:choose>
+					        <c:when test="${empty bestList}">
+					            <div class="board-row" style="justify-content: center; color: #94a3b8;">
+					                인기 게시글이 없습니다.
+					            </div>
+					        </c:when>
+					        <c:otherwise>
+					            <c:forEach var="best" items="${bestList}">
+					                <div class="board-row">
+					                    <div class="col-likes">
+					                        ${best.likeCount}
+					                    </div>
+					                    
+					                    <div class="col-title">
+									
+										    <a href="<c:url value='/board/view?boardNo=${best.boardNo}' />" style="text-decoration: none; color: inherit; vertical-align: middle;">
+										        ${best.boardTitle}
+										        
+										        <c:if test="${best.replyCount > 0}">
+										            <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px; margin-left: 4px;">[${best.replyCount}]</span>
+										        </c:if>
+										    </a>
+										</div>
+					                    
+					                    <div class="col-author">
+					                        ${best.userName}
+					                    </div>
+					                    
+					                    <div class="col-date">
+					                        <fmt:formatDate value="${best.postDate}" pattern="MM.dd"/>
+					                    </div>
+					                </div>
+					            </c:forEach>
+					        </c:otherwise>
+					    </c:choose>
+                    
                 </div>
             </div>
 

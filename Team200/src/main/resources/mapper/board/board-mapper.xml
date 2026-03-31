@@ -41,6 +41,7 @@
 		<id column="BOARD_NO" property="boardNo"/>
 
 		<result column="READ_COUNT" property="readCount" />
+		<result property="likeCount" column="likeCount"/>
 		
 		<association property="party" javaType="partyRecruit" autoMapping="true">
         <id column="BOARD_NO" property="boardNo"/>
@@ -60,6 +61,7 @@
 				FROM (
 					SELECT
 						B.BOARD_NO,
+						B.USER_NO,
 						B.BOARD_TITLE ,
 						U.USER_NAME ,
 						B.READ_COUNT AS readCount,
@@ -104,7 +106,8 @@
         B.BOARD_TITLE, B.BOARD_CONTENT, B.POST_DATE, B.BOARD_CD, B.READ_COUNT,
         U.USER_NAME,
         P.CAPACITY, P.TIER, P.PARTY_CURRENT, P.PREFER_MAP,
-        C.CATEGORY_NAME
+        C.CATEGORY_NAME,
+        (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount
 		FROM BOARD B
 		LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
 		LEFT JOIN PARTY_RECRUIT P ON B.BOARD_NO = P.BOARD_NO
@@ -176,18 +179,26 @@
 		INSERT INTO REPLY (
 		REPLY_NO, USER_NO, BOARD_NO, REPLY_CONTENT,PARENT_REPLY_NO
 		) VALUES (
-		SEQ_REPLY_NO.NEXTVAL, #{userNo}, #{boardNo}, #{replyContent} ,#{parentReplyNo}
+		SEQ_REPLY_NO.NEXTVAL, #{userNo}, #{boardNo}, #{replyContent} ,
+		<choose>
+            <when test="parentReplyNo == 0">
+                NULL
+            </when>
+            <otherwise>
+                #{parentReplyNo}
+            </otherwise>
+        </choose>
 		)
 	</insert>
 	
 	<select id="selectReplyList" resultType="reply">
-		SELECT R.*,
-			   U.USER_NAME 
-		FROM REPLY R
-		JOIN LOG_GG_USER U ON R.USER_NO = U.USER_NO
-		WHERE BOARD_NO = #{boardNo} 
-		AND STATUS = 'Y'
-		ORDER BY NVL(PARENT_REPLY_NO, REPLY_NO) ASC, REPLY_DATE ASC
+    SELECT R.*,
+           U.USER_NAME 
+    FROM REPLY R
+    JOIN LOG_GG_USER U ON R.USER_NO = U.USER_NO
+    WHERE R.BOARD_NO = #{boardNo} 
+    
+    ORDER BY NVL(NULLIF(R.PARENT_REPLY_NO, 0), R.REPLY_NO) ASC, R.REPLY_DATE ASC
 	</select>
 	
 	<!-- 조회수 -->
@@ -215,6 +226,7 @@
 			FILE_PATH = #{filePath}
 		WHERE FILE_NO = #{fileNo}
 	</update>
+	
 	<update id="updateReply">
     UPDATE REPLY
     SET 
@@ -236,7 +248,11 @@
 		SET 
 			STATUS = 'N' 
 			WHERE REPLY_NO = #{replyNo}
+			<if test="userNo != null and userNo != 0">
+        	AND USER_NO = #{userNo}
+    		</if>
 	</update>
+	
 	<delete id="deleteSelectedFile">
     DELETE FROM ATTACH_FILE
     WHERE FILE_NO = #{fileNo}
@@ -349,11 +365,15 @@
 	SELECT 
         BOARD_NO, 
         BOARD_TITLE, 
+        GAME_CODE,
         REASON, 
         POST_DATE, 
         ANSWER_STATUS
     	FROM INQUIRY
     WHERE USER_NO = #{userNo}
+    <if test="gameCode != null and gameCode != 'all'">
+        AND GAME_CODE = #{gameCode}
+    </if>
     ORDER BY BOARD_NO DESC
 	</select>
 	
@@ -369,6 +389,15 @@
         POST_DATE ASC
 	</select>
 	
+	<select id="selectInquiryCount" resultType="_int">
+    SELECT COUNT(*) 
+    FROM INQUIRY 
+    WHERE USER_NO = #{userNo}
+    <if test="gameCode != null and gameCode != 'all'">
+        AND GAME_CODE = #{gameCode} 
+    </if>
+	</select>
+
 	<insert id="insertInquiry">
 		<selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
         SELECT SEQ_INQUIRY_NO.NEXTVAL FROM DUAL
@@ -376,10 +405,12 @@
     INSERT INTO INQUIRY (
         BOARD_NO, USER_NO, USER_NAME, 
         BOARD_TITLE, BOARD_CONTENT, REASON, 
+        GAME_CODE,
         POST_DATE,ANSWER_STATUS, ANSWER
     ) VALUES (
         #{boardNo}, #{userNo}, #{userName}, 
         #{boardTitle}, #{boardContent}, #{reason}, 
+        #{gameCode},
         SYSDATE, DEFAULT, DEFAULT
     )
 	</insert>
@@ -496,7 +527,7 @@
 	</select>
 	
 	<!-- 인기게시글 -->
-	<select id="selectBestBoards" resultType="boardExt">
+	<select id="selectBestBoards" resultType="boardExt" parameterType="string">
     SELECT * FROM (
         SELECT 
             B.BOARD_NO,
@@ -505,16 +536,67 @@
             B.GAME_CODE,
             U.USER_NAME,
             C.CATEGORY_NAME,
+            B.POST_DATE,
             (SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
             (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount
         FROM BOARD B
-        JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
-        JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+        LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+        LEFT JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
         WHERE B.BOARD_CD = 'Y' 
           AND B.POST_DATE >= SYSDATE - 7  
+          <if test="gameCode != null and gameCode != 'ALL'">
+              AND B.GAME_CODE = #{gameCode}
+          </if>
           ORDER BY likeCount DESC, B.READ_COUNT DESC, B.BOARD_NO DESC
     ) 
     WHERE ROWNUM &lt;= 5 
     </select>
     	
+    <!-- 갤러리 -->	
+    <select id="selectGalleryList" resultType="boardExt">
+    SELECT *
+    FROM (
+        SELECT ROWNUM AS RNUM, T1.*
+        FROM (
+            SELECT
+                B.BOARD_NO,
+                B.BOARD_TITLE,
+                U.USER_NAME,
+                B.READ_COUNT AS readCount,
+                B.POST_DATE AS postDate,
+                B.GAME_CODE,
+                (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount,
+                (SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
+                (SELECT CHANGE_NAME FROM ATTACH_FILE F WHERE F.BOARD_NO = B.BOARD_NO AND ROWNUM = 1) AS thumbnail
+            FROM BOARD B
+            LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+            JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+            WHERE B.BOARD_CD = 'Y'
+              AND C.CATEGORY_NAME = '갤러리' <if test="gameCode != null and gameCode != 'all'">
+                AND B.GAME_CODE = UPPER(#{gameCode})
+              </if>
+            ORDER BY B.BOARD_NO DESC
+        ) T1
+    )
+    WHERE RNUM BETWEEN #{offset} AND #{limit}
+	</select>
+	
+	<select id="selectGalleryCount" resultType="int">
+	    SELECT COUNT(*)
+	    FROM BOARD B
+	    JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+	    WHERE B.BOARD_CD = 'Y'
+	      AND C.CATEGORY_NAME = '갤러리'
+	      <if test="gameCode != null and gameCode != 'all'">
+	        AND B.GAME_CODE = UPPER(#{gameCode})
+	      </if>
+	</select>
+	
+	<select id="selectCategoryNoByName" resultType="int">
+    SELECT CATEGORY_NO 
+    FROM CATEGORY_TABLE 
+    WHERE GAME_CODE = UPPER(#{gameCode}) 
+      AND CATEGORY_NAME = #{categoryName}
+	</select>
+	
 </mapper>
