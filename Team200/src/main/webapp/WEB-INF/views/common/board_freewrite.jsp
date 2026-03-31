@@ -1,6 +1,18 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
+<%-- 🌟 수정 모드인지 새 글 모드인지 판별 --%>
+<c:set var="isEdit" value="${not empty board}" />
+<c:choose>
+    <c:when test="${isEdit}">
+        <c:set var="actionUrl" value="/board/update" />
+    </c:when>
+    <c:otherwise>
+        <c:set var="actionUrl" value="/board/${tempBoardType}_write_${gameId}" />
+    </c:otherwise>
+</c:choose>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,7 +25,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/${gameThemeCss}">
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
 
-    <title>LOG.GG - ${gameName} 글쓰기</title>
+    <title>LOG.GG - ${gameName} ${isEdit ? '글 수정' : '글 쓰기'}</title>
 </head>
 <body>
     <c:set var="headerTitle" value="${gameName}" />
@@ -30,54 +42,61 @@
 
             <div class="write-container">
                 <div class="category-fixed-bar">
-                    <span class="category-tag">작성 중</span>
-                    <%-- 세션에 담긴 정보로 게시판 종류 표시 --%>
+                    <span class="category-tag">${isEdit ? '수정 중' : '작성 중'}</span>
                     <span class="category-text" id="targetGame">
                         ${gameName} &gt; ${tempBoardType == 'free' ? '자유 게시판' : '공략 게시판'}
                     </span>
                 </div>
 
                 <div class="write-header">
-                    <h2>새 글 작성하기</h2>
+                    <h2>${isEdit ? '게시글 수정하기' : '새 글 작성하기'}</h2>
                 </div>
 
-                <%-- 💖 action 경로에 들어가는 변수들이 컨트롤러와 일치하는지 확인 완료! 💖 --%>
-<<<<<<< HEAD
-                <form id="writeForm" action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>" method="POST" enctype="multipart/form-data">
-                    
-                    <%-- ✅ Spring Security 필수 방패! 이미 잘 들어가 있었습니다! --%>
+                <form id="writeForm" action="<c:url value='${actionUrl}?${_csrf.parameterName}=${_csrf.token}'/>" method="POST" enctype="multipart/form-data">
+                    <%-- ✅ Spring Security CSRF 토큰 --%>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    
+                    <%-- 🌟 수정 시 반드시 필요한 게시글 번호 --%>
+                    <c:if test="${isEdit}">
+                        <input type="hidden" name="boardNo" value="${board.boardNo}" />
+                    </c:if>
 
                     <div class="form-group">
                         <label>제목</label>
-                        <%-- ✅ name="title" 확인 완료 --%>
-                        <input type="text" name="title" placeholder="제목을 입력해 주세요" required>
+                        <%-- ✅ name을 VO 필드명인 boardTitle로 변경 --%>
+                        <input type="text" name="boardTitle" value="${board.boardTitle}" placeholder="제목을 입력해 주세요" required>
                     </div>
-=======
-				<form id="writeForm"
-					action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>"
-					method="POST" enctype="multipart/form-data">
-					<%-- ✅ Spring Security 필수 방패! 이미 잘 들어가 있었습니다! --%>
-					<input type="hidden" name="${_csrf.parameterName}"
-						value="${_csrf.token}" />
-
->>>>>>> main
 
                     <div class="form-group">
                         <label>내용</label>
-                        <%-- ✅ name="content" 확인 완료 --%>
-                        <textarea class="editor-area" name="content" rows="15" placeholder="커뮤니티 가이드라인을 준수하여 내용을 작성해 주세요." required></textarea>
+                        <%-- ✅ name을 VO 필드명인 boardContent로 변경 --%>
+                        <textarea class="editor-area" name="boardContent" rows="15" placeholder="커뮤니티 가이드라인을 준수하여 내용을 작성해 주세요." required>${board.boardContent}</textarea>
 
-                        <div class="file-upload">
-                            <%-- ✅ name="upFile" 확인 완료 --%>
+                        <div class="file-upload" style="margin-top: 20px;">
+                            <%-- 🌟 기존 첨부파일 목록 및 삭제 UI --%>
+                            <c:if test="${isEdit and not empty board.fileList}">
+                                <div class="existing-files" style="margin-bottom: 15px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 14px; color: #ef4444;">🗑️ 삭제할 기존 파일을 체크해 주세요.</p>
+                                    <c:forEach var="file" items="${board.fileList}">
+                                        <div style="margin-bottom: 5px; font-size: 14px;">
+                                            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                                <input type="checkbox" name="deleteFileNos" value="${file.fileNo}">
+                                                <span style="color: #475569;">${file.originName}</span>
+                                            </label>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                            </c:if>
+
+                            <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 14px; color: #334155;">📎 새 파일 추가</p>
                             <input type="file" name="upFile" multiple style="margin-bottom: 10px;"> <br> 
-                            📎 사진이나 파일을 첨부할 수 있습니다.
+                            <span style="font-size: 13px; color: #64748b;">사진이나 파일을 첨부할 수 있습니다.</span>
                         </div>
                     </div>
 
                     <div class="write-footer">
                         <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
-                        <button type="submit" class="btn btn-submit">등록하기</button>
+                        <button type="submit" class="btn btn-submit">${isEdit ? '수정완료' : '등록하기'}</button>
                     </div>
                 </form>
             </div>

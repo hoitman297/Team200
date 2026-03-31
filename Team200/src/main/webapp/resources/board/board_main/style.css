@@ -58,8 +58,27 @@
     color: var(--primary-navy); border-bottom: 2px solid var(--border-color); 
 }
 .list-table td { padding: 16px 15px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #475569; }
+
+/* 제목 칸 스타일 */
 .td-title { text-align: left !important; font-weight: 600; color: #1e293b; }
-.list-table tr:hover { background: #f8fafc; cursor: pointer; }
+.td-title a { text-decoration: none; color: inherit; }
+
+/* [행 클릭 인터렉션 수정] */
+/* 1. 번호(첫 번째 td)는 기본 화살표 커서 유지 */
+.list-table tbody tr td:first-child {
+    cursor: default;
+}
+
+/* 2. 번호를 제외한 나머지 칸들은 손가락 모양 커서 표시 */
+.list-table tbody tr td:not(:first-child) {
+    cursor: pointer;
+}
+
+/* 3. 마우스 올렸을 때 행 배경색 변경 */
+.list-table tbody tr:hover { 
+    background: #f8fafc; 
+}
+
 .empty-msg { padding: 80px !important; color: #94a3b8; font-weight: 500; }
 
 /* [페이지네이션] */
@@ -71,13 +90,13 @@
 /* [우측 사이드바 영역 수정] */
 .sidebar-right { 
     height: fit-content; 
-    background: transparent !important; /* 배경 투명하게 */
-    padding: 0 !important;             /* 불필요한 패딩 제거 */
-    border: none !important;            /* 테두리 제거 */
+    background: transparent !important; 
+    padding: 0 !important;             
+    border: none !important;            
 }
 
 .notice-card { 
-    background: #cbd5e1; /* 공지사항 카드 본체 색상 */
+    background: #cbd5e1; 
     border-radius: 20px; 
     padding: 25px; 
     box-shadow: var(--card-shadow); 
