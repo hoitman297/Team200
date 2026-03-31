@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -41,28 +42,27 @@
                     <h2>새 공략 작성하기</h2>
                 </div>
                 
-                <form id="writeForm" action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>" method="POST" 
-                enctype="multipart/form-data">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <form id="writeForm" action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
-                    <div class="form-group">
-                        <label>제목</label>
-                        <input type="text" name="boardTitle" placeholder="공략 제목을 입력해 주세요" required>
-                    </div>
+					<div class="form-group">
+						<label>제목</label> <input type="text" name="title"
+							placeholder="공략 제목을 입력해 주세요" required>
+					</div>
 
-                    <div class="form-group">
-                        <label>내용</label>
+					<div class="form-group">
+						<label>내용</label>
+						<textarea class="editor-area" name="content" rows="15"
+							placeholder="나만의 꿀팁과 공략을 공유해 주세요! (비방/욕설 금지)" required></textarea>
 
-                        <textarea class="editor-area" name="boardContent" rows="15" placeholder="나만의 꿀팁과 공략을 공유해 주세요! (비방/욕설 금지)" required></textarea>
-                        
-                        <div class="file-upload">
-                            <input type="file" name="upFile" multiple style="margin-bottom: 10px;"> <br>
-                            📎 공략에 필요한 이미지나 파일을 첨부할 수 있습니다.
+						<div class="file-upload">
+							<input type="file" name="upFile" multiple
+								style="margin-bottom: 10px;"> <br> 📎 공략에 필요한 이미지나
+							파일을 첨부할 수 있습니다.
+						</div>
+					</div>
 
-                        </div>
-                    </div>
-
-                    <div class="write-footer">
+					<div class="write-footer">
                         <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
                         <button type="submit" class="btn btn-submit">등록하기</button>
                     </div>
