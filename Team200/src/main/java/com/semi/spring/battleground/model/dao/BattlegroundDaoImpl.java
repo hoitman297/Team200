@@ -1,10 +1,12 @@
 package com.semi.spring.battleground.model.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.semi.spring.battleground.model.vo.BagItemInfoVO;
-import com.semi.spring.overwatch.model.dao.OverwatchDaoImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,4 +29,15 @@ public class BattlegroundDaoImpl implements BattlegroundDao {
 		session.insert("battlegroundMapper.insertBagItem", item);
 	}
 
+	public List<Map<String, Object>> selectCategoryList() {
+        return session.selectList("battlegroundMapper.selectCategoryList");
+    }
+
+    public List<BagItemInfoVO> selectAllItemList() {
+        return session.selectList("battlegroundMapper.selectAllItemList");
+    }
+
+    public List<BagItemInfoVO> selectItemListByCategory(int categoryNo) {
+        return session.selectList("battlegroundMapper.selectItemListByCategory", categoryNo);
+    }
 }
