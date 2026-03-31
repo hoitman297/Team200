@@ -1,13 +1,13 @@
 package com.semi.spring.battleground.model.service;
 
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.semi.spring.battleground.model.dao.BattlegroundDao;
 import com.semi.spring.battleground.model.vo.BagItemInfoVO;
 
@@ -23,12 +23,11 @@ public class BattlegroundDataService {
 
     @PostConstruct
     public void init() {
-        // 서버 시작 시 DB에 아이템이 있는지 확인
         int count = bgDao.checkItemCount(); 
         
         if (count == 0) {
             log.info("=== [배틀그라운드] DB가 비어있어 공식 API Assets에서 아이템 데이터를 수집합니다 ===");
-            new Thread(() -> updateItemDataFromOfficial()).start();
+            new Thread(this::updateItemDataFromOfficial).start();
         } else {
             log.info("=== [배틀그라운드] 이미 아이템 데이터가 존재합니다. ===");
         }
@@ -37,83 +36,112 @@ public class BattlegroundDataService {
     public void updateItemDataFromOfficial() {
         try {
             RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper objectMapper = new ObjectMapper(); 
 
-            // PUBG 공식 API에서 제공하는 아이템 사전(Dictionary) JSON URL
-            String officialItemUrl = "https://raw.githubusercontent.com/pubg/api-assets/master/dictionaries/telemetry/item.json";
+            String jsonUrl = "https://raw.githubusercontent.com/pubg/api-assets/master/dictionaries/telemetry/item/itemId.json";
+            log.info(">>> PUBG 공식 아이템 데이터(itemId.json)를 다운로드합니다...");
             
-            log.info(">>> PUBG 공식 아이템 데이터(JSON)를 다운로드합니다...");
-            
-            // JSON 데이터가 "키":"값" 형태이므로 Map으로 바로 받아옵니다.
-            Map<String, String> itemData = restTemplate.getForObject(officialItemUrl, Map.class);
+            String jsonResponse;
+            try {
+                jsonResponse = restTemplate.getForObject(jsonUrl, String.class);
+                log.info(">>> JSON 다운로드 성공! 데이터 길이: {}", jsonResponse.length());
+            } catch (Exception e) {
+                log.error(">>> JSON 파일을 읽어오는데 실패했습니다.", e);
+                return; 
+            }
 
-            if (itemData != null) {
+            if (jsonResponse != null) {
+                Map<String, String> itemData = objectMapper.readValue(jsonResponse, new TypeReference<Map<String, String>>() {});
                 int count = 0;
 
-                for (Map.Entry<String, String> entry : itemData.entrySet()) {
-                    String itemKey = entry.getKey();     // 예: "Item_Weapon_AK47_C"
-                    String itemName = entry.getValue();  // 예: "AKM"
+                log.info(">>> 총 {}개의 데이터를 분석 시작합니다...", itemData.size());
 
-                    // 불필요한 시스템 더미 데이터나 이름이 없는 데이터는 패스
+                for (Map.Entry<String, String> entry : itemData.entrySet()) {
+                    String itemKey = entry.getKey();     
+                    String itemName = entry.getValue();  
+
                     if (itemName == null || itemName.trim().isEmpty() || itemKey.contains("Dummy")) {
                         continue;
                     }
 
                     BagItemInfoVO item = new BagItemInfoVO();
                     item.setItemName(itemName);
-                    
-                    // 공식 JSON에는 상세 설명이 없으므로, 기본 설명으로 아이템 ID(Key)를 넣어두거나 임의 처리합니다.
-                    item.setItemInfo("공식 분류 ID: " + itemKey); 
+                    item.setItemInfo("공식 아이템 ID: " + itemKey); 
 
-                    // ---------------------------------------------------------
-                    // [핵심] 키(Key) 값을 분석하여 카테고리(1~5)와 타입 자동 분류
-                    // ---------------------------------------------------------
-                    int categoryNo = 5; // 기본값: 소모품(기타)
-                    String itemType = "일반";
-
-                    String keyLower = itemKey.toLowerCase();
+                    setCategoryInfo(item, itemKey);
                     
-                    if (keyLower.contains("weapon")) {
-                        categoryNo = 1; // 무기
-                        itemType = "무기";
-                    } else if (keyLower.contains("attach") || keyLower.contains("scope") || keyLower.contains("muzzle")) {
-                        categoryNo = 2; // 부착물
-                        itemType = "부착물";
-                    } else if (keyLower.contains("ammo")) {
-                        categoryNo = 3; // 탄약
-                        itemType = "탄약";
-                    } else if (keyLower.contains("armor") || keyLower.contains("head")) {
-                        categoryNo = 4; // 방어구 (조끼, 헬멧)
-                        itemType = "방어구";
-                    } else if (keyLower.contains("heal") || keyLower.contains("boost") || keyLower.contains("energy")) {
-                        categoryNo = 5; // 소모품 (회복/부스트)
-                        itemType = "회복/소모품";
-                    } else if (keyLower.contains("backpack")) {
-                        categoryNo = 5; 
-                        itemType = "가방";
-                    }
-                    
-                    item.setCategoryNo(categoryNo);
-                    item.setItemType(itemType);
-
-                    // ---------------------------------------------------------
-                    // 이미지 처리 (공식 아이콘 URL 조립)
-                    // ---------------------------------------------------------
-                    // 공식 Assets 저장소의 규칙을 사용하여 이미지 URL을 유추할 수 있습니다.
-                    // (단, 모든 아이템 이미지가 완벽하게 일치하지는 않을 수 있어 예외 처리가 필요할 수 있습니다)
-                    String imgUrl = "https://raw.githubusercontent.com/pubg/api-assets/master/assets/icons/item/" + itemKey + ".png";
+                    String imgUrl = generateImageUrl(itemKey);
                     item.setItemImg(imgUrl);
 
+                    // ---------------------------------------------------------
+                    // ✨ 강력한 디버깅용 DB 저장 로직 (에러 상세 출력)
+                    // ---------------------------------------------------------
                     try {
                         bgDao.insertBagItem(item);
                         count++;
                     } catch (Exception e) {
-                        log.error(">>> [{}] 아이템 DB 저장 실패: {}", itemName, e.getMessage());
+                        // 에러가 발생하면 전체 스택 트레이스(원인)를 콘솔에 강제로 출력합니다.
+                        log.error(">>> 💥 [DB 저장 실패] 아이템명: {}", itemName);
+                        log.error(">>> 💥 실패 원인 상세: ", e); 
                     }
                 }
-                log.info("=== [배틀그라운드] 공식 데이터 기반 총 {}개의 아이템 정보 저장 완료! ===", count);
+                log.info("=== [배틀그라운드] 총 {}개의 아이템 (이름 + 이미지 URL) 저장 완료! ===", count);
             }
         } catch (Exception e) {
-            log.error("=== [배틀그라운드] 공식 API 데이터 파싱 중 에러 발생 ===", e);
+            log.error("=== [배틀그라운드] 전체 파싱 에러 ===", e);
         }
+    }
+
+    private void setCategoryInfo(BagItemInfoVO item, String itemKey) {
+        int categoryNo = 5; 
+        String itemType = "일반";
+        String keyLower = itemKey.toLowerCase();
+        
+        if (keyLower.contains("weapon")) {
+            categoryNo = 1; 
+            itemType = "무기";
+        } else if (keyLower.contains("attach") || keyLower.contains("scope") || keyLower.contains("muzzle") || keyLower.contains("grip")) {
+            categoryNo = 2; 
+            itemType = "부착물";
+        } else if (keyLower.contains("ammo")) {
+            categoryNo = 3; 
+            itemType = "탄약";
+        } else if (keyLower.contains("armor") || keyLower.contains("head") || keyLower.contains("vest")) {
+            categoryNo = 4; 
+            itemType = "방어구";
+        } else if (keyLower.contains("heal") || keyLower.contains("boost") || keyLower.contains("energy") || keyLower.contains("painkiller")) {
+            categoryNo = 5; 
+            itemType = "회복/소모품";
+        } else if (keyLower.contains("backpack")) {
+            categoryNo = 5; 
+            itemType = "가방";
+        }
+        
+        item.setCategoryNo(categoryNo);
+        item.setItemType(itemType);
+    }
+
+    private String generateImageUrl(String itemKey) {
+        String imageBaseUrl = "https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Item/";
+        String folderPath = "";
+        String keyLower = itemKey.toLowerCase();
+
+        if (keyLower.contains("weapon")) {
+            folderPath = "Weapon/"; 
+        } else if (keyLower.contains("attach")) {
+            folderPath = "Weapon/Attachment/"; 
+        } else if (keyLower.contains("ammo")) {
+            folderPath = "Ammo/"; 
+        } else if (keyLower.contains("armor") || keyLower.contains("head") || keyLower.contains("equip")) {
+            folderPath = "Equipment/"; 
+        } else if (keyLower.contains("boost")) {
+            folderPath = "Use/Boost/"; 
+        } else if (keyLower.contains("heal")) {
+            folderPath = "Use/Heal/"; 
+        } else {
+            folderPath = "Etc/"; 
+        }
+        
+        return imageBaseUrl + folderPath + itemKey + ".png";
     }
 }

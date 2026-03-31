@@ -161,7 +161,6 @@ public class BoardController {
             @RequestParam Map<String, Object> paramMap,
             Model model) {
 
-<<<<<<< HEAD
         String dbGameCode = "";
         
         switch(gameCode.toLowerCase()) {
@@ -372,73 +371,64 @@ public class BoardController {
             return "redirect:/board/view?boardNo=" + boardNo;
         }
     }
-=======
-		    if(result > 0) {
-		        ra.addFlashAttribute("message", "게시글이 성공적으로 등록되었습니다.");
-		        return "redirect:/board/" + boardType + "_" + gameCode;
-		    } else {
-		        ra.addFlashAttribute("message", "게시글 등록에 실패했습니다.");
-		        return "redirect:/";
-		    }
-		}
-		@PostMapping("/addLike")
-		@ResponseBody
-		public Map<String, Object> addLike(
-		        @RequestParam("boardNo") int boardNo, 
-		        Authentication auth) {
-		    
-		    Map<String, Object> response = new HashMap<>();
 
-		    if (auth == null || !auth.isAuthenticated()) {
-		        response.put("status", "error");
-		        response.put("message", "로그인 후 이용 가능합니다.");
-		        return response;
-		    }
+    @PostMapping("/addLike")
+    @ResponseBody
+    public Map<String, Object> addLike(
+            @RequestParam("boardNo") int boardNo, 
+            Authentication auth) {
+        
+        Map<String, Object> response = new HashMap<>();
 
-		    MemberExt loginUser = (MemberExt) auth.getPrincipal();
-		    int userNo = loginUser.getUserNo();
+        if (auth == null || !auth.isAuthenticated()) {
+            response.put("status", "error");
+            response.put("message", "로그인 후 이용 가능합니다.");
+            return response;
+        }
 
-		    // 서비스 호출!
-		    int result = boardService.insertBoardLike(boardNo, userNo);
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+        int userNo = loginUser.getUserNo();
 
-		    if (result == -1) {
-		        // 이미 공감한 경우
-		        response.put("status", "already");
-		        response.put("message", "이미 공감한 게시글입니다.");
-		    } else {
-		        // 성공적으로 공감된 경우
-		        response.put("status", "success");
-		        response.put("newLikeCount", result);
-		    }
-		    
-		    return response;
-		}
-		// 1. 댓글 목록 불러오기 (화면 이동 없음!)
-		@ResponseBody
-		@GetMapping(value = "/reply/list", produces = "application/json; charset=UTF-8")
-		public List<Reply> selectReplyList(int boardNo) {
-		    // 매퍼의 selectReplyList 호출
-		    return boardService.selectReplyList(boardNo);
-		}
+        // 서비스 호출!
+        int result = boardService.insertBoardLike(boardNo, userNo);
 
-		// 2. 댓글 작성하기 (화면 이동 없음!)
-		@ResponseBody
-		@PostMapping("/reply/insert")
-		public String insertReply(Reply reply, Authentication auth) {
-		    // 비로그인 사용자가 댓글 달려고 할 때 방어
-		    if (auth == null || !auth.isAuthenticated()) {
-		        return "login"; 
-		    }
-		    
-		    // 로그인한 유저 정보 꺼내서 세팅
-		    MemberExt loginUser = (MemberExt)auth.getPrincipal();
-		    reply.setUserNo(loginUser.getUserNo());
-		    
-		    // 매퍼의 insertReply 호출
-		    int result = boardService.insertReply(reply);
-		    
-		    return result > 0 ? "success" : "fail";
-		}	
+        if (result == -1) {
+            // 이미 공감한 경우
+            response.put("status", "already");
+            response.put("message", "이미 공감한 게시글입니다.");
+        } else {
+            // 성공적으로 공감된 경우
+            response.put("status", "success");
+            response.put("newLikeCount", result);
+        }
+        
+        return response;
+    }
 
->>>>>>> main
+    // 1. 댓글 목록 불러오기 (화면 이동 없음!)
+    @ResponseBody
+    @GetMapping(value = "/reply/list", produces = "application/json; charset=UTF-8")
+    public List<Reply> selectReplyList(int boardNo) {
+        // 매퍼의 selectReplyList 호출
+        return boardService.selectReplyList(boardNo);
+    }
+
+    // 2. 댓글 작성하기 (화면 이동 없음!)
+    @ResponseBody
+    @PostMapping("/reply/insert")
+    public String insertReply(Reply reply, Authentication auth) {
+        // 비로그인 사용자가 댓글 달려고 할 때 방어
+        if (auth == null || !auth.isAuthenticated()) {
+            return "login"; 
+        }
+        
+        // 로그인한 유저 정보 꺼내서 세팅
+        MemberExt loginUser = (MemberExt)auth.getPrincipal();
+        reply.setUserNo(loginUser.getUserNo());
+        
+        // 매퍼의 insertReply 호출
+        int result = boardService.insertReply(reply);
+        
+        return result > 0 ? "success" : "fail";
+    }    
 }
