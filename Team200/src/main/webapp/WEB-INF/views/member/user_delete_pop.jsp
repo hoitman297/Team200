@@ -34,7 +34,6 @@
             </label>
 
             <div class="btn-group">
-<<<<<<< HEAD
     <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
     <button type="button" 
             class="btn btn-submit" 
@@ -42,11 +41,9 @@
             disabled 
             data-url="<c:url value='/member/delete' />">회원 탈퇴</button>
 			</div>
-=======
                 <button class="btn btn-cancel" onclick="history.back()">취소</button>
                 <button class="btn btn-submit"  id="submitBtn" onclick="location.href='../마이페이지/회원탈퇴2.html'">회원 탈퇴</button>
             </div>
->>>>>>> parent of bf55e09 (jsp 파일 수정 및 제이쿼리로 변환)
         </div>
     </div>
 </body>

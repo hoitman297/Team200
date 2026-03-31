@@ -17,4 +17,16 @@ public interface MemberService {
 
 	Member selectOne(String userId);
 
+	int pwCheck(String userPw);
+
+	int deleteMember(String userId);
+
+	Member findId(Member member);
+	
+	Member findPw(Member member);
+
+	int updateTempPw(String userId, String tempPw);
+	
+	
+
 }

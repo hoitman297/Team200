@@ -14,8 +14,6 @@ public class SecurityDaoImpl implements SecurityDao {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
-		System.out.print("username = " + username);
-		System.out.println(" from SecurityDaoImpl");
 		return session.selectOne("security.loadUserByUsername",username);
 	}
 
