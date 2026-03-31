@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.semi.spring.lol.model.vo.ChampionVO;
 import com.semi.spring.lol.model.vo.LolItemVO;
+import com.semi.spring.lol.model.vo.RecommendBuildVO;
 import com.semi.spring.lol.model.vo.RuneVO;
 import com.semi.spring.lol.model.vo.SkillVO;
 import com.semi.spring.lol.model.vo.SkinVO;
@@ -24,4 +25,7 @@ public interface LolDao {
 	int insertTalent(TalentVO talent);
 	List<RuneVO> selectAllRunes();
 	List<TalentVO> selectTalentsByRune(int runeNo);
+	
+    int insertRecommendBuild(RecommendBuildVO buildVO);
+    int replaceRecommendBuild(RecommendBuildVO buildVO);
 }
