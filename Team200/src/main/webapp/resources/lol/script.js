@@ -141,9 +141,9 @@ $(document).ready(function() {
     // =========================================================================
     // 4. 룬 (특성) 로딩 기능 (기존 코드 유지)
     // =========================================================================
-    if ($(".path-icon").length > 0) {
-        $(".path-icon").first().click();
-    }
+if ($(".path-icon").length > 0) {
+    $(".path-icon").first().click();
+}
 });
 
 // 전역 함수 (기존 코드 유지)
@@ -162,6 +162,7 @@ function loadTalents(runeNo, runeName, element) {
                 let mainRunesHtml = `<div class="keystone-row">`;
                 let subRunesHtml  = `<div class="subrune-grid">`;
                 let mainRuneCount = (runeName === '정밀') ? 4 : 3;
+                
                 data.forEach((t, index) => {
                     let isMainRune = (index < mainRuneCount); 
                     let slotClass = isMainRune ? "main-rune" : "sub-rune";
@@ -171,15 +172,27 @@ function loadTalents(runeNo, runeName, element) {
                     if (isMainRune) mainRunesHtml += slotHtml;
                     else subRunesHtml += slotHtml;
                 });
+                
                 mainRunesHtml += `</div>`;
                 subRunesHtml += `</div>`;
+                
+                // HTML을 화면에 그려줍니다.
                 $("#primary-slots-container").html(mainRunesHtml + subRunesHtml);
-                setTimeout(() => { $(".talent-slot").first().click(); }, 100);
+                
+                // ✨ [핵심 수정] setTimeout을 없애고 HTML이 그려진 직후 바로 첫 번째 룬을 클릭합니다.
+                let firstSlot = $(".talent-slot").first();
+                if(firstSlot.length > 0) {
+                    firstSlot[0].click(); // 첫 번째 특성 상세정보 자동 표시
+                }
             } else {
-                $("#primary-slots-container").html("<p style='color:white;'>데이터가 없습니다.</p>");
+                $("#primary-slots-container").html("<p style='color:#94a3b8; text-align:center;'>데이터가 없습니다.</p>");
+                $("#desc-name").html("룬 정보 없음");
+                $("#desc-text").html("선택된 룬 경로에 데이터가 존재하지 않습니다.");
             }
         },
-        error: function(xhr, status, error) { console.error("에러 발생: ", error); }
+        error: function(xhr, status, error) { 
+            console.error("에러 발생: ", error); 
+        }
     });
 }
 

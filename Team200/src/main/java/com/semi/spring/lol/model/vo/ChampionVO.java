@@ -14,10 +14,13 @@ public class ChampionVO {
     private String champPosition; // CHAMP_POSITION 
     private String champRoles;    // CHAMP_ROLES 
     private String champImg;      // CHAMP_IMG 
+    private String champIntro;
+    
+    private String id;            // API에서 키값으로 사용하는 영문명
 
-    private String id;            // API에서 키값으로 사용하는 영문명 (예: Garen)
+    //스킬과 스킨 정보
+    private SkillVO skills;       
+    private List<SkinVO> skins;   
 
-    // --- 추가: 스킬과 스킨 정보 ---
-    private SkillVO skills;       // 스킬은 1:1 관계 (테이블 구조상)
-    private List<SkinVO> skins;   // 스킨은 1:N 관계
+    private RecommendBuildVO recommendBuild;
 }

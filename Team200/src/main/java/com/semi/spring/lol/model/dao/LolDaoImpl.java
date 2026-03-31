@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.semi.spring.lol.model.vo.ChampionVO;
 import com.semi.spring.lol.model.vo.LolItemVO;
+import com.semi.spring.lol.model.vo.RecommendBuildVO;
 import com.semi.spring.lol.model.vo.RuneVO;
 import com.semi.spring.lol.model.vo.SkillVO;
 import com.semi.spring.lol.model.vo.SkinVO;
@@ -85,4 +86,13 @@ public class LolDaoImpl implements LolDao {
 		// TODO Auto-generated method stub
 		return session.selectList(NAMESPACE + "selectTalentsByRune", runeNo);
 	}
+	
+	public int insertRecommendBuild(RecommendBuildVO buildVO) {
+		return session.insert(NAMESPACE + "insertRecommendBuild", buildVO);
+	}
+	
+	public int replaceRecommendBuild(RecommendBuildVO buildVO) {
+        // namespace는 본인의 mapper 설정에 맞게 변경해 줘! (예: lolMapper)
+        return session.insert("lolMapper.replaceRecommendBuild", buildVO);
+    }
 }
