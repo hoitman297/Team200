@@ -11,4 +11,5 @@ public class BoardExt extends Board{
 	private List<AttachFile> fileList;
 	private PartyRecruit party;
 	private String thumbnail;
+	private String changeName;
 }

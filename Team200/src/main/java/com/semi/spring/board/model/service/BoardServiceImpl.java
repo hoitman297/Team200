@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +20,9 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
+import com.semi.spring.common.model.vo.PageInfo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -148,7 +152,144 @@ public class BoardServiceImpl implements BoardService {
 	public int insertReply(Reply reply) {
 		return boardDao.insertReply(reply);
 	}
-	
 
+	@Override
+	public int deleteReply(Map<String, Object> paramMap) {
+		return boardDao.deleteReply(paramMap);
+	}
+
+	@Override
+	public int selectGalleryCount(String game) {
+		return boardDao.selectGalleryCount(game);
+	}
+
+	@Override
+	public List<BoardExt> selectGalleryList(PageInfo pi, String game) {
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("gameCode", game);
+	    map.put("offset", (pi.getCurrentPage() - 1) * pi.getBoardLimit() + 1);
+	    map.put("limit", pi.getCurrentPage() * pi.getBoardLimit());
+	    
+	    return boardDao.selectGalleryList(map);
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int insertGallery(BoardExt board, List<MultipartFile> upFiles, String savePath) {
+	    
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("gameCode", board.getGameCode().toUpperCase());
+	    map.put("categoryName", "갤러리");
+	    
+	    int categoryNo = boardDao.selectCategoryNoByName(map);
+	    board.setCategoryNo(categoryNo);
+
+	    int result = boardDao.insertBoard(board);
+
+	    if (result > 0 && upFiles != null) {
+	        List<AttachFile> attachFileList = new ArrayList<>();
+	        for (MultipartFile f : upFiles) {
+	            if (f != null && !f.getOriginalFilename().equals("")) {
+	                String originName = f.getOriginalFilename();
+	                String changeName = FileRename(originName); // 후배님이 만든 메서드
+
+	                AttachFile at = new AttachFile();
+	                at.setBoardNo(board.getBoardNo());
+	                at.setGameCode(board.getGameCode());
+	                at.setOriginName(originName);
+	                at.setChangeName(changeName);
+	                at.setFilePath("/resources/upload/board/");
+	                at.setFileSize(f.getSize());
+	                at.setFileExt(originName.substring(originName.lastIndexOf(".")));
+
+	                attachFileList.add(at);
+
+	                try {
+	                    f.transferTo(new File(savePath + changeName));
+	                } catch (IOException e) {
+	                    throw new RuntimeException("갤러리 파일 저장 중 에러 발생", e);
+	                }
+	            }
+	        }
+	        if (!attachFileList.isEmpty()) {
+	            result = boardDao.insertAttachFileList(attachFileList);
+	        }
+	    }
+	    return result;
+	}
+
+	@Override
+	public int insertInquiry(Inquiry inquiry) {
+		return boardDao.insertInquiry(inquiry);
+	}
+
+	@Override
+	public int selectInquiryCount(Map<String, Object> paramMap) {
+		return boardDao.selectInquiryCount(paramMap);
+	}
+
+	@Override
+	public List<Inquiry> selectInquiryList(PageInfo pi, Map<String, Object> paramMap) {
+		return boardDao.selectInquiryList(pi, paramMap);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public int updateBoard(Board board, List<MultipartFile> upFiles, List<Integer> deleteFileNos, String savePath) {
+	    
+	    int result = boardDao.updateBoard(board);
+
+	    if (result > 0) {
+	        
+	        if (deleteFileNos != null && !deleteFileNos.isEmpty()) {
+	            for (int fileNo : deleteFileNos) {
+	                boardDao.deleteSelectedFile(fileNo);
+	                
+	            }
+	        }
+
+	        if (upFiles != null) {
+	            List<AttachFile> attachFileList = new ArrayList<>();
+
+	            for (int i = 0; i < upFiles.size(); i++) {
+	                MultipartFile f = upFiles.get(i);
+	                String originName = f.getOriginalFilename();
+
+	                if (originName != null && !originName.equals("")) {
+	                    String changeName = FileRename(originName); 
+
+	                    AttachFile at = new AttachFile();
+	                    at.setBoardNo(board.getBoardNo());
+	                    at.setGameCode(board.getGameCode());
+	                    at.setOriginName(originName);
+	                    at.setChangeName(changeName);
+	                    at.setFilePath("/resources/upload/board/");
+	                    at.setFileSize(f.getSize());
+	                    at.setFileExt(originName.substring(originName.lastIndexOf(".")));
+
+	                    attachFileList.add(at);
+
+	                    try {
+	                        f.transferTo(new File(savePath + changeName));
+	                    } catch (IOException e) {
+	                        e.printStackTrace();
+	                        throw new RuntimeException("수정 중 파일 저장 에러가 발생했습니다."); 
+	                    }
+	                }
+	            }
+	            
+	            if (!attachFileList.isEmpty()) {
+	                result = boardDao.insertAttachFileList(attachFileList);
+	            }
+	        }
+	    }
+	    return result;
+	}
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteBoard(int boardNo) {
+        return boardDao.deleteBoard(boardNo);
+    }
 
 }

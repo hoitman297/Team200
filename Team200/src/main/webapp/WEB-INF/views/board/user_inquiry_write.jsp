@@ -1,5 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%-- ✨ 추가: 이전 페이지에서 넘어온 game 값을 읽어서 변수에 저장합니다! --%>
 <c:set var="currentGame" value="${empty param.game ? 'all' : param.game}" />
@@ -30,11 +31,13 @@
             <div class="write-card" style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div class="write-header" style="font-size: 20px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;">📝 문의 작성</div>
                 
-                <form id="qnaForm" action="<c:url value='/board/inquirySubmit' />" method="POST">
+                <form id="qnaForm" action="<c:url value='/board/inquiry/insert' />" method="POST">
+                	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                	
                     <div class="form-group-row" style="display: flex; gap: 20px; margin-bottom: 20px;">
                         <div class="form-item" style="flex: 1;">
                             <label class="label" style="display: block; margin-bottom: 8px; font-weight: 500;">문의 사유</label>
-                            <select name="inquiryType" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                            <select name="reason" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
                                 <option value="report">사용자 신고 관련</option>
                                 <option value="account">계정/로그인 문의</option>
                                 <option value="etc">기타 문의</option>
@@ -44,7 +47,7 @@
                         <%-- ✨ 수정된 부분: 읽기 전용 텍스트에서 선택 가능한 드롭다운으로 변경! --%>
                         <div class="form-item" style="flex: 1;">
                             <label class="label" style="display: block; margin-bottom: 8px; font-weight: 500;">게임 분류</label>
-                            <select name="gameCategory" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                            <select name="gameCode" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
                                 <%-- 넘어온 게임 파라미터와 일치하면 자동으로 selected(선택) 되게 해주는 마법의 EL 표현식! --%>
                                 <option value="all" ${currentGame == 'all' ? 'selected' : ''}>전체/기타</option>
                                 <option value="battleground" ${currentGame == 'battleground' ? 'selected' : ''}>배틀그라운드</option>
@@ -56,12 +59,12 @@
 
                     <div style="margin-bottom: 20px;">
                         <label class="label" style="display: block; margin-bottom: 8px; font-weight: 500;">제목</label>
-                        <input type="text" name="title" placeholder="문의 제목을 입력해주세요." style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+                        <input type="text" name="boardTitle" placeholder="문의 제목을 입력해주세요." style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
                     </div>
 
                     <div style="margin-bottom: 20px;">
                         <label class="label" style="display: block; margin-bottom: 8px; font-weight: 500;">문의 내용</label>
-                        <textarea name="content" placeholder="내용을 상세히 적어주시면 더 빠른 답변이 가능합니다." style="width: 100%; height: 200px; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; resize: vertical;"></textarea>
+                        <textarea name="boardContent" placeholder="내용을 상세히 적어주시면 더 빠른 답변이 가능합니다." style="width: 100%; height: 200px; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; resize: vertical;"></textarea>
                     </div>
 
                     <div class="form-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
