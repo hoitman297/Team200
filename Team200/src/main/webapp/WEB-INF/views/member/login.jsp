@@ -9,12 +9,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/login/style.css">
 	<script src="${pageContext.request.contextPath}/resources/member/login/script.js"></script>
 	
-<style>
-a {
-  text-decoration: none;
-  color : black;
-}
-</style>
 	<title>로그인</title>
 </head>
 <body>

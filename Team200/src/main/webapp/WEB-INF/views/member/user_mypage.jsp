@@ -46,7 +46,7 @@
                 	<a href="<c:url value = '/member/update' />">
                     <div class="menu-item" onclick="msg('회원 정보 및 비밀번호 수정')">
                         <strong>회원 정보 수정</strong>
-                        <span>이메일, 연락처 및 비밀번호를 변경합니다.</span>
+                        <span>이메일, 비밀번호 및 닉네임을 변경합니다.</span>
                     </div>
                     </a>
                 </div>
@@ -58,7 +58,7 @@
                 	<a href="<c:url value = '/member/activity' />">
                     <div class="menu-item" onclick="msg('게시글 조회')">
                         <strong>작성한 게시글 / 댓글 조회</strong>
-                        <span style="color: #ff5454; font-weight: bold;">내가 쓴 글 총 12개</span> 
+                        <span style="color: #ff5454; font-weight: bold;">내가 쓴 글 총 0개</span> 
                     </div>
                     
                     </a>

@@ -1,0 +1,163 @@
+/* =========================================
+   [상세보기 페이지 전용 스타일]
+   ========================================= */
+
+/* 문의글 헤더 (제목 및 작성자 정보) */
+.view-container {
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+.view-header {
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.view-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.view-title h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.view-meta {
+    font-size: 14px;
+    color: var(--text-sub);
+    display: flex;
+    align-items: center;
+}
+
+.meta-item.divider {
+    margin: 0 12px;
+    color: #cbd5e1;
+}
+
+/* ✨ 문의글 본문 (주인님의 질문 영역 - 가독성 & 입체감 강화) */
+.view-content {
+    min-height: 150px;
+    font-size: 16px;
+    font-weight: 500; /* 글씨를 살짝 더 도톰하게 */
+    line-height: 1.8;
+    color: #1e293b; /* 텍스트를 진한 남회색으로 고정 */
+    white-space: pre-wrap; /* 줄바꿈 유지 */
+    
+    padding: 30px; /* 글씨가 벽에 붙지 않게 안쪽 여백 넉넉히 */
+    background-color: #ffffff; /* 완전한 순백색으로 변경하여 글씨 돋보이게 */
+    border: 1px solid #cbd5e1; /* 테두리를 살짝 더 진하게 */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* 은은한 그림자로 입체감 부여 */
+    border-radius: 12px; /* 둥글둥글한 모서리 통일 */
+    margin-top: 20px; /* 위쪽(제목/작성자 정보)과 간격 띄우기 */
+    margin-bottom: 40px; /* 답변 부분과의 간격 확보 */
+}
+
+/* ✨ 관리자 답변 영역 (오피셜 느낌 팍팍 나게 강조!) */
+.answer-container {
+    background-color: #f0f4f9; /* 질문(흰색)과 확실히 대비되는 연푸른색 배경 */
+    border: 1px solid #bfdbfe; /* 테두리도 연한 파란색으로 매칭 */
+    border-left: 6px solid var(--accent-blue); /* 왼쪽에 굵은 파란색 띠를 둘러 오피셜 강조 */
+    border-radius: 12px;
+    padding: 25px 30px; /* 좌우 여백을 살짝 늘림 */
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08); /* 파란빛이 도는 고급스러운 그림자 */
+}
+
+.answer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #94a3b8; /* 구분선을 살짝 더 진하게 */
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-icon {
+    width: 32px;
+    height: 32px;
+    background-color: var(--primary-navy);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-profile strong {
+    font-size: 15px;
+    color: var(--primary-navy);
+}
+
+.answer-date {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* ✨ 관리자 답변 텍스트 */
+.answer-content {
+    font-size: 15.5px; /* 글씨 크기를 아주 살짝 키움 */
+    font-weight: 500; /* 답변도 또렷하게 보이도록 도톰하게 */
+    line-height: 1.7;
+    color: #1e293b; /* 진한 색상으로 가독성 확보 */
+}
+
+/* 하단 버튼 영역 */
+.view-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.btn-list, .btn-edit, .btn-delete {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-list {
+    background: white;
+    border: 1px solid var(--primary-navy);
+    color: var(--primary-navy);
+}
+
+.btn-list:hover {
+    background: var(--bg-soft);
+}
+
+.btn-edit {
+    background: #f1f5f9;
+    border: 1px solid transparent;
+    color: var(--primary-navy);
+    margin-right: 8px;
+}
+
+.btn-edit:hover {
+    background: #e2e8f0;
+}
+
+.btn-delete {
+    background: #fee2e2;
+    border: 1px solid transparent;
+    color: #ef4444;
+}
+
+.btn-delete:hover {
+    background: #fecaca;
+}
