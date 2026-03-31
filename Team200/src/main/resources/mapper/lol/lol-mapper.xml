@@ -4,16 +4,56 @@
 <mapper namespace="lolMapper">
 
 	<select id="selectAllChampions" resultType="championVO">
-		SELECT
-		CHAMP_NO AS champNo,
-		CHAMP_NAME AS champName,
-		CHAMP_POSITION AS champPosition,
-		CHAMP_ROLES AS champRoles,
-		CHAMP_IMG AS champImg,
-		CHAMP_INTRO AS champIntro,
-		CHAMP_NAME AS id FROM CHAMP_INFO
+		SELECT CHAMP_NO AS champNo, 
+		       CHAMP_NAME AS champName,
+		       CHAMP_POSITION AS champPosition,
+		       CHAMP_ROLES AS champRoles,
+		       CHAMP_IMG AS champImg, 
+		       CHAMP_INTRO AS champIntro,
+		       CHAMP_NAME AS id
+		FROM CHAMP_INFO
 		ORDER BY CHAMP_NAME ASC
 	</select>
+
+	<insert id="insertChampion" parameterType="championVO">
+		<selectKey keyProperty="champNo" resultType="int" order="BEFORE">
+			SELECT SEQ_CHAMP_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO CHAMP_INFO (
+			CHAMP_NO, CHAMP_NAME, CHAMP_POSITION,
+			CHAMP_ROLES, CHAMP_IMG, CHAMP_INTRO
+		) VALUES (
+			#{champNo}, #{champName},
+			#{champPosition}, #{champRoles}, #{champImg}, #{champIntro}
+		)
+	</insert>
+
+	<insert id="insertChampionSkills" parameterType="skillVO">
+		INSERT INTO CHAMP_SKILLS_INFO (
+			CHAMP_NO,
+			SKILL_P_NAME, SKILL_P_DESC, SKILL_P_IMG,
+			SKILL_Q_NAME, SKILL_Q_DESC, SKILL_Q_IMG,
+			SKILL_W_NAME, SKILL_W_DESC, SKILL_W_IMG,
+			SKILL_E_NAME, SKILL_E_DESC, SKILL_E_IMG,
+			SKILL_R_NAME, SKILL_R_DESC, SKILL_R_IMG
+		) VALUES (
+			#{champNo},
+			#{skillPName}, #{skillPDesc}, #{skillPImg},
+			#{skillQName}, #{skillQDesc}, #{skillQImg},
+			#{skillWName}, #{skillWDesc}, #{skillWImg},
+			#{skillEName}, #{skillEDesc}, #{skillEImg},
+			#{skillRName}, #{skillRDesc}, #{skillRImg}
+		)
+	</insert>
+
+	<insert id="insertChampionSkin" parameterType="skinVO">
+		INSERT INTO CHAMP_SKIN_INFO (
+			CHAMP_SKIN_NO, CHAMP_NO, CHAMP_SKIN_NAME, CHAMP_SKIN_IMG
+		) VALUES (
+			SEQ_CHAMP_SKIN_NO.NEXTVAL, #{champNo},
+			#{champSkinName}, #{champSkinImg}
+		)
+	</insert>
 
 	<resultMap id="champDetailMap" type="championVO">
 		<id property="champNo" column="CHAMP_NO" />
@@ -47,98 +87,86 @@
 		</collection>
 	</resultMap>
 
-	<select id="getChampDetail" parameterType="_int"
-		resultMap="champDetailMap">
+	<select id="getChampDeta" parameterType="int" resultMap="champDetailMap">
 		SELECT
-		C.CHAMP_NO, C.CHAMP_NAME, C.CHAMP_IMG, C.CHAMP_INTRO,
-		CASE
-		WHEN LOWER(C.CHAMP_POSITION) LIKE '%assassin%' THEN '암살자'
-		WHEN LOWER(C.CHAMP_POSITION) LIKE '%fighter%' THEN '전사'
-		WHEN LOWER(C.CHAMP_POSITION) LIKE '%mage%' THEN '마법사'
-		WHEN LOWER(C.CHAMP_POSITION) LIKE '%marksman%' THEN '원거리 딜러'
-		WHEN LOWER(C.CHAMP_POSITION) LIKE '%support%' THEN '서포터'
-		WHEN LOWER(C.CHAMP_POSITION) LIKE '%tank%' THEN '탱커'
-		ELSE C.CHAMP_POSITION
-		END as CHAMP_POSITION,
-		S.*,
-		K.CHAMP_SKIN_NO, K.CHAMP_SKIN_NAME, K.CHAMP_SKIN_IMG
+			C.CHAMP_NO, C.CHAMP_NAME, C.CHAMP_IMG, C.CHAMP_INTRO,
+			CASE
+				WHEN LOWER(C.CHAMP_POSITION) LIKE '%assassin%' THEN '암살자'
+				WHEN LOWER(C.CHAMP_POSITION) LIKE '%fighter%' THEN '전사'
+				WHEN LOWER(C.CHAMP_POSITION) LIKE '%mage%' THEN '마법사'
+				WHEN LOWER(C.CHAMP_POSITION) LIKE '%marksman%' THEN '원거리 딜러'
+				WHEN LOWER(C.CHAMP_POSITION) LIKE '%support%' THEN '서포터'
+				WHEN LOWER(C.CHAMP_POSITION) LIKE '%tank%' THEN '탱커'
+				ELSE C.CHAMP_POSITION
+			END as CHAMP_POSITION,
+			S.*,
+			K.CHAMP_SKIN_NO, K.CHAMP_SKIN_NAME, K.CHAMP_SKIN_IMG
 		FROM CHAMP_INFO C
 		LEFT JOIN CHAMP_SKILLS_INFO S ON C.CHAMP_NO = S.CHAMP_NO
 		LEFT JOIN CHAMP_SKIN_INFO K ON C.CHAMP_NO = K.CHAMP_NO
 		WHERE C.CHAMP_NO = #{champNo}
 	</select>
 
-	<select id="selectRecommendBuild" parameterType="_int"
-		resultType="map">
+	<select id="selectAllItems" resultType="LolItemVO">
 		SELECT
-		R.CHAMP_NO,
-		I1.ITEM_NAME as ITEM1_NAME, I1.ITEM_IMG as ITEM1_IMG,
-		I2.ITEM_NAME as ITEM2_NAME, I2.ITEM_IMG as ITEM2_IMG,
-		I3.ITEM_NAME as ITEM3_NAME, I3.ITEM_IMG as ITEM3_IMG,
-		T1.TALENT_NAME as RUNE1_NAME, T1.TALENT_IMG as RUNE1_IMG,
-		T2.TALENT_NAME as RUNE2_NAME, T2.TALENT_IMG as RUNE2_IMG,
-		T3.TALENT_NAME as RUNE3_NAME, T3.TALENT_IMG as RUNE3_IMG,
-		T4.TALENT_NAME as RUNE4_NAME, T4.TALENT_IMG as RUNE4_IMG
-		FROM CHAMP_RECOMMEND_INFO R
-		LEFT JOIN LOL_ITEM_INFO I1 ON R.ITEM_NO_1 = I1.ITEM_NO
-		LEFT JOIN LOL_ITEM_INFO I2 ON R.ITEM_NO_2 = I2.ITEM_NO
-		LEFT JOIN LOL_ITEM_INFO I3 ON R.ITEM_NO_3 = I3.ITEM_NO
-		LEFT JOIN TALENT_INFO T1 ON R.TALENT_NO_1 = T1.TALENT_NO
-		LEFT JOIN TALENT_INFO T2 ON R.TALENT_NO_2 = T2.TALENT_NO
-		LEFT JOIN TALENT_INFO T3 ON R.TALENT_NO_3 = T3.TALENT_NO
-		LEFT JOIN TALENT_INFO T4 ON R.TALENT_NO_4 = T4.TALENT_NO
-		WHERE R.CHAMP_NO = #{champNo}
+			ITEM_NO AS itemNo,
+			ITEM_NAME AS itemName,
+			ITEM_PRICE AS itemPrice,
+			ITEM_INFO AS itemInfo,
+			ITEM_IMG AS itemImg,
+			ITEM_TAG AS itemTag 
+		FROM LOL_ITEM_INFO
+		ORDER BY ITEM_PRICE ASC, ITEM_NAME ASC
 	</select>
 
-	<insert id="insertRecommendBuild"
-		parameterType="recommendBuildVO">
-		MERGE INTO CHAMP_RECOMMEND_INFO R
-		USING DUAL
-		ON (R.CHAMP_NO = #{champNo})
-		WHEN MATCHED THEN
-		UPDATE SET
-		ITEM_NO_1 = #{itemNo1},
-		ITEM_NO_2 = #{itemNo2},
-		ITEM_NO_3 = #{itemNo3},
-		TALENT_NO_1 = #{talentNo1},
-		TALENT_NO_2 = #{talentNo2},
-		TALENT_NO_3 = #{talentNo3},
-		TALENT_NO_4 = #{talentNo4}
-		WHEN NOT MATCHED THEN
-		INSERT (
-		CHAMP_NO, ITEM_NO_1, ITEM_NO_2, ITEM_NO_3,
-		TALENT_NO_1, TALENT_NO_2, TALENT_NO_3, TALENT_NO_4
+	<insert id="insertItem" parameterType="LolItemVO">
+		INSERT INTO LOL_ITEM_INFO (
+			ITEM_NO, ITEM_NAME, ITEM_PRICE, 
+			ITEM_INFO, ITEM_IMG, ITEM_TAG 
 		) VALUES (
-		#{champNo}, #{itemNo1}, #{itemNo2}, #{itemNo3},
-		#{talentNo1}, #{talentNo2}, #{talentNo3}, #{talentNo4}
+			#{itemNo}, #{itemName}, #{itemPrice}, 
+			#{itemInfo}, #{itemImg}, #{itemTag} 
 		)
 	</insert>
 
-	<insert id="insertItem" parameterType="LolItemVO">
-		INSERT INTO LOL_ITEM_INFO (ITEM_NO, ITEM_NAME, ITEM_PRICE, ITEM_INFO,
-		ITEM_IMG, ITEM_TAG)
-		VALUES (#{itemNo}, #{itemName}, #{itemPrice}, #{itemInfo}, #{itemImg},
-		#{itemTag})
+	<insert id="insertRune" parameterType="RuneVO">
+		INSERT INTO RUNE_INFO (RUNE_NO, RUNE_NAME, RUNE_INFO, RUNE_IMG)
+		VALUES (SEQ_RUNE_NO.NEXTVAL, #{runeName}, #{runeInfo}, #{runeImg})
+		<selectKey keyProperty="runeNo" resultType="int" order="AFTER">
+			SELECT SEQ_RUNE_NO.CURRVAL FROM DUAL
+		</selectKey>
 	</insert>
 
-	<insert id="replaceRecommendBuild"
-		parameterType="com.semi.spring.lol.model.vo.RecommendBuildVO">
-		MERGE INTO RECOMMEND_BUILD
-		USING DUAL
-		ON (CHAMP_NO = #{champNo})
-		WHEN MATCHED THEN
-		UPDATE SET
-		ITEM_NO1 = #{itemNo1},
-		ITEM_NO2 = #{itemNo2},
-		ITEM_NO3 = #{itemNo3},
-		TALENT_NO1 = #{talentNo1},
-		TALENT_NO2 = #{talentNo2},
-		TALENT_NO3 = #{talentNo3},
-		TALENT_NO4 = #{talentNo4}
-		WHEN NOT MATCHED THEN
-		INSERT (CHAMP_NO, ITEM_NO1, ITEM_NO2, ITEM_NO3, TALENT_NO1, TALENT_NO2,
-		TALENT_NO3, TALENT_NO4)
-		VALUES (#{champNo}, #{itemNo1}, #{itemNo2}, #{itemNo3}, #{talentNo1},
-		#{talentNo2}, #{talentNo3}, #{talentNo4})
+	<insert id="insertTalent" parameterType="TalentVO">
+		INSERT INTO TALENT_INFO (
+			TALENT_NO, RUNE_NO, TALENT_NAME, 
+			TALENT_INFO, TALENT_IMG
+		) VALUES (
+			SEQ_TALENT_NO.NEXTVAL, #{runeNo}, #{talentName}, 
+			#{talentInfo}, #{talentImg}
+		)
 	</insert>
+
+	<select id="selectAllRunes" resultType="RuneVO">
+		SELECT
+			RUNE_NO as runeNo,
+			RUNE_NAME as runeName,
+			RUNE_INFO as runeInfo,
+			RUNE_IMG as runeImg
+		FROM RUNE_INFO
+		ORDER BY RUNE_NO ASC
+	</select>
+	
+	<select id="selectTalentsByRune" parameterType="int" resultType="TalentVO">
+		SELECT
+			TALENT_NO as talentNo,
+			RUNE_NO as runeNo,
+			TALENT_NAME as talentName,
+			TALENT_INFO as talentInfo,
+			TALENT_IMG as talentImg
+		FROM TALENT_INFO
+		WHERE RUNE_NO = #{runeNo}
+		ORDER BY TALENT_NO ASC
+	</select>
+
 </mapper>

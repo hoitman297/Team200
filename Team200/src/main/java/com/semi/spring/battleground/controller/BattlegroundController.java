@@ -1,4 +1,4 @@
-package com.semi.spring.battleground.controller;
+	package com.semi.spring.battleground.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
