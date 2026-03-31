@@ -13,6 +13,7 @@
     <package name="com.semi.spring.security.model.vo"/>
     <package name="com.semi.spring.lol.model.vo"/>
     <package name="com.semi.spring.overwatch.model.vo"/>
+    <package name="com.semi.spring.battleground.model.vo"/>
 </typeAliases>
 
 </configuration>

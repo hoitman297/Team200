@@ -12,6 +12,113 @@
 	-border-light: #e2e8f0;
 }
 
+/* 
+================================================
+		롤 아이템
+================================================
+
+ */
+.item-card {
+    background: white;
+    border-radius: 24px;
+    display: flex;
+    gap: 40px;
+    padding: 20px;
+}
+
+.item-table-container {
+    flex: 1;
+}
+
+.item-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.item-table thead th {
+    padding: 15px;
+    border-bottom: 2px solid #e2e8f0;
+    color: var(--primary-navy);
+}
+
+.item-table tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: center;
+}
+
+/* ✨ 추가된 페이지 버튼 스타일 ✨ */
+.page-nav-btn {
+    border: 1px solid #e2e8f0;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: var(--transition);
+}
+
+.page-nav-btn:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: var(--accent-blue);
+}
+
+.page-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* 카테고리 (기존 유지) */
+.item-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 160px;
+    margin-top: 15px;
+}
+
+.category-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    color: var(--primary-navy);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease-in-out;
+}
+
+.category-icon {
+    width: 8px;
+    height: 8px;
+    background-color: #cbd5e1;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.category-btn:hover .category-icon {
+    background-color: var(--accent-blue);
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background-color: #ffffff;
+    border-color: #3b82f6;
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.category-btn.active .category-icon {
+    background-color: #3b82f6;
+}
+
+
 /* =========================================================================
    룬(특성) 정보 영역 스타일
    ========================================================================= */
