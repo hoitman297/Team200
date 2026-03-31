@@ -110,19 +110,10 @@
 
                 <%-- 댓글 섹션 --%>
                 <section class="comment-section">
-<<<<<<< HEAD
-                    <div class="comment-count">댓글 2</div>
-                    
-                    <div class="comment-form">
-                        <textarea id="commentContent" placeholder="댓글을 남겨보세요."></textarea>
-                        <%-- 3. 버튼 클릭 시 호출되는 AJAX 등에 대비해 CSRF 토큰을 사용할 준비가 됨 --%>
-                        <button class="comment-submit">등록</button>
-                    </div>
 
                     <div class="comment-list">
                         <%-- 댓글 리스트 생략 --%>
                     </div>
-=======
 				    <div class="comment-count" id="reply-count-display">댓글 0</div>
 				    
 				    <div class="comment-form">
@@ -150,14 +141,11 @@
 <!--                             </div> -->
 <!--                         </div> -->
 <!--                     </div> -->
->>>>>>> main
                 </section>
             </article>
         </main>
         <%-- (이하 생략) --%>
     </div>
-<<<<<<< HEAD
-=======
 
     <footer>© 2026 LOG.GG 배틀그라운드 서비스. 모든 권리 보유.</footer>
 		<script>
@@ -271,6 +259,5 @@
 		    });
 		}
 		</script>
->>>>>>> main
 </body>
 </html>

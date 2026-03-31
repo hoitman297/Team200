@@ -41,35 +41,40 @@
                 </div>
 
                 <%-- 💖 action 경로에 들어가는 변수들이 컨트롤러와 일치하는지 확인 완료! 💖 --%>
-                <form id="writeForm" action="<c:url value='/board/${tempBoardType}_write_${gameId}'/>" method="POST" enctype="multipart/form-data">
-                    
-                    <%-- ✅ Spring Security 필수 방패! 이미 잘 들어가 있었습니다! --%>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                    
-                    <div class="form-group">
-                        <label>제목</label>
-                        <%-- ✅ name="title" 확인 완료 --%>
-                        <input type="text" name="title" placeholder="제목을 입력해 주세요" required>
-                    </div>
+				<form id="writeForm"
+					action="<c:url value='/board/${tempBoardType}_write_${gameId}?${_csrf.parameterName}=${_csrf.token}'/>"
+					method="POST" enctype="multipart/form-data">
+					<%-- ✅ Spring Security 필수 방패! 이미 잘 들어가 있었습니다! --%>
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
 
-                    <div class="form-group">
-                        <label>내용</label>
-                        <%-- ✅ name="content" 확인 완료 --%>
-                        <textarea class="editor-area" name="content" rows="15" placeholder="커뮤니티 가이드라인을 준수하여 내용을 작성해 주세요." required></textarea>
-                        
-                        <div class="file-upload">
-                            <%-- ✅ name="upFile" 확인 완료 --%>
-                            <input type="file" name="upFile" multiple style="margin-bottom: 10px;"> <br>
-                            📎 사진이나 파일을 첨부할 수 있습니다.
-                        </div>
-                    </div>
+					<div class="form-group">
+						<label>제목</label>
+						<%-- ✅ name="title" 확인 완료 --%>
+						<input type="text" name="title" placeholder="제목을 입력해 주세요" required>
+					</div>
 
-                    <div class="write-footer">
-                        <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
-                        <button type="submit" class="btn btn-submit">등록하기</button>
-                    </div>
-                </form>
-            </div>
+					<div class="form-group">
+						<label>내용</label>
+						<%-- ✅ name="content" 확인 완료 --%>
+						<textarea class="editor-area" name="content" rows="15"
+							placeholder="커뮤니티 가이드라인을 준수하여 내용을 작성해 주세요." required></textarea>
+
+						<div class="file-upload">
+							<%-- ✅ name="upFile" 확인 완료 --%>
+							<input type="file" name="upFile" multiple
+								style="margin-bottom: 10px;"> <br> 📎 사진이나 파일을 첨부할
+							수 있습니다.
+						</div>
+					</div>
+
+					<div class="write-footer">
+						<button type="button" class="btn btn-cancel"
+							onclick="history.back()">취소</button>
+						<button type="submit" class="btn btn-submit">등록하기</button>
+					</div>
+				</form>
+			</div>
         </main>
 
         <aside class="side-right">
