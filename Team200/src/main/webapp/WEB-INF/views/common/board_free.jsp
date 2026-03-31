@@ -70,8 +70,13 @@
                                 <tr class="board-row-item">
                                     <td>${post.id}</td>
                                     <td class="td-title">
-									<a href="<c:url value='/board/view?boardNo=${post.boardNo}' />">${post.boardTitle}</a>
-									</td>
+                                        <a href="<c:url value='/board/view?boardNo=${post.boardNo}' />">${post.boardTitle}</a>
+                                        
+                                        <%-- 💖 내가 쓴 글이면 제목 옆에 '[내 글]' 표시 (추가된 부분) 💖 --%>
+                                        <c:if test="${not empty sessionScope.loginUser and sessionScope.loginUser.userNo == post.userNo}">
+                                            <span class="my-post-tag" style="color: #3b82f6; font-size: 11px; font-weight: bold; margin-left: 5px;">[내 글]</span>
+                                        </c:if>
+                                    </td>
                                     <td>${post.userName}</td>
                                     <td><fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd"/></td>
                                     <td>${post.readCount}</td>
@@ -82,30 +87,30 @@
                     </c:choose>
                 </tbody>
             </table>
-		
+        
             <div class="pagination">
-			    <%-- 이전 페이지 --%>
-			    <c:if test="${pi.currentPage > 1}">
-			        <a href="?cp=${pi.currentPage - 1}" class="page-link">&lt; 이전</a>
-			    </c:if>
-			
-			    <%-- 페이지 번호 반복문 --%>
-			    <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
-			        <c:choose>
-			            <c:when test="${p == pi.currentPage}">
-			                <span class="page-num active">${p}</span> <%-- 현재 페이지 --%>
-			            </c:when>
-			            <c:otherwise>
-			                <a href="?cp=${p}" class="page-num">${p}</a>
-			            </c:otherwise>
-			        </c:choose>
-			    </c:forEach>
-			
-			    <%-- 다음 페이지 --%>
-			    <c:if test="${pi.currentPage < pi.maxPage}">
-			        <a href="?cp=${pi.currentPage + 1}" class="page-link">다음 &gt;</a>
-			    </c:if>
-			</div>
+                <%-- 이전 페이지 --%>
+                <c:if test="${pi.currentPage > 1}">
+                    <a href="?cp=${pi.currentPage - 1}" class="page-link">&lt; 이전</a>
+                </c:if>
+            
+                <%-- 페이지 번호 반복문 --%>
+                <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
+                    <c:choose>
+                        <c:when test="${p == pi.currentPage}">
+                            <span class="page-num active">${p}</span> <%-- 현재 페이지 --%>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="?cp=${p}" class="page-num">${p}</a>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            
+                <%-- 다음 페이지 --%>
+                <c:if test="${pi.currentPage < pi.maxPage}">
+                    <a href="?cp=${pi.currentPage + 1}" class="page-link">다음 &gt;</a>
+                </c:if>
+            </div>
         </main>
 
         <aside class="sidebar-right">
@@ -119,6 +124,6 @@
     </div>
 
     <footer>© 2026 LOG.GG ${gameName} 서비스. 모든 권리 보유.</footer>
-	
+    
 </body>
 </html>
