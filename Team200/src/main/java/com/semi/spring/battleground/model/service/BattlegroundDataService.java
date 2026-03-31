@@ -93,30 +93,43 @@ public class BattlegroundDataService {
     }
 
     private void setCategoryInfo(BagItemInfoVO item, String itemKey) {
-        int categoryNo = 5; 
-        String itemType = "일반";
+        int categoryNo = 5; // 기본값
+        String itemType = "기타/소모품";
         String keyLower = itemKey.toLowerCase();
         
-        if (keyLower.contains("weapon")) {
-            categoryNo = 1; 
-            itemType = "무기";
-        } else if (keyLower.contains("attach") || keyLower.contains("scope") || keyLower.contains("muzzle") || keyLower.contains("grip")) {
+        // 1. 부착물(Attach)을 무기(Weapon)보다 먼저 체크합니다. (우선순위 상향)
+        // 이유: 파츠 아이템 ID에 'weapon'이 포함된 경우가 많음 (예: Item_Attach_Weapon_Muzzle...)
+        if (keyLower.contains("attach") || keyLower.contains("scope") || 
+            keyLower.contains("muzzle") || keyLower.contains("grip") || 
+            keyLower.contains("stock") || keyLower.contains("magazine")) {
             categoryNo = 2; 
             itemType = "부착물";
-        } else if (keyLower.contains("ammo")) {
+        } 
+        // 2. 부착물이 아닌 것 중 'weapon'이 포함된 것을 순수 무기로 분류
+        else if (keyLower.contains("weapon")) {
+            categoryNo = 1; 
+            itemType = "무기";
+        } 
+        // 3. 탄약
+        else if (keyLower.contains("ammo")) {
             categoryNo = 3; 
             itemType = "탄약";
-        } else if (keyLower.contains("armor") || keyLower.contains("head") || keyLower.contains("vest")) {
+        } 
+        // 4. 방어구 및 가방 (헬멧, 조끼, 가방 등)
+        else if (keyLower.contains("armor") || keyLower.contains("head") || 
+                 keyLower.contains("vest") || keyLower.contains("helmet") || 
+                 keyLower.contains("backpack") || keyLower.contains("equip")) {
             categoryNo = 4; 
             itemType = "방어구";
-        } else if (keyLower.contains("heal") || keyLower.contains("boost") || keyLower.contains("energy") || keyLower.contains("painkiller")) {
+        } 
+        // 5. 회복 및 부스트 아이템
+        else if (keyLower.contains("heal") || keyLower.contains("boost") || 
+                 keyLower.contains("energy") || keyLower.contains("painkiller") || 
+                 keyLower.contains("firstaid") || keyLower.contains("medkit")) {
             categoryNo = 5; 
             itemType = "회복/소모품";
-        } else if (keyLower.contains("backpack")) {
-            categoryNo = 5; 
-            itemType = "가방";
         }
-        
+
         item.setCategoryNo(categoryNo);
         item.setItemType(itemType);
     }
