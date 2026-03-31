@@ -40,10 +40,12 @@
 		<security:intercept-url pattern="/member/loginProcess" access="permitAll"/> 
 		
 	<security:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
-		<security:intercept-url pattern="/board/**" access="hasRole('USER')"/>
-		<security:intercept-url pattern="/reply/**" access="hasRole('USER')"/>
-		<security:intercept-url pattern="/stomp/**" access="permitAll"/>
+	
+		<security:intercept-url pattern="/board/**" access="hasAnyRole('USER', 'ADMIN')"/>
+		<security:intercept-url pattern="/reply/**" access="hasAnyRole('USER', 'ADMIN')"/>
+		<security:intercept-url pattern="/gallery/**" access="hasAnyRole('USER', 'ADMIN')"/>
 		
+		<security:intercept-url pattern="/stomp/**" access="permitAll"/>
 		<security:intercept-url pattern="/**" access="permitAll" />
 		
 		<security:form-login

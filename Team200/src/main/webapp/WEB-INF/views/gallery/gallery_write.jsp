@@ -1,5 +1,26 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<c:set var="gameParam" value="${fn:toUpperCase(empty param.game ? 'BG' : param.game)}" />
+
+<c:choose>
+    <c:when test="${gameParam == 'LOL'}">
+        <c:set var="gameName" value="리그 오브 레전드"/>
+        <c:set var="gameCode" value="LOL"/>
+    </c:when>
+    <c:when test="${gameParam == 'OW'}">
+        <c:set var="gameName" value="오버워치"/>
+        <c:set var="gameCode" value="OW"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="gameName" value="배틀그라운드"/>
+        <c:set var="gameCode" value="BG"/>
+    </c:otherwise>
+</c:choose>
+
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,15 +32,16 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
 	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
 	
-    <title>LOG.GG - 미디어 업로드</title>
+    <title>LOG.GG - ${gameName} 미디어 업로드</title>
 </head>
 <body>
 
-    <c:set var="headerTitle" value="갤러리" />
+    <c:set var="headerTitle" value="${gameName}" />
 	<%@ include file="../common/header.jsp" %>
 
     <div class="main-layout">
         <aside class="side-left">
+        <c:set var="gameId" value="${fn:toLowerCase(gameCode)}" />
             <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
@@ -31,7 +53,11 @@
                     <h2>사진 / 영상 업로드</h2>
                 </div>
 
-                <form id="galleryForm">
+                <form id="galleryForm" action="${pageContext.request.contextPath}/gallery/insert" 
+      			method="POST" enctype="multipart/form-data">
+      			
+      			<input type="hidden" name="gameCode" value="${empty param.game ? 'BG' : param.game.toUpperCase()}">
+      			
                     <div class="form-group">
                         <label class="form-label">제목</label>
                         <input type="text" class="input-title" placeholder="제목을 입력하세요" required>
@@ -77,6 +103,6 @@
         </aside>
     </div>
 
-    <footer>© 2026 LOG.GG 배틀그라운드 서비스. 모든 권리 보유.</footer>
+    <footer>© 2026 LOG.GG ${gameName} 서비스. 모든 권리 보유.</footer>
 </body>
 </html>

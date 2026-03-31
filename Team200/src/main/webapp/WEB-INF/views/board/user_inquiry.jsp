@@ -84,10 +84,28 @@
                 </table>
 
                 <div class="pagination">
-                    <button class="page-btn">이전</button>
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">다음</button>
-                </div>
+			    <%-- 이전 페이지 --%>
+			    <c:if test="${pi.currentPage > 1}">
+			        <a href="?cp=${pi.currentPage - 1}" class="page-link">&lt; 이전</a>
+			    </c:if>
+			
+			    <%-- 페이지 번호 반복문 --%>
+			    <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
+			        <c:choose>
+			            <c:when test="${p == pi.currentPage}">
+			                <span class="page-num active">${p}</span> <%-- 현재 페이지 --%>
+			            </c:when>
+			            <c:otherwise>
+			                <a href="?cp=${p}" class="page-num">${p}</a>
+			            </c:otherwise>
+			        </c:choose>
+			    </c:forEach>
+			
+			    <%-- 다음 페이지 --%>
+			    <c:if test="${pi.currentPage < pi.maxPage}">
+			        <a href="?cp=${pi.currentPage + 1}" class="page-link">다음 &gt;</a>
+			    </c:if>
+			</div>
             </div>
         </main>
 

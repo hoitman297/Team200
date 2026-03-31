@@ -76,11 +76,15 @@
 					                    </div>
 					                    
 					                    <div class="col-title">
-					                        <span style="color: #64748b; margin-right: 8px;">[${best.categoryName}]</span>
-					                        <a href="<c:url value='/board/view?boardNo=${best.boardNo}' />">
-					                            ${best.boardTitle}
-					                        </a>
-					                    </div>
+									
+										    <a href="<c:url value='/board/view?boardNo=${best.boardNo}' />" style="text-decoration: none; color: inherit; vertical-align: middle;">
+										        ${best.boardTitle}
+										        
+										        <c:if test="${best.replyCount > 0}">
+										            <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px; margin-left: 4px;">[${best.replyCount}]</span>
+										        </c:if>
+										    </a>
+										</div>
 					                    
 					                    <div class="col-author">
 					                        ${best.userName}

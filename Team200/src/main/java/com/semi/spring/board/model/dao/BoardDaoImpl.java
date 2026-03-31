@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
 
@@ -57,11 +59,6 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public int insertBoard(Board board) {
 		return session.insert("board.insertBoard",board);
-	}
-
-	@Override
-	public int updateBoard(Board board) {
-		return session.update("board.updateBoard",board);
 	}
 
 	@Override
@@ -122,5 +119,59 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public int insertReply(Reply reply) {
 		return session.insert("board.insertReply",reply);
+	}
+	
+	@Override
+	public int deleteReply(Map<String, Object> paramMap) {
+	    return session.update("board.deleteReply", paramMap);
+	}
+
+	@Override
+	public int selectCategoryNoByName(Map<String, Object> map) {
+		return session.selectOne("board.selectCategoryNoByName", map);
+	}
+
+	@Override
+	public int selectGalleryCount(String game) {
+		return session.selectOne("board.selectGalleryCount", game);
+	}
+
+	@Override
+	public List<BoardExt> selectGalleryList(Map<String, Object> map) {
+		return session.selectList("board.selectGalleryList", map);
+	}
+
+	@Override
+	public int insertInquiry(Inquiry inquiry) {
+		return session.insert("board.insertInquiry", inquiry);
+	}
+
+	@Override
+	public int selectInquiryCount(Map<String, Object> paramMap) {
+		return session.selectOne("board.selectInquiryCount", paramMap);
+	}
+
+	@Override
+	public List<Inquiry> selectInquiryList(PageInfo pi, Map<String, Object> paramMap) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+	    RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+	    
+	    return session.selectList("board.selectInquiry", paramMap, rowBounds);
+	}
+
+	@Override
+	public int deleteBoard(int boardNo) {
+		return session.update("board.deleteBoard", boardNo);
+	}
+
+	@Override
+	public int updateBoard(Board board) {
+		return session.update("board.updateBoard", board);
+	}
+
+	@Override
+	public void deleteSelectedFile(int fileNo) {
+		session.delete("board.deleteSelectedFile", fileNo);
+		
 	}
 }

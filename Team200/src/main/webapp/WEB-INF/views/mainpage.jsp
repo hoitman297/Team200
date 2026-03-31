@@ -56,103 +56,19 @@
 						alt="PUBG"></a>
 				</div>
 			</div>
-
 			<div class="board-card">
-				<div class="tab-menu" style="position: relative;">
-				    <div class="tab-item active">인기 게시글</div>
-				
-				    <div style="position: relative; display: inline-block;" 
-				         onmouseenter="this.querySelector('.preview-container').style.display='block'" 
-				         onmouseleave="this.querySelector('.preview-container').style.display='none'">
-				        
-				        <a href="<c:url value='/lol/main' />"><div class="tab-item">리그 오브 레전드</div></a>
-				        
-				        <div class="preview-container" style="display: none; position: absolute; top: 100%; left: 0; width: 450px; background: white; border-radius: 15px; box-shadow: var(--card-shadow); z-index: 1000; padding: 10px; border: 1px solid #f1f5f9;">
-				            <div class="board-row header-row" style="padding: 10px 0; border-bottom: 2px solid #f1f5f9; font-size: 13px;">
-				                <div class="col-likes" style="width: 50px;">공감</div>
-				                <div class="col-title" style="flex: 1; text-align: left; padding-left: 15px;">제목</div>
-				                <div class="col-author" style="width: 80px;">작성자</div>
-				                <div class="col-date" style="width: 70px;">날짜</div>
-				            </div>
-				            <c:forEach var="b" items="${lolBest}">
-				                <div class="board-row" style="padding: 10px 0; border-bottom: 1px solid #f8fafc; font-size: 13px;">
-				                    <div class="col-likes" style="width: 50px; color: var(--accent-blue); font-weight: bold;">${b.likeCount}</div>
-				                    
-				                    <div class="col-title" style="flex: 1; text-align: left; padding-left: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-				                        <a href="<c:url value='/board/view?boardNo=${b.boardNo}' />" style="text-decoration: none; color: inherit; display: block; width: 100%;">
-				                            ${b.boardTitle}
-				                        </a>
-				                    </div>
-				                    
-				                    <div class="col-author" style="width: 80px; color: #64748b;">${b.userName}</div>
-				                    <div class="col-date" style="width: 70px; color: #94a3b8; text-align: right;">
-				                        <fmt:formatDate value="${b.postDate}" pattern="MM.dd"/>
-				                    </div>
-				                </div>
-				            </c:forEach>
-				        </div>
-				    </div>
-				
-				    <div style="position: relative; display: inline-block;" 
-				         onmouseenter="this.querySelector('.preview-container').style.display='block'" 
-				         onmouseleave="this.querySelector('.preview-container').style.display='none'">
-				        
-				        <a href="<c:url value='/ow/main' />"><div class="tab-item">오버워치</div></a>
-				        
-				        <div class="preview-container" style="display: none; position: absolute; top: 100%; left: 0; width: 450px; background: white; border-radius: 15px; box-shadow: var(--card-shadow); z-index: 1000; padding: 10px; border: 1px solid #f1f5f9;">
-				            <div class="board-row header-row" style="padding: 10px 0; border-bottom: 2px solid #f1f5f9; font-size: 13px;">
-				                <div class="col-likes" style="width: 50px;">공감</div>
-				                <div class="col-title" style="flex: 1; text-align: left; padding-left: 15px;">제목</div>
-				                <div class="col-author" style="width: 80px;">작성자</div>
-				                <div class="col-date" style="width: 70px;">날짜</div>
-				            </div>
-				            <c:forEach var="b" items="${owBest}">
-				                <div class="board-row" style="padding: 10px 0; border-bottom: 1px solid #f8fafc; font-size: 13px;">
-				                    <div class="col-likes" style="width: 50px; color: var(--accent-blue); font-weight: bold;">${b.likeCount}</div>
-				                    <div class="col-title" style="flex: 1; text-align: left; padding-left: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-				                        <a href="<c:url value='/board/view?boardNo=${b.boardNo}' />" style="text-decoration: none; color: inherit; display: block; width: 100%;">
-				                            ${b.boardTitle}
-				                        </a>
-				                    </div>
-				                    <div class="col-author" style="width: 80px; color: #64748b;">${b.userName}</div>
-				                    <div class="col-date" style="width: 70px; color: #94a3b8; text-align: right;">
-				                        <fmt:formatDate value="${b.postDate}" pattern="MM.dd"/>
-				                    </div>
-				                </div>
-				            </c:forEach>
-				        </div>
-				    </div>
-				
-				    <div style="position: relative; display: inline-block;" 
-				         onmouseenter="this.querySelector('.preview-container').style.display='block'" 
-				         onmouseleave="this.querySelector('.preview-container').style.display='none'">
-				        
-				        <a href="<c:url value='/bg/main' />"><div class="tab-item">배틀그라운드</div></a>
-				        
-				        <div class="preview-container" style="display: none; position: absolute; top: 100%; left: 0; width: 450px; background: white; border-radius: 15px; box-shadow: var(--card-shadow); z-index: 1000; padding: 10px; border: 1px solid #f1f5f9;">
-				            <div class="board-row header-row" style="padding: 10px 0; border-bottom: 2px solid #f1f5f9; font-size: 13px;">
-				                <div class="col-likes" style="width: 50px;">공감</div>
-				                <div class="col-title" style="flex: 1; text-align: left; padding-left: 15px;">제목</div>
-				                <div class="col-author" style="width: 80px;">작성자</div>
-				                <div class="col-date" style="width: 70px;">날짜</div>
-				            </div>
-				            <c:forEach var="b" items="${bgBest}">
-				                <div class="board-row" style="padding: 10px 0; border-bottom: 1px solid #f8fafc; font-size: 13px;">
-				                    <div class="col-likes" style="width: 50px; color: var(--accent-blue); font-weight: bold;">${b.likeCount}</div>
-				                    <div class="col-title" style="flex: 1; text-align: left; padding-left: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-				                        <a href="<c:url value='/board/view?boardNo=${b.boardNo}' />" style="text-decoration: none; color: inherit; display: block; width: 100%;">
-				                            ${b.boardTitle}
-				                        </a>
-				                    </div>
-				                    <div class="col-author" style="width: 80px; color: #64748b;">${b.userName}</div>
-				                    <div class="col-date" style="width: 70px; color: #94a3b8; text-align: right;">
-				                        <fmt:formatDate value="${b.postDate}" pattern="MM.dd"/>
-				                    </div>
-				                </div>
-				            </c:forEach>
-				        </div>
-				    </div>
-				</div>
+
+                <div class="tab-menu">
+
+                    <div class="tab-item active">인기 게시글</div>
+
+                    <a href="<c:url value = '/lol/main' />"><div class="tab-item">리그 오브 레전드</div></a>
+
+                    <a href="<c:url value = '/ow/main' />"><div class="tab-item">오버워치</div></a>
+
+                    <a href="<c:url value = '/bg/main' />"><div class="tab-item">배틀그라운드</div></a>
+
+                </div>
 
 				<div class="tab-content">
 					<div class="board-row header-row">
@@ -173,10 +89,18 @@
 									<div class="col-likes">${best.likeCount}</div>
 
 									<div class="col-title">
-										<span style="color: #64748b; margin-right: 8px;">[${best.categoryName}]</span>
-										<a
-											href="<c:url value='/board/view?boardNo=${best.boardNo}' />">
-											${best.boardTitle} </a>
+									    <a href="<c:url value='/board/view?boardNo=${best.boardNo}' />" style="text-decoration: none; color: inherit; display: block; width: 100%;">
+									        
+<!-- 									        <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px; margin-left: 4px;"> -->
+<%-- 									            [${best.gameCode == 'LOL' ? '롤' : (best.gameCode == 'OW' ? '옵치' : '배그')}] --%>
+<!-- 									        </span> -->
+									
+									        <span style="font-weight: 500;">${best.boardTitle}</span>
+									        
+									        <c:if test="${best.replyCount > 0}">
+									            <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px; margin-left: 4px;">[${best.replyCount}]</span>
+									        </c:if>
+									    </a>
 									</div>
 
 									<div class="col-author">${best.userName}</div>
