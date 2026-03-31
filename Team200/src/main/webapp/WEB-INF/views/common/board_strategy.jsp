@@ -53,6 +53,8 @@
                         <th style="width: 60px;">공감</th>
                     </tr>
                 </thead>
+<<<<<<< HEAD
+=======
                 <tbody id="boardTableBody">
                     <%-- 💖 임시 테스트용 가짜 데이터 시작 💖 --%>
 <!--                     <tr class="board-row-item"> -->
@@ -80,6 +82,7 @@
 <!--                         <td>5</td> -->
 <!--                     </tr> -->
                     <%-- 💖 임시 테스트용 가짜 데이터 끝 💖 --%>
+>>>>>>> main
 
                     <%-- 🚨 깐깐한 c:choose 블록 (공백 완전 제거) 🚨 --%>
                     <c:choose><c:when test="${empty boardList}">
@@ -91,11 +94,24 @@
                             <tr class="board-row-item">
                                 <td>${post.id}</td>
                                 <td class="td-title">
+<<<<<<< HEAD
+                                    ${post.title}
+                                    <%-- 💖 내가 쓴 글이면 제목 옆에 '[내 글]' 표시 추가 💖 --%>
+                                    <c:if test="${not empty sessionScope.loginUser and sessionScope.loginUser.userNo == post.userNo}">
+                                        <span class="my-post-tag" style="color: #3b82f6; font-size: 11px; font-weight: bold; margin-left: 5px;">[내 글]</span>
+                                    </c:if>
+                                </td>
+                                <td>${post.writer}</td>
+                                <td>${post.date}</td>
+                                <td>${post.views}</td>
+                                <td>${post.likes}</td>
+=======
                                 <a href="<c:url value='/board/view?boardNo=${post.boardNo}' />">${post.boardTitle}</a></td>
                                 <td>${post.userName}</td>
                                 <td><fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd"/></td>
                                 <td>${post.readCount}</td>
                                 <td>${post.likeCount}</td>
+>>>>>>> main
                             </tr>
                         </c:forEach>
                     </c:otherwise></c:choose>

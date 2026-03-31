@@ -9,6 +9,7 @@
 <c:set var="gameName" value="리그 오브 레전드" />
 <c:set var="gameThemeCss" value="board/board_write/style.css" /> <%-- 게임별 전용 CSS가 있다면 경로 변경 --%>
 <c:set var="boardNotice" value="욕설 및 비방글은 금지됩니다.<br>게시판 성격에 맞는 글을 작성해 주세요.<br>도배 시 이용 제한이 있을 수 있습니다." />
+<c:set var="tempBoardType" value="free" />
 
 <%-- 2. 공통 뼈대 파일 불러오기 --%>
 <%@ include file="../common/board_freewrite.jsp" %>
