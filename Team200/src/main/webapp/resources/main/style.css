@@ -291,12 +291,14 @@ header {
     content: attr(data-title);
     position: absolute;
     bottom: 25px;
-    left: 25px;
+    left: 50%; /* 1단계: 카드 가로 길이의 딱 절반(50%) 위치로 이동! */
+    transform: translateX(-50%); /* 2단계: 텍스트 너비의 절반만큼 왼쪽으로 다시 당겨오기! */
     color: white;
     font-weight: 800;
     font-size: 20px;
+    text-align: center;
+    white-space: nowrap; /* 글자가 부모 요소 너비에 막혀 두 줄로 깨지는 것을 방지해요! */
 }
-
 /* 게시판 섹션 */
 .board-card {
     background: white;

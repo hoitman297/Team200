@@ -51,11 +51,9 @@
         </div>
 
         <div class="footer-link">
-            <a href="login.html">로그인 화면으로 돌아가기</a>
+            <a href="${pageContext.request.contextPath}/member/login">로그인 화면으로 돌아가기</a>
         </div>
     </div>
-
-    <script src="/Front/JS/마이페이지/로그인관련/아이디비번찾기.js"></script>
 
 </body>
 </html>
