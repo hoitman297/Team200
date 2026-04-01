@@ -59,13 +59,14 @@
                 	<a href="<c:url value = '/member/activity' />">
                     <div class="menu-item" onclick="msg('게시글 조회')">
                         <strong>작성한 게시글 / 댓글 조회</strong>
-                        <span style="color: #ff5454; font-weight: bold;">내가 쓴 글 총 0개</span> 
+                        <span style="color: #ff5454; font-weight: bold;">
+                        	내가 쓴 글 총 ${totalBoardCount}개 | 댓글 ${totalReplyCount}개</span> 
                     </div>
                     
                     </a>
                     <a href="<c:url value = '/member/comment' />">
                     <div class="menu-item" onclick="msg('삭제 관리')">
-                        <strong>수정 및 삭제 관리</strong>
+                        <strong>댓글 일괄 삭제</strong>
                         <span>일괄 삭제 기능을 제공합니다.</span>
                     </div>
                     </a>
