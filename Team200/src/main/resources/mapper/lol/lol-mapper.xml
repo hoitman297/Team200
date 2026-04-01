@@ -120,7 +120,7 @@
 	</select>
 
 	<insert id="insertItem" parameterType="LolItemVO">
-		INSERT INTO LOL_ITEM_INFO (
+		MERGE INTO LOL_ITEM_INFO (
 			ITEM_NO, ITEM_NAME, ITEM_PRICE, 
 			ITEM_INFO, ITEM_IMG, ITEM_TAG 
 		) VALUES (
