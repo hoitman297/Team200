@@ -35,9 +35,14 @@
 	                <label>이메일</label>
 	                <form:input path="email" id="email1" type="email" placeholder="example@log.gg" required="true"/>
 	            </div>
-	            <div>
-            		<p>회원님의 아이디는 [<strong id="ID_RESULT"></strong>] 입니다.</p>
-            	</div>
+	            <div id="id_result_area" style="display:none; margin-top: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; text-align: center;">
+				    <p id="id_success_msg" style="display:none; margin: 0; color: #333;">
+				        회원님의 아이디는 <strong id="found_id" style="color: #ff4747;"></strong> 입니다.
+				    </p>
+				    <p id="id_fail_msg" style="display:none; margin: 0; color: #ff4747; font-weight: bold;">
+				        일치하는 회원 정보가 없습니다.
+				    </p>
+				</div>
 	         	   <button type="button" class="btn-main" onclick="findId()">아이디 찾기</button>
             </form:form>
         </div>
@@ -57,10 +62,18 @@
 		                <label>가입 이메일</label>
 		                <form:input path="email" id="email2" type="email" placeholder="example@log.gg" required="true"/>
 		            </div>
-		            <div>
-		            	<p>임시 비밀번호를 발급받습니다. 발급받으신 후 변경 부탁드립니다</p>
-		            	<p>회원님의 임시비밀번호는 [<strong id="PW_RESULT"></strong>] 입니다.</p>
-		            </div>
+		            <div class="pw-info-box" style="margin-top: 15px; font-size: 0.9em; color: #666;">
+			            <p>※ 임시 비밀번호를 발급받습니다. 발급받고 반드시 비밀번호를 변경해 주세요.</p>
+			        </div>
+			
+			        <div id="pw_result_area" style="display:none; margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; text-align: center;">
+			            <p id="pw_success_msg" style="display:none; margin: 0; color: #333;">
+			                회원님의 임시비밀번호는 <strong id="PW_RESULT" style="color: #ff4747;"></strong> 입니다.
+			            </p>
+			            <p id="pw_fail_msg" style="display:none; margin: 0; color: #ff4747; font-weight: bold;">
+			                일치하는 회원 정보가 없습니다.
+			            </p>
+			        </div>
           	  <button type="button" class="btn-main" onclick="findPw()">비밀번호 찾기</button>
             </form:form>
         </div>
@@ -92,13 +105,20 @@
                     email: email
     			},
     			success : function(result){
-					if(result != ""){
-						$("#ID_RESULT").text(result);
-					}else{
-						alert("일치하는 회원 정보가 없습니다.");
-						$("#ID_RESULT").text("");
-					}	
-				},
+    	            // 영역 일단 보이기
+    	            $("#id_result_area").show();
+
+    	            if(result !== "" && result !== null){
+    	                // 아이디가 있을 때
+    	                $("#id_success_msg").show();
+    	                $("#id_fail_msg").hide();
+    	                $("#found_id").text(result);
+    	            } else {
+    	                // 아이디가 없을 때
+    	                $("#id_success_msg").hide();
+    	                $("#id_fail_msg").show();
+    	            }    
+    	        },
 				error : function(){
 					alert("서버 통신 오류 발생")
 				}
@@ -125,13 +145,21 @@
                     email: email
     			},
     			success : function(result){
-    				if (result !== "") {
-                        $("#PW_RESULT").text(result);
-                    } else {
-                        alert("일치하는 정보가 없습니다.");
-                        $("#PW_RESULT").text("");
-                    }	
-				},
+    	            // 결과 영역 노출
+    	            $("#pw_result_area").show();
+
+    	            if (result !== "" && result !== null) {
+    	                // 성공 시
+    	                $("#pw_success_msg").show();
+    	                $("#pw_fail_msg").hide();
+    	                $("#PW_RESULT").text(result);
+    	            } else {
+    	                // 실패 시
+    	                $("#pw_success_msg").hide();
+    	                $("#pw_fail_msg").show();
+    	                $("#PW_RESULT").text("");
+    	            }    
+    	        },
     			error: function() {
                     alert("서버 통신 오류 발생");
                 }

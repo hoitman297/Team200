@@ -27,7 +27,9 @@
 	<div class="main-layout">
 		<aside class="side-left">
 			<div class="side-card">
-				<h3>패치 노트</h3>
+				<h3>패치 노트<button class="btn-mini" style="background:#fff">
+                <a href="<c:url value = '/board/patchnote'/>">목록</a></button></h3>
+				
 				<div class="list-item">2026.03.05 [오버워치]</div>
 				<div class="list-item">2026.02.05 [배틀그라운드]</div>
 				<div class="list-item">2026.01.15 [롤]</div>
@@ -118,9 +120,9 @@
 
 		<aside class="side-right">
 			<div class="side-card">
-				<h3>공지사항</h3>
-				<div class="list-item">공개 테스트 서버 안내</div>
-				<div class="list-item">웹사이트 업데이트 내역</div>
+				<h3>공지사항<button class="btn-mini" style="background:#fff">
+                <a href="<c:url value = '/board/notice'/>">목록</a></button></h3>
+				<div class="list-item">${title}</div>
 			</div>
 		</aside>
 	</div>

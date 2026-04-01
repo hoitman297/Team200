@@ -32,7 +32,60 @@
 		#{patchnoteNo}, #{gameCode}, #{title}, DEFAULT, #{patchnoteContent}
 		)
 	</insert>
+	
+	<select id="selectRecentNotice" resultType="notice">
+	    SELECT * FROM (
+	        SELECT TITLE, POST_DATE
+	        FROM NOTICE
+	        ORDER BY NOTICE_NO DESC
+	    )
+	    WHERE ROWNUM = 1
+	</select>
+	
+	<select id="selectRecentPatchnote" resultType="patchnote">
+	    SELECT * FROM (
+	        SELECT TITLE, POST_DATE
+	        FROM PATCHNOTE
+	        ORDER BY PATCHNOTE_NO DESC
+	    )
+	    WHERE ROWNUM = 1
+	</select>
 
+	<select id="selectInquiryList" resultType="inquiry">
+		SELECT BOARD_NO AS boardNo ,
+		 	   GAME_CODE AS gameCode ,
+		 	   BOARD_CONTENT AS boardContent ,
+		 	   BOARD_TITLE AS boardTitle,
+		 	   USER_NAME AS userName ,
+		 	   POST_DATE AS postDate ,
+		 	   ANSWER_STATUS AS answerStatus
+		FROM INQUIRY
+		ORDER BY BOARD_NO DESC
+	</select>
+	
+	<select id="selectMemberList" resultType="member">
+		SELECT USER_NO AS userNo ,
+			   USER_ID as userId ,
+			   USER_NAME as userName ,
+			   EMAIL as email ,
+			   WITHDRAW as withdraw ,
+			   ENROLL_DATE as enrollDate
+		FROM LOG_GG_USER
+		ORDER BY USER_NO DESC
+	</select>
+	
+	<update id="deleteMember">
+		UPDATE LOG_GG_USER
+		SET WITHDRAW = 'Y'
+		WHERE USER_NO = #{userNo}
+	</update>
+	
+	<update id="updateUserWithdraw" parameterType="map">
+	    UPDATE LOG_GG_USER 
+	    SET WITHDRAW = UPPER(TRIM(#{withdraw})) 
+	    WHERE USER_NO = #{userNo}
+	</update>
+	
 
 
 
