@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
@@ -69,4 +70,10 @@ public interface BoardService {
 	List<Map<String, Object>> selectMyReplies(PageInfo pi, Map<String, Object> paramMap);
 	
 	int deleteMyReplies(Map<String, Object> paramMap);
+	
+    List<GameInfoReply> selectInfoReplies(Map<String, Object> paramMap);
+
+    int insertInfoReply(GameInfoReply reply);
+    
+    int deleteInfoReply(GameInfoReply reply);
 }
