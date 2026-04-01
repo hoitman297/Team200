@@ -22,4 +22,14 @@ public interface MemberDao {
 	Member selectOne(String userId);
 
 	int nameCheck(String userName);
+
+	int pwCheck(String userPw);
+
+	int deleteMember(String userId);
+
+	Member selectId(Member member);
+	
+	Member selectPw(Member member);
+	
+	int updateTempPw(Member member);
 }

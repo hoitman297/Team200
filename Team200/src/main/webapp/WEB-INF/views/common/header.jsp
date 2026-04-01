@@ -1,12 +1,28 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<!-- alertify -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<!-- alertify css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+<!-- Default theme -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"/>
+
+<c:if test="${not empty alertMsg}">
+<script>
+	toastr.options.progressBar = true;
+	toastr.success("서비스요청결과",'${alertMsg}' ,{timeOut : 2000});
+	//toastr.error("에러 발생", '${error}' , {timeOut : 3000})
+</script>
+</c:if>
+
 <%-- 
   주의: include되는 파일에는 html, head, body 태그를 쓰지 않는다. 
   여기에 적힌 태그들이 부모 페이지의 <body> 태그 안으로 그대로 들어감.
 --%>
+
 <header>
 	<div class="dropdown" id="mainMenu">
 		<div class="header-left">☰ ${not empty headerTitle ? headerTitle : '메인페이지'}

@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_mypage/style.css">
 	<script src="${pageContext.request.contextPath}/resources/member/user_mypage/script.js"></script>
+    <sec:authentication property="principal" var="loginUser"/>
     
     <title>마이페이지 - Desktop Dashboard</title>
 </head>

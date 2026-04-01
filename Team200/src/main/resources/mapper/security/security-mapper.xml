@@ -8,6 +8,7 @@
 			USER_ID, 
 			USER_PW,  
 			USER_NAME,
+			EMAIL,
 			CASE 
 				WHEN USER_ROLE = 'A' THEN 'ROLE_ADMIN'
 				ELSE 'ROLE_USER'
@@ -23,6 +24,7 @@
 		<result column="USER_ID" property="userId" />
 		<result column="USER_PW" property="userPw" />
 		<result column="USER_NAME" property="userName" />
+		<result property="email" column="email" />
 		
 		<collection property="authorities"
 			javaType="java.util.ArrayList"
