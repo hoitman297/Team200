@@ -156,7 +156,7 @@ public class BoardDaoImpl implements BoardDao {
 		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
 	    RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
 	    
-	    return session.selectList("board.selectInquiry", paramMap, rowBounds);
+	    return session.selectList("board.selectInquiryList", paramMap, rowBounds);
 	}
 
 	@Override
@@ -173,5 +173,15 @@ public class BoardDaoImpl implements BoardDao {
 	public void deleteSelectedFile(int fileNo) {
 		session.delete("board.deleteSelectedFile", fileNo);
 		
+	}
+
+	@Override
+	public Inquiry selectInquiryDetail(int boardNo) {
+		return session.selectOne("board.selectInquiryDetail", boardNo);
+	}
+	
+	@Override
+	public int deleteInquiry(int boardNo) {
+	    return session.delete("board.deleteInquiry", boardNo);
 	}
 }

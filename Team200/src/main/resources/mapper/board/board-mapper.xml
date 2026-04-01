@@ -361,10 +361,11 @@
 	</update>
 	
 	<!-- 1:1문의 -->
-	<select id="selectInquiry" resultType="inquiry">
+	<select id="selectInquiryList" resultType="inquiry">
 	SELECT 
         BOARD_NO, 
         BOARD_TITLE, 
+        USER_NAME,
         GAME_CODE,
         REASON, 
         POST_DATE, 
@@ -422,6 +423,11 @@
         ANSWER_STATUS = 'C'
     WHERE BOARD_NO = #{boardNo}
 	</update>
+	
+	<delete id="deleteInquiry">
+    DELETE FROM INQUIRY 
+    WHERE BOARD_NO = #{boardNo}
+	</delete>
 	
 	<!-- 공감 -->
 	<insert id="insertBoardLike" parameterType="boardLike">

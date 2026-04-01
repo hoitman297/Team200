@@ -44,17 +44,15 @@
                             </select>
                         </div>
                         
-                        <%-- ✨ 수정된 부분: 읽기 전용 텍스트에서 선택 가능한 드롭다운으로 변경! --%>
-                        <div class="form-item" style="flex: 1;">
-                            <label class="label" style="display: block; margin-bottom: 8px; font-weight: 500;">게임 분류</label>
-                            <select name="gameCode" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
-                                <%-- 넘어온 게임 파라미터와 일치하면 자동으로 selected(선택) 되게 해주는 마법의 EL 표현식! --%>
-                                <option value="all" ${currentGame == 'all' ? 'selected' : ''}>전체/기타</option>
-                                <option value="battleground" ${currentGame == 'battleground' ? 'selected' : ''}>배틀그라운드</option>
-                                <option value="lol" ${currentGame == 'lol' ? 'selected' : ''}>리그 오브 레전드</option>
-                                <option value="overwatch" ${currentGame == 'overwatch' ? 'selected' : ''}>오버워치</option>
-                            </select>
-                        </div>
+						<div class="form-item" style="flex: 1;">
+						    <label class="label" style="display: block; margin-bottom: 8px; font-weight: 500;">게임 분류</label>
+						    <select name="gameCode" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;" required>
+						        <option value="all" ${currentGame == 'all' ? 'selected' : ''}>전체/기타</option>
+						        <option value="battleground" ${currentGame == 'battleground' ? 'selected' : ''}>배틀그라운드</option>
+						        <option value="lol" ${currentGame == 'lol' ? 'selected' : ''}>리그 오브 레전드</option>
+						        <option value="overwatch" ${currentGame == 'overwatch' ? 'selected' : ''}>오버워치</option>
+						    </select>
+						</div>
                     </div>
 
                     <div style="margin-bottom: 20px;">

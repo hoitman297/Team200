@@ -46,55 +46,6 @@ public class BoardController {
     private final ResourceLoader resourceLoader;
     private final ServletContext application;
 
-    // 문의 상세 보기
-    @GetMapping("/inquiryView")
-    public String board_inquiryView() {
-        return "board/user_inquiry_view";
-    }
-
-<<<<<<< HEAD
-    // 게시글 상세보기
-    @GetMapping("/view")
-    public String board_view(
-            @RequestParam("boardNo") int boardNo,
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Model model) {
-        
-        Cookie[] cookies = request.getCookies();
-        boolean isViewed = false;
-        
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("viewed_board_" + boardNo)) {
-                    isViewed = true;
-                    break; 
-                }
-            }
-        }
-        
-        if (!isViewed) {
-            boardService.increaseCount(boardNo); 
-            
-            Cookie newCookie = new Cookie("viewed_board_" + boardNo, "true");
-            newCookie.setMaxAge(60 * 60); 
-            newCookie.setPath("/"); 
-            
-            response.addCookie(newCookie);
-        }
-        
-        BoardExt board = boardService.selectBoard(boardNo);
-        
-        if (board == null) {
-            return "redirect:/";
-        }    
-        
-        model.addAttribute("board", board);
-        return "board/board_view";
-    }
-        
-    // [헬퍼] 게임코드 -> DB용 코드
-=======
 	@GetMapping("/view")
 	public String board_view(
 	        @RequestParam("boardNo") int boardNo,
@@ -135,30 +86,40 @@ public class BoardController {
 	}
         
 	// 게임코드 변환 헬퍼 메서드
->>>>>>> main
-    private String getDbGameCode(String gameCode) {
-        switch(gameCode.toLowerCase()) {
-            case "battleground": return "BG";
-            case "overwatch": return "OW";
-            case "lol": return "LOL";
-            default: return gameCode.toUpperCase();
-        }
-    }
-<<<<<<< HEAD
+	private String getDbGameCode(String gameCode) {
+	    if (gameCode == null) return "all";
+	    
+	    // 무조건 대문자로 바꿔서 비교
+	    switch(gameCode.toUpperCase()) {
+	        case "BATTLEGROUND":
+	        case "BG":
+	            return "BG";
+	        case "OVERWATCH":
+	        case "OW":
+	            return "OW";
+	        case "LOL":
+	        case "LEAGUEOFLEGENDS":
+	            return "LOL";	
+	        case "ALL":
+	            return "all";
+	        default:
+	            return gameCode.toUpperCase();
+	    }
+	}
 
     // [헬퍼] DB용 코드 -> 경로용 소문자 ID
     private String getPathGameId(String dbGameCode) {
+        if (dbGameCode == null) return "all";
+        
         switch(dbGameCode.toUpperCase()) {
             case "BG": return "battleground";
             case "OW": return "overwatch";
             case "LOL": return "lol";
-            default: return "lol";
+            default: return "all";
         }
     }
     
-=======
-	
->>>>>>> main
+
     // 공통 목록 조회 로직
     private void addBoardListToModel(Map<String, Object> paramMap, int cp, Model model) {
         int listCount = boardService.selectListCount(paramMap);
@@ -302,7 +263,7 @@ public class BoardController {
         return "board/" + type + "_write_" + gameId; 
     }
 
-<<<<<<< HEAD
+
     // ================= [수정 완료] 게시글 업데이트 처리 =================
     @PostMapping("/update") 
     public String updateBoard(Board board, 
@@ -328,20 +289,9 @@ public class BoardController {
         session.removeAttribute("tempCategoryNo");
         session.removeAttribute("tempBoardType");
         
-=======
-    // 게시글 수정 처리
-    @PostMapping("/edit")
-    public String updateBoard(Board board, 
-    						 @RequestParam(value="upFile", required=false) List<MultipartFile> upFiles,
-    						 @RequestParam(value="deleteFileNos", required=false) List<Integer> deleteFileNos,
-                             Authentication auth, HttpSession session, RedirectAttributes ra) {
-    	
-        String savePath = session.getServletContext().getRealPath("/resources/upload/board/");
-        int result = boardService.updateBoard(board, upFiles, deleteFileNos, savePath);
-        ra.addFlashAttribute("message", result > 0 ? "수정되었습니다." : "수정 실패");
->>>>>>> main
         return "redirect:/board/view?boardNo=" + board.getBoardNo();
     }
+
 
     // 게시글 삭제 처리
     @GetMapping("/delete")
@@ -406,7 +356,7 @@ public class BoardController {
         reply.setUserNo(((MemberExt)auth.getPrincipal()).getUserNo());
         return boardService.insertReply(reply) > 0 ? "success" : "fail";
     }
-<<<<<<< HEAD
+
         
     // 댓글 삭제
     @ResponseBody
@@ -425,27 +375,31 @@ public class BoardController {
         return result > 0 ? "success" : "fail";
     }
         
-    // 1:1문의 메인
+ // 1:1문의 메인
     @GetMapping("/inquiry")
     public String inquiry(@RequestParam(value="game", defaultValue="all") String game,
             @RequestParam(value="cp", defaultValue="1") int cp, 
             Authentication auth, 
             Model model) {
+        
         if (auth == null) return "redirect:/member/login";
         MemberExt loginUser = (MemberExt) auth.getPrincipal();
         int userNo = loginUser.getUserNo();
         
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("userNo", userNo);
-        paramMap.put("game", game);
+        
+        String dbGameCode = game.equalsIgnoreCase("all") ? "all" : getDbGameCode(game);
+        paramMap.put("gameCode", dbGameCode);
         
         int listCount = boardService.selectInquiryCount(paramMap);
-        PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
+        PageInfo pi = Pagination.getPageInfo( listCount,cp, 10, 10);
         List<Inquiry> inquiryList = boardService.selectInquiryList(pi, paramMap);
         
         model.addAttribute("inquiryList", inquiryList);
         model.addAttribute("pi", pi);
-        model.addAttribute("currentGame", game);
+        
+        model.addAttribute("currentGame", game.toLowerCase());
         
         return "board/user_inquiry";
     }
@@ -464,87 +418,80 @@ public class BoardController {
         inquiry.setUserNo(loginUser.getUserNo());
         inquiry.setUserName(loginUser.getUserName());
         
+        String normalizedCode = getDbGameCode(inquiry.getGameCode());
+        inquiry.setGameCode(normalizedCode);
+        
         int result = boardService.insertInquiry(inquiry);
         
         if(result > 0) {
             ra.addFlashAttribute("message", "문의가 성공적으로 접수되었습니다.");
-            return "redirect:/board/inquiry"; 
+            String pathId = getPathGameId(normalizedCode);
+            return "redirect:/board/inquiry?game=" + pathId;
         } else {
             ra.addFlashAttribute("message", "문의 접수에 실패했습니다.");
             return "redirect:/board/inquiryWrite";
         }
     }    
-=======
-		
-	// 댓글 삭제
-	@ResponseBody
-	@PostMapping("/reply/delete")
-	public String deleteReply(int replyNo, Authentication auth) {
-	    if (auth == null || !auth.isAuthenticated()) {
-	        return "login"; 
-	    }
-	    int userNo = ((MemberExt)auth.getPrincipal()).getUserNo();
-	    Map<String, Object> paramMap = new HashMap<>();
-	    paramMap.put("replyNo", replyNo);
-	    paramMap.put("userNo", userNo);
-	    
-	    int result = boardService.deleteReply(paramMap);
-	    
-	    return result > 0 ? "success" : "fail";
-	}
-		
-		// 1:1문의 메인
-	    @GetMapping("/inquiry")
-	    public String inquiry(@RequestParam(value="game", defaultValue="all") String game,
-	            @RequestParam(value="cp", defaultValue="1") int cp, 
-	            Authentication auth, 
-	            Model model) {
-	    	MemberExt loginUser = (MemberExt) auth.getPrincipal();
-	        int userNo = loginUser.getUserNo();
-	        
-	        // 2. 전체 문의 개수 조회 (페이지네이션용)
-	        // Map에 담아서 보내면 나중에 게임별 필터링 추가하기 편합니다!
-	        Map<String, Object> paramMap = new HashMap<>();
-	        paramMap.put("userNo", userNo);
-	        paramMap.put("game", game);
-	        
-	        int listCount = boardService.selectInquiryCount(paramMap);
-	        
-	        // 3. 페이지네이션 객체 생성
-	        PageInfo pi = Pagination.getPageInfo(cp, listCount, 10, 10);
-	        
-	        // 4. 리스트 조회
-	        List<Inquiry> inquiryList = boardService.selectInquiryList(pi, paramMap);
-	        
-	        model.addAttribute("inquiryList", inquiryList);
-	        model.addAttribute("pi", pi);
-	        model.addAttribute("currentGame", game);
-	        
-	        return "board/user_inquiry";
-	    }
-	    
-		// 1:1 문의 작성 페이지 이동
-	    @GetMapping("/inquiryWrite")
-	    public String inquiryWrite() {
-	    	return "board/user_inquiry_write";
-	    }
-	    
-	    @PostMapping("/inquiry/insert")
-	    public String insertInquiry(Inquiry inquiry, Authentication auth, RedirectAttributes ra) {
-	        
-	        MemberExt loginUser = (MemberExt) auth.getPrincipal();
-	        inquiry.setUserNo(loginUser.getUserNo());
-	        inquiry.setUserName(loginUser.getUserName());
-	        
-	        int result = boardService.insertInquiry(inquiry);
-	        
-	        if(result > 0) {
-	            ra.addFlashAttribute("message", "문의가 성공적으로 접수되었습니다.");
-	            return "redirect:/board/inquiry"; 
-	        } else {
-	            ra.addFlashAttribute("message", "문의 접수에 실패했습니다.");
-	            return "redirect:/board/inquiryWrite";
-	        }
-	    }	
->>>>>>> main
+    
+ // 문의 상세 보기
+    @GetMapping("/inquiryView")
+    public String board_inquiryView(@RequestParam("boardNo") int boardNo,
+                                    @RequestParam(value="game", defaultValue="all") String game,
+                                    Authentication auth,
+                                    Model model,
+                                    RedirectAttributes ra) {
+        
+        // 1. 로그인 체크
+        if (auth == null) {
+            ra.addFlashAttribute("message", "로그인 후 이용 가능합니다.");
+            return "redirect:/member/login";
+        }
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+
+        // 2. DB에서 문의글 상세 정보 가져오기 (Service, DAO에 selectInquiryDetail 메서드 필요!)
+        Inquiry inquiry = boardService.selectInquiryDetail(boardNo);
+
+        // 3. 보안 체크 (게시글이 없거나, 작성자가 본인이 아닐 경우 튕겨내기)
+        if (inquiry == null || inquiry.getUserNo() != loginUser.getUserNo()) {
+            ra.addFlashAttribute("message", "조회 권한이 없거나 존재하지 않는 문의입니다.");
+            // 돌아갈 때 원래 보던 탭으로 돌려보내는 센스!
+            return "redirect:/board/inquiry?game=" + game; 
+        }
+
+        // 4. JSP에 데이터 전달
+        model.addAttribute("inq", inquiry);
+        model.addAttribute("currentGame", game); // "목록으로" 버튼을 눌렀을 때 원래 필터 유지용
+
+        return "board/user_inquiry_view";
+    }
+    
+ // 1:1 문의 삭제 처리
+    @GetMapping("/inquiryDelete")
+    public String inquiryDelete(@RequestParam("boardNo") int boardNo, 
+                                Authentication auth, 
+                                RedirectAttributes ra) {
+        
+        if (auth == null) return "redirect:/member/login";
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+        
+        // 1. 혹시 남의 글을 삭제하려고 하는지 DB에서 작성자 확인
+        Inquiry inquiry = boardService.selectInquiryDetail(boardNo);
+        
+        if (inquiry == null || inquiry.getUserNo() != loginUser.getUserNo()) {
+            ra.addFlashAttribute("message", "삭제 권한이 없습니다.");
+            return "redirect:/board/inquiry";
+        }
+        
+        // 2. 삭제 실행!
+        int result = boardService.deleteInquiry(boardNo);
+        
+        if(result > 0) {
+            ra.addFlashAttribute("message", "문의글이 정상적으로 삭제되었습니다.");
+        } else {
+            ra.addFlashAttribute("message", "삭제에 실패했습니다.");
+        }
+        
+        // 3. 삭제 후 목록으로 (기본 '전체' 탭으로 이동)
+        return "redirect:/board/inquiry";
+    }
 }
