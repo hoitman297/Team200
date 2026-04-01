@@ -617,4 +617,45 @@
       AND CATEGORY_NAME = #{categoryName}
 	</select>
 	
+	
+	<!-- 롤, 옵치 캐릭터 정보 댓글 -->
+	<select id="selectInfoReplies" resultType="gameInfoReply">
+	    SELECT 
+	        R.INFO_REPLY_NO, 
+	        R.USER_NO, 
+	        R.GAME_CODE,
+	        R.TARGET_NO,
+	        DBMS_LOB.SUBSTR(R.REPLY_CONTENT, 4000, 1) AS REPLY_CONTENT, 
+	        R.REPLY_DATE, 
+	        U.USER_NAME 
+	    FROM GAME_INFO_REPLY R
+	    JOIN LOG_GG_USER U ON R.USER_NO = U.USER_NO
+	    WHERE R.GAME_CODE = #{gameCode} 
+	      AND R.TARGET_NO = #{targetNo}
+	      AND R.STATUS = 'Y'
+	    ORDER BY R.INFO_REPLY_NO DESC
+	</select>
+	
+	<insert id="insertInfoReply">
+	    INSERT INTO GAME_INFO_REPLY (
+	        INFO_REPLY_NO, 
+	        USER_NO, 
+	        GAME_CODE, 
+	        TARGET_NO, 
+	        REPLY_CONTENT
+	    ) VALUES (
+	        SEQ_INFO_REPLY_NO.NEXTVAL, 
+	        #{userNo}, 
+	        #{gameCode}, 
+	        #{targetNo}, 
+	        #{replyContent}
+	    )
+	</insert>
+	
+	<update id="deleteInfoReply">
+	    UPDATE GAME_INFO_REPLY
+	    SET STATUS = 'N'
+	    WHERE INFO_REPLY_NO = #{infoReplyNo}
+	      AND USER_NO = #{userNo}
+	</update>
 </mapper>

@@ -11,6 +11,7 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
@@ -80,4 +81,10 @@ public interface BoardDao {
 	public List<Map<String, Object>> selectMyReplies(PageInfo pi, Map<String, Object> paramMap);
 	
 	public int deleteMyReplies(Map<String, Object> paramMap);
+	
+	public List<GameInfoReply> selectInfoReplies(Map<String, Object> paramMap);
+
+    public int insertInfoReply(GameInfoReply reply);
+
+	public int deleteInfoReply(GameInfoReply reply);
 }

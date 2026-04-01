@@ -2,27 +2,34 @@ package com.semi.spring.overwatch.controller;
 
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
 
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
+import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
 import com.semi.spring.overwatch.model.service.OverwatchService;
 import com.semi.spring.overwatch.model.vo.HeroSkillsVO;
 import com.semi.spring.overwatch.model.vo.HeroSkinVO;
 import com.semi.spring.overwatch.model.vo.HeroVO;
+import com.semi.spring.security.model.vo.MemberExt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,4 +104,57 @@ public class OverwatchController {
 		return "overwatch/box";
 	}
 
+	// ==========================================================
+    // 🔫 영웅 정보 페이지 전용 댓글(팁) 기능 (AJAX)
+    // ==========================================================
+
+    // 1. 영웅 댓글 목록 불러오기
+    @GetMapping("/replyList")
+    @ResponseBody
+    public List<GameInfoReply> selectHeroReplyList(@RequestParam("targetNo") int targetNo) {
+        
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("gameCode", "OW"); // ✨ 오버워치니까 무조건 'OW' 강제 세팅!
+        paramMap.put("targetNo", targetNo); 
+        
+        return boardService.selectInfoReplies(paramMap);
+    }
+
+    // 2. 영웅 댓글 등록하기
+    @PostMapping("/insertReply")
+    @ResponseBody
+    public String insertHeroReply(@ModelAttribute GameInfoReply reply, Authentication auth) {
+        
+        if (auth == null) {
+            return "login"; 
+        }
+        
+        int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+        reply.setUserNo(userNo);
+        reply.setGameCode("OW"); // ✨ 'OW' 강제 세팅
+        
+        int result = boardService.insertInfoReply(reply);
+        
+        return (result > 0) ? "success" : "fail";
+    }
+
+    // 3. 영웅 댓글 삭제하기
+    @PostMapping("/deleteReply")
+    @ResponseBody
+    public String deleteHeroReply(@RequestParam("infoReplyNo") int infoReplyNo, Authentication auth) {
+        
+        if (auth == null) {
+            return "login";
+        }
+        
+        int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+        
+        GameInfoReply reply = new GameInfoReply();
+        reply.setInfoReplyNo(infoReplyNo); 
+        reply.setUserNo(userNo); // 본인 글만 삭제할 수 있도록 세팅
+        
+        int result = boardService.deleteInfoReply(reply);
+        
+        return (result > 0) ? "success" : "fail";
+    }
 }

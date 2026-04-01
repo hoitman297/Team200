@@ -1,5 +1,6 @@
 package com.semi.spring.lol.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,16 +8,20 @@ import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Board;
+import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
 import com.semi.spring.lol.model.dao.LolDao;
@@ -25,6 +30,7 @@ import com.semi.spring.lol.model.vo.ChampionVO;
 import com.semi.spring.lol.model.vo.LolItemVO;
 import com.semi.spring.lol.model.vo.RuneVO;
 import com.semi.spring.lol.model.vo.TalentVO;
+import com.semi.spring.security.model.vo.MemberExt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -146,4 +152,64 @@ public class LolController {
 		return "lol/box";
 	}
 
+	// ==========================================================
+    // ✨ [신규 추가] 챔피언 정보 페이지 전용 댓글 기능
+    // ==========================================================
+
+    // 1. 롤 챔피언 댓글 목록 불러오기 (AJAX)
+    @GetMapping("/replyList")
+    @ResponseBody
+    public List<GameInfoReply> selectChampReplyList(@RequestParam("targetNo") int targetNo) {
+        
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("gameCode", "LOL"); // 서버에서 'LOL' 강제 세팅 (보안)
+        paramMap.put("targetNo", targetNo); // JSP에서 넘어온 챔피언 번호
+        
+        return boardService.selectInfoReplies(paramMap);
+    }
+
+    // 2. 롤 챔피언 댓글 등록하기 (AJAX)
+    @PostMapping("/insertReply")
+    @ResponseBody
+    public String insertChampReply(@ModelAttribute GameInfoReply reply, Authentication auth) {
+        
+        // 시큐리티 로그인 체크
+        if (auth == null) {
+            return "login"; 
+        }
+        
+        // 로그인한 유저 PK 세팅
+        int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+        reply.setUserNo(userNo);
+        reply.setGameCode("LOL"); // 서버에서 'LOL' 강제 세팅
+        
+        int result = boardService.insertInfoReply(reply);
+        
+        return (result > 0) ? "success" : "fail";
+    }
+    
+    /**
+     * 3. 롤 챔피언 댓글 삭제하기 (AJAX)
+     */
+    @PostMapping("/deleteReply")
+    @ResponseBody
+    public String deleteChampReply(@RequestParam("infoReplyNo") int infoReplyNo, Authentication auth) {
+        
+        if (auth == null) {
+            return "login"; // 비로그인 상태
+        }
+        
+        int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+        
+        GameInfoReply reply = new GameInfoReply();
+        reply.setInfoReplyNo(infoReplyNo); // 지울 댓글 번호
+        reply.setUserNo(userNo);           // 현재 로그인한 사람 번호 (본인 확인용)
+        
+        // 매퍼에서 WHERE INFO_REPLY_NO = ? AND USER_NO = ? 로 검사하므로 본인 글만 지워집니다.
+        int result = boardService.deleteInfoReply(reply);
+        
+        return (result > 0) ? "success" : "fail";
+    }
+    // ==========================================================
+    
 }

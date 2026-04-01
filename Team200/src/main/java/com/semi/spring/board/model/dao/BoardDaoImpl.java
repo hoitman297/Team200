@@ -14,6 +14,7 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
@@ -223,4 +224,19 @@ public class BoardDaoImpl implements BoardDao {
 	public int deleteMyReplies(Map<String, Object> paramMap) {
 	    return session.update("board.deleteMyReplies", paramMap);
 	}
+	
+	@Override
+    public List<GameInfoReply> selectInfoReplies(Map<String, Object> paramMap) {
+        return session.selectList("board.selectInfoReplies", paramMap);
+    }
+
+    @Override
+    public int insertInfoReply(GameInfoReply reply) {
+        return session.insert("board.insertInfoReply", reply);
+    }
+    
+    @Override
+    public int deleteInfoReply(GameInfoReply reply) {
+        return session.update("board.deleteInfoReply", reply);
+    }
 }

@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +19,7 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
+import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.common.model.vo.PageInfo;
@@ -312,7 +312,7 @@ public class BoardServiceImpl implements BoardService {
 		return boardDao.selectMyBoards(pi, paramMap);
 	}
 
-	@Override
+	@Override	
 	public int selectMyRepliesCount(Map<String, Object> paramMap) {
 		return boardDao.selectMyRepliesCount(paramMap);
 	}
@@ -326,4 +326,19 @@ public class BoardServiceImpl implements BoardService {
 	public int deleteMyReplies(Map<String, Object> paramMap) {
 		return boardDao.deleteMyReplies(paramMap);
 	}
+	
+	@Override
+    public List<GameInfoReply> selectInfoReplies(Map<String, Object> paramMap) {
+        return boardDao.selectInfoReplies(paramMap);
+    }
+
+    @Override
+    public int insertInfoReply(GameInfoReply reply) {
+        return boardDao.insertInfoReply(reply);
+    }
+    
+    @Override
+    public int deleteInfoReply(GameInfoReply reply) {
+        return boardDao.deleteInfoReply(reply);
+    }
 }
