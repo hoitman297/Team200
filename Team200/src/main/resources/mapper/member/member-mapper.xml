@@ -41,12 +41,14 @@
 		SELECT COUNT(*)
 		FROM LOG_GG_USER
 		WHERE USER_ID = #{userId}
+		AND WITHDRAW = 'N'
 	</select>
 	
 	<select id="nameCheck" resultType="int">
 		SELECT COUNT(*) 
 		FROM LOG_GG_USER 
 		WHERE USER_NAME = #{userName}
+		AND WITHDRAW = 'N'
 	</select>
 	
 	<select id="pwCheck" resultType="int">

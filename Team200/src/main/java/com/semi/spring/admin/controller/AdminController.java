@@ -1,5 +1,7 @@
 package com.semi.spring.admin.controller;
 
+import java.util.List;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.core.io.ResourceLoader;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.semi.spring.admin.service.AdminService;
@@ -31,17 +34,27 @@ public class AdminController {
 	private final ServletContext application; 
 	
 	@GetMapping("/main")
-	public String adminMain() {
+	public String adminMain(Model model) {
+		
+//		Notice recentNotice = adminService.selectRecentNotice(recentNotice);
+//		
+//		model.addAttribute("title", recentNotice.getTitle()); 
+//	    model.addAttribute("postDate", recentNotice.getPostDate());
+//	    
+//	    Patchnote recentPatchnote = adminService.selectRecentPatchnote(recentPatchnote);
+//	    
+//	    model.addAttribute("title", recentPatchnote.getTitle()); 
+//	    model.addAttribute("postDate", recentPatchnote.getPostDate());
+	    
 		return "admin/admin_main";
 	}
 	
 	@GetMapping("/inquiry")
-	public String adminInquiry(
-			@ModelAttribute Inquiry inquiry,
-			Model model) {
+	public String adminInquiry(Model model) {
 		
-		model.addAttribute(inquiry);
+		List<Inquiry> list = adminService.selectInquiryList();
 		
+		model.addAttribute("inquiryList", list);
 		return "admin/admin_inquiry";
 	}
 	
@@ -112,8 +125,37 @@ public class AdminController {
 	}
 	
 	@GetMapping("/user_management")
-	public String userManagement() {
+	public String userManagement(Model model) {
+		
+		List<Member> userList = adminService.selectMemberList();
+		
+		model.addAttribute("userList", userList);
 		return "admin/user_management";
+	}
+	
+	@ResponseBody
+	@PostMapping("/deleteUser")
+	public String deleteUser(int userNo) {
+		
+		int userList = adminService.deleteMember(userNo);
+		return (userList > 0) ? "success" : "fail";
+	}
+	
+	@ResponseBody
+	@PostMapping("/updateUserWithdraw")
+	public String updateUserWithdraw(int userNo, String withdraw) {
+		
+		String withdrawValue = "N"; 
+		if ("Y".equalsIgnoreCase(withdrawValue) || "정지".equals(withdrawValue)) {
+	        withdrawValue = "Y";
+	    } else if ("N".equalsIgnoreCase(withdrawValue) || "활성화".equals(withdrawValue)) {
+	        withdrawValue = "N";
+	    }
+		
+	    int result = adminService.updateUserWithdraw(userNo, withdrawValue);
+	    
+	    // AJAX의 success 반환
+	    return (result > 0) ? "success" : "fail";
 	}
 	
 }
