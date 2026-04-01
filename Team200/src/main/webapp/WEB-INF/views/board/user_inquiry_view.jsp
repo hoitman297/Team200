@@ -1,5 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <%-- 목록으로 돌아갈 때 원래 있던 탭을 유지하기 위해 game 값을 받습니다! --%>
 <c:set var="currentGame" value="${empty param.game ? 'all' : param.game}" />
@@ -10,6 +12,16 @@
         <c:when test="${currentGame == 'lol'}">리그 오브 레전드</c:when>
         <c:when test="${currentGame == 'overwatch'}">오버워치</c:when>
         <c:otherwise>전체</c:otherwise>
+    </c:choose>
+</c:set>
+
+<c:set var="upperCode" value="${fn:toUpperCase(inq.gameCode)}" />
+<c:set var="tagGameName">
+    <c:choose>
+        <c:when test="${upperCode == 'BG' or upperCode == 'BATTLEGROUND'}">배그</c:when>
+        <c:when test="${upperCode == 'LOL'}">롤</c:when>
+        <c:when test="${upperCode == 'OW' or upperCode == 'OVERWATCH'}">옵치</c:when>
+        <c:otherwise>기타</c:otherwise>
     </c:choose>
 </c:set>
 
@@ -45,40 +57,47 @@
                 <div class="view-container">
                     <div class="view-header">
                         <div class="view-title">
-                            <span class="status-badge waiting">답변대기</span>
-                            <h3><span style="color: var(--accent-blue); margin-right: 8px;">[계정/로그인 문의]</span> 로그인 오류가 계속 발생합니다.</h3>
+                            <%-- 상태에 따른 뱃지 출력 --%>
+                            <c:choose>
+                                <c:when test="${inq.answerStatus == 'W'}">
+                                    <span class="status-badge waiting">답변대기</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="status-badge completed" style="background-color: #10b981; color: white;">답변완료</span>
+                                </c:otherwise>
+                            </c:choose>
+                            
+                            <%-- 게임 태그 및 제목 --%>
+                            <h3>
+                                <span style="color: var(--accent-blue); margin-right: 8px;">[${tagGameName}]</span> 
+                                <c:out value="${inq.boardTitle}" />
+                            </h3>
                         </div>
                         <div class="view-meta">
-                            <span class="meta-item">작성자: <strong>USER01</strong></span>
+                            <span class="meta-item">작성자: <strong>${inq.userName}</strong></span>
                             <span class="meta-item divider">|</span>
-                            <span class="meta-item">작성일: 2026-03-09 14:30</span>
+                            <span class="meta-item">작성일: <fmt:formatDate value="${inq.postDate}" pattern="yyyy-MM-dd HH:mm" /></span>
                         </div>
                     </div>
 
-                    <div class="view-content">
-                        로그인을 하려고 하는데 비밀번호가 맞음에도 불구하고 계속 오류 메시지가 뜹니다.<br>
-                        캐시 삭제도 해봤는데 안 되네요. 빠른 확인 부탁드립니다!<br><br>
-                        (오류 스크린샷 링크: https://imgur.com/example)
-                    </div>
+                    <%-- ✨ white-space: pre-wrap을 줘서 줄바꿈이 그대로 유지되게 합니다 --%>
+                    <div class="view-content" style="white-space: pre-wrap; line-height: 1.6;"><c:out value="${inq.boardContent}" /></div>
                 </div>
 
-                <div class="answer-container">
-                    <div class="answer-header">
-                        <div class="admin-profile">
-                            <div class="admin-icon">GM</div>
-                            <strong>LOG.GG 고객지원팀</strong>
+                <%-- ✨ 관리자 답변 (답변 완료(C) 상태이고 답변 내용이 있을 때만 노출) --%>
+                <c:if test="${inq.answerStatus == 'C' and not empty inq.answer}">
+                    <div class="answer-container">
+                        <div class="answer-header">
+                            <div class="admin-profile">
+                                <div class="admin-icon">GM</div>
+                                <strong>LOG.GG 고객지원팀</strong>
+                            </div>
                         </div>
-                        <span class="answer-date">2026-03-09 15:10</span>
+                        <div class="answer-content" style="white-space: pre-wrap; line-height: 1.6;">
+                            <c:out value="${inq.answer}" />
+                        </div>
                     </div>
-                    <div class="answer-content">
-                        안녕하세요, USER01님.<br>
-                        LOG.GG 고객지원팀입니다.<br><br>
-                        현재 특정 브라우저 환경에서 로그인 세션이 충돌하는 현상이 확인되어 담당 부서에서 수정 중에 있습니다.<br>
-                        크롬(Chrome) 시크릿 모드나 다른 브라우저(Edge 등)를 이용해 임시로 접속해 주시길 권장해 드립니다.<br>
-                        이용에 불편을 드려 대단히 죄송합니다.<br><br>
-                        감사합니다.
-                    </div>
-                </div>
+                </c:if>
 
                 <div class="view-footer">
                     <div class="footer-left">
@@ -87,8 +106,10 @@
                     </div>
                     <div class="footer-right">
                         <%-- 본인 작성글일 경우에만 수정/삭제 노출 --%>
-                        <button type="button" class="btn-edit" onclick="location.href='#'">수정</button>
-                        <button type="button" class="btn-delete" onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='#'">삭제</button>
+                        <c:if test="${inq.answerStatus == 'W'}">
+                            <button type="button" class="btn-edit" onclick="location.href='<c:url value='/board/inquiryEdit?boardNo=${inq.boardNo}' />'">수정</button>
+                            <button type="button" class="btn-delete" onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='<c:url value='/board/inquiryDelete?boardNo=${inq.boardNo}' />'">삭제</button>
+                        </c:if>
                     </div>
                 </div>
 

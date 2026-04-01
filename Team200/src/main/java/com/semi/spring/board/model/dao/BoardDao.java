@@ -67,5 +67,7 @@ public interface BoardDao {
 
 	public void deleteSelectedFile(int fileNo);
 
-	
+	public Inquiry selectInquiryDetail(int boardNo);
+
+	public int deleteInquiry(int boardNo);
 }

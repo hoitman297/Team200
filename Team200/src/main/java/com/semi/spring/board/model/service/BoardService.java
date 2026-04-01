@@ -56,4 +56,7 @@ public interface BoardService {
 
 	int deleteBoard(int boardNo);
 
+	Inquiry selectInquiryDetail(int boardNo);
+
+	int deleteInquiry(int boardNo);
 }
