@@ -28,8 +28,7 @@
 		ORDER BY CATEGORY_NO ASC
 	</select>
 
-	<select id="selectAllItemList"
-		resultType="bagItemInfoVO">
+	<select id="selectAllItemList" resultType="bagItemInfoVO">
 		SELECT
 		ITEM_NO as itemNo,
 		CATEGORY_NO as categoryNo,
@@ -38,11 +37,10 @@
 		ITEM_IMG as itemImg,
 		ITEM_TYPE as itemType
 		FROM BAG_ITEM_INFO
-		ORDER BY ITEM_NO DESC
+		ORDER BY ITEM_NAME ASC
 	</select>
 
-	<select id="selectItemListByCategory" parameterType="_int"
-		resultType="bagItemInfoVO">
+	<select id="selectItemListByCategory" parameterType="_int" resultType="bagItemInfoVO">
 		SELECT
 		ITEM_NO as itemNo,
 		CATEGORY_NO as categoryNo,
@@ -52,6 +50,6 @@
 		ITEM_TYPE as itemType
 		FROM BAG_ITEM_INFO
 		WHERE CATEGORY_NO = #{categoryNo}
-		ORDER BY ITEM_NO DESC
+		ORDER BY ITEM_NAME ASC
 	</select>
 </mapper>

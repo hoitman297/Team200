@@ -17,6 +17,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/battleground/script.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    <%-- 검색 및 툴팁 스크립트가 있다면 추가 --%>
+    <script src="${pageContext.request.contextPath}/resources/search/script.js" defer></script>
     
     <title>배틀그라운드 아이템 정보 - LOG.GG</title>
 </head>
@@ -33,87 +35,95 @@
         <%-- 메인 콘텐츠 영역 --%>
         <main class="content-area">
             <div class="top-row">
-                <a href="<c:url value='/bg/main'/>"><div class="logo">LOG.GG</div></a>
+                <a href="<c:url value='/bg/main'/>" style="text-decoration: none;">
+                    <div class="logo">LOG.GG</div>
+                </a>
+                <%-- 롤 디자인: 검색바 추가 --%>
+                <div class="search-bar">
+                    <input type="text" id="itemSearchInput" class="search-input-field" placeholder="아이템 이름 검색"> 
+                    <span style="cursor:pointer">🔍</span>
+                </div>
             </div>
 
             <div class="item-card">
-                <%-- 아이템 카테고리 필터 (동적 생성) --%>
+                <%-- 롤 디자인: 알약(Pill) 형태의 카테고리 메뉴 --%>
                 <div class="item-categories">
-                    <a href="<c:url value='/bg/item?category=0'/>" class="category-btn">
-                        <div class="category-icon ${currentCategory == 0 ? 'active-border' : ''}">
-                            <span class="all-text">ALL</span>
-                        </div>
-                        <span class="${currentCategory == 0 ? 'active-text' : ''}">전체</span>
+                    <a href="<c:url value='/bg/item?category=0'/>" class="category-btn ${currentCategory == 0 ? 'active' : ''}" style="text-decoration: none;">
+                        <div class="category-icon"></div>
+                        <span>전체</span>
                     </a>
                     
                     <c:forEach var="cat" items="${categoryList}">
-                        <a href="<c:url value='/bg/item?category=${cat.categoryNo}'/>" class="category-btn">
-                            <div class="category-icon ${currentCategory == cat.categoryNo ? 'active-border' : ''}">
-                                <%-- 카테고리별 아이콘 이미지가 있을 경우 사용 --%>
-                                <c:if test="${not empty cat.categoryImg}">
-                                    <img src="${pageContext.request.contextPath}/resources/battleground/img/${cat.categoryImg}" alt="${cat.categoryName}">
-                                </c:if>
-                            </div>
-                            <span class="${currentCategory == cat.categoryNo ? 'active-text' : ''}">${cat.categoryName}</span>
+                        <a href="<c:url value='/bg/item?category=${cat.categoryNo}'/>" class="category-btn ${currentCategory == cat.categoryNo ? 'active' : ''}" style="text-decoration: none;">
+                            <div class="category-icon"></div>
+                            <span>${cat.categoryName}</span>
                         </a>
                     </c:forEach>
                 </div>
 
                 <%-- 아이템 데이터 테이블 --%>
                 <div class="item-table-container">
+                    <%-- 롤 디자인: 우측 상단 페이지 컨트롤러 --%>
+                    <div class="table-controls" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <span style="font-size: 14px; font-weight: bold; color: #1e293b;">
+                            <span id="currentPage">1</span> / <span id="totalPage">1</span>
+                        </span>
+                        <button id="prevBtn" class="page-nav-btn">◀</button>
+                        <button id="nextBtn" class="page-nav-btn">▶</button>
+                    </div>
+
                     <table class="item-table">
                         <thead>
                             <tr>
-                                <th>아이콘</th>
-                                <th>이름</th>
-                                <th>종류</th>
-                                <th>상세 정보</th>
+                                <th class="icon" style="width: 100px;">아이콘</th> <%-- 너비 약간 확장 --%>
+                                <th class="name-price" style="width: 200px;">이름</th>
+                                <th class="name-price" style="width: 120px;">종류</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="itemTableBody">
                             <c:choose>
                                 <c:when test="${empty itemList}">
                                     <tr>
-                                        <td colspan="4" class="no-data">등록된 아이템 정보가 없습니다.</td>
+                                        <td colspan="4" style="padding: 100px 0; color: #94a3b8; text-align: center;">등록된 아이템 정보가 없습니다.</td>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="item" items="${itemList}">
-                                        <tr>
+                                        <%-- JS 툴팁 연동을 위한 data 속성 추가 --%>
+                                        <tr class="item-row" data-info="${item.itemInfo}" data-name="${item.itemName}">
                                             <td>
-                                                <div class="item-img-box">
-                                                    <img src="${item.itemImg}" alt="${item.itemName}" onerror="this.src='${pageContext.request.contextPath}/resources/img/default_item.png'">
+                                                <div class="item-img-placeholder" style="background: none; border: none;">
+                                                    <%-- ✨ 이미지 크기를 64px로 확대 ✨ --%>
+                                                    <img src="${item.itemImg}" alt="${item.itemName}" onerror="this.src='${pageContext.request.contextPath}/resources/img/default_item.png'" style="width: 64px; height: 64px; border-radius: 5px; object-fit: contain;">
                                                 </div>
                                             </td>
-                                            <td class="item-name">${item.itemName}</td>
-                                            <td><span class="type-tag">${item.itemType}</span></td>
-                                            <td class="item-info-text">${item.itemInfo}</td>
+                                            <td class="item-name-cell" style="font-weight: bold; color: #1e293b;">${item.itemName}</td>
+                                            <td class="name-price" style="color: #3b82f6; font-weight: 700;">${item.itemType}</td>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>
                             </c:choose>
                         </tbody>
                     </table>
-
-                    <%-- 페이징 처리 영역 --%>
-                    <div class="pagination">
-                        <button class="page-btn">← 이전</button>
-                        <button class="page-btn">다음 →</button>
-                    </div>
                 </div>
             </div>
         </main>
 
         <%-- 오른쪽 사이드바: 뉴스 및 공지 --%>
         <aside class="side-right">
-            <div class="side-card info-box">
-                <h3>아이템 소식</h3>
-                <p>최신 패치에서 조정된 무기 데미지 수치를 확인하세요!</p>
+            <div class="side-card" style="background: #cbd5e1; height: 300px; padding: 20px; border-radius: 12px;">
+                <h3 style="margin-bottom: 15px; font-size: 16px; font-weight: 800; color: #1e293b;">아이템 소식</h3>
+                <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                    배틀그라운드 신규 패치 무기 데미지 조정안이 적용되었습니다.
+                </div>
             </div>
         </aside>
     </div>
 
     <%-- 공통 푸터 로드 --%>
     <%@ include file="../common/footer.jsp"%>
+    
+    <%-- 롤 디자인: 툴팁을 띄우기 위한 숨김 div --%>
+    <div id="item-tooltip" style="display:none; position:absolute; z-index:9999;"></div>
 </body>
 </html>
