@@ -56,4 +56,17 @@ public interface BoardService {
 
 	int deleteBoard(int boardNo);
 
+	Inquiry selectInquiryDetail(int boardNo);
+
+	int deleteInquiry(int boardNo);
+
+	int selectMyBoardsCount(Map<String, Object> paramMap);
+
+	List<BoardExt> selectMyBoards(PageInfo pi, Map<String, Object> paramMap);
+
+	int selectMyRepliesCount(Map<String, Object> paramMap);
+
+	List<Map<String, Object>> selectMyReplies(PageInfo pi, Map<String, Object> paramMap);
+	
+	int deleteMyReplies(Map<String, Object> paramMap);
 }

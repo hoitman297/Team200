@@ -1,10 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%-- 1. 변수 설정: 주소창의 game 값을 읽어옴 (기본값 all) --%>
-<c:set var="currentGame" value="${empty param.game ? 'all' : param.game}" />
-
+<c:set var="currentGame" value="${empty currentGame ? (empty param.game ? 'all' : param.game) : currentGame}" />
 <%-- 2. 헤더/푸터용 게임 이름 매칭 --%>
 <c:set var="displayGameName">
     <c:choose>
@@ -67,45 +66,68 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%-- 실데이터 출력 시 <c:forEach>를 사용하게 될 부분 --%>
-                        <tr>
-                            <td>003</td>
-                            <td class="title-td">
-                                <%-- 전체보기일 때 어떤 게임 문의인지 태그 달아주면 좋음 --%>
-                                <c:if test="${currentGame == 'all'}"><small style="color:#3b82f6">[배그]</small> </c:if>
-                                로그인 오류가 계속 발생합니다.
-                            </td>
-                            <td>USER01</td>
-                            <td>25-03-09</td>
-                            <td><span class="status-badge waiting">답변대기</span></td>
-                        </tr>
-                        <%-- ... 반복 ... --%>
-                    </tbody>
+					    <c:choose>
+					        <c:when test="${empty inquiryList}">
+					            <tr>
+					                <td colspan="5" class="empty-msg" style="text-align:center; padding:50px 0; color:#94a3b8;">
+					                    작성하신 문의 내역이 없습니다.
+					                </td>
+					            </tr>
+					        </c:when>
+					        <c:otherwise>
+					            <c:forEach var="inq" items="${inquiryList}">
+					            	<c:set var="upperCode" value="${fn:toUpperCase(inq.gameCode)}" />
+					                <tr>
+					                    <td>${inq.boardNo}</td>
+					                    <td class="title-td">
+					                        <a href="<c:url value='/board/inquiryView?boardNo=${inq.boardNo}' />" style="text-decoration:none; color:#1e293b;">
+					                            <%-- 전체 보기일 때 게임 태그 --%>
+					                            <c:if test="${currentGame == 'all'}">
+					                                <span class="game-tag" style="color:#3b82f6; font-weight:bold; font-size:0.9em;">
+														[<c:choose>
+														    <c:when test="${upperCode == 'BATTLEGROUND' or upperCode == 'BG'}">배그</c:when>
+														    <c:when test="${upperCode == 'LOL'}">롤</c:when>
+														    <c:when test="${upperCode == 'OVERWATCH' or upperCode == 'OW'}">옵치</c:when>
+														    <c:otherwise>기타</c:otherwise>
+														</c:choose>]
+					                                </span>
+					                            </c:if>
+					                            <%-- ✨ 보안을 위해 c:out 사용 --%>
+					                            <c:out value="${inq.boardTitle}" />
+					                        </a>
+					                    </td>
+					                    <td>${inq.userName}</td>
+					                    <td><fmt:formatDate value="${inq.postDate}" pattern="yy-MM-dd" /></td>
+					                    <td>
+					                        <c:choose>
+					                            <c:when test="${inq.answerStatus == 'W'}">
+					                                <span class="status-badge waiting" style="color:#ef4444; background:#fee2e2; padding:4px 8px; border-radius:4px; font-size:12px;">답변대기</span>
+					                            </c:when>
+					                            <c:otherwise>
+					                                <span class="status-badge completed" style="color:#10b981; background:#d1fae5; padding:4px 8px; border-radius:4px; font-size:12px;">답변완료</span>
+					                            </c:otherwise>
+					                        </c:choose>
+					                    </td>
+					                </tr>
+					            </c:forEach>
+					        </c:otherwise>
+					    </c:choose>
+					</tbody>
                 </table>
 
-                <div class="pagination">
-			    <%-- 이전 페이지 --%>
-			    <c:if test="${pi.currentPage > 1}">
-			        <a href="?cp=${pi.currentPage - 1}" class="page-link">&lt; 이전</a>
-			    </c:if>
-			
-			    <%-- 페이지 번호 반복문 --%>
-			    <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
-			        <c:choose>
-			            <c:when test="${p == pi.currentPage}">
-			                <span class="page-num active">${p}</span> <%-- 현재 페이지 --%>
-			            </c:when>
-			            <c:otherwise>
-			                <a href="?cp=${p}" class="page-num">${p}</a>
-			            </c:otherwise>
-			        </c:choose>
-			    </c:forEach>
-			
-			    <%-- 다음 페이지 --%>
-			    <c:if test="${pi.currentPage < pi.maxPage}">
-			        <a href="?cp=${pi.currentPage + 1}" class="page-link">다음 &gt;</a>
-			    </c:if>
-			</div>
+	                <div class="pagination">
+                    <c:if test="${pi.currentPage > 1}">
+                        <a href="?game=${currentGame}&cp=${pi.currentPage - 1}" class="page-link">&lt;</a>
+                    </c:if>
+                    
+                    <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
+                        <a href="?game=${currentGame}&cp=${p}" class="page-num ${p == pi.currentPage ? 'active' : ''}">${p}</a>
+                    </c:forEach>
+                    
+                    <c:if test="${pi.currentPage < pi.maxPage}">
+                        <a href="?game=${currentGame}&cp=${pi.currentPage + 1}" class="page-link">&gt;</a>
+                    </c:if>
+                </div>
             </div>
         </main>
 

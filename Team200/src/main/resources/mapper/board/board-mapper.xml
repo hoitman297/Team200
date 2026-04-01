@@ -361,10 +361,11 @@
 	</update>
 	
 	<!-- 1:1문의 -->
-	<select id="selectInquiry" resultType="inquiry">
+	<select id="selectInquiryList" resultType="inquiry">
 	SELECT 
         BOARD_NO, 
         BOARD_TITLE, 
+        USER_NAME,
         GAME_CODE,
         REASON, 
         POST_DATE, 
@@ -423,6 +424,11 @@
     WHERE BOARD_NO = #{boardNo}
 	</update>
 	
+	<delete id="deleteInquiry">
+    DELETE FROM INQUIRY 
+    WHERE BOARD_NO = #{boardNo}
+	</delete>
+	
 	<!-- 공감 -->
 	<insert id="insertBoardLike" parameterType="boardLike">
     INSERT INTO BOARD_LIKES (USER_NO, BOARD_NO) 
@@ -469,9 +475,9 @@
 		    JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
 		    WHERE B.USER_NO = #{userNo}
 		    	AND B.BOARD_CD = 'Y'
-		    	<if test="gameCode != null and gameCode != ''">
-		     	AND B.GAME_CODE = #{gameCode}
-		    	</if>
+		    	<if test="gameCode != null and gameCode != '' and gameCode != 'all'">
+	              AND B.GAME_CODE = #{gameCode}
+	            </if>
 		    ORDER BY B.BOARD_NO DESC
     	)T1
     ) WHERE RNUM BETWEEN #{offset} AND #{limit}
@@ -482,7 +488,7 @@
 		SELECT ROWNUM AS RNUM , T1.* FROM(
 		    SELECT 
 		        R.REPLY_NO,
-		        R.REPLY_CONTENT,
+		        DBMS_LOB.SUBSTR(R.REPLY_CONTENT, 4000, 1) AS REPLY_CONTENT,
 		        R.REPLY_DATE,
 		        B.BOARD_NO,
 		        B.BOARD_TITLE,
@@ -496,9 +502,9 @@
 		    WHERE R.USER_NO = #{userNo}
 		      AND R.STATUS = 'Y'
 		      AND B.BOARD_CD = 'Y'
-		      <if test="gameCode != null and gameCode != ''">
-		      AND B.GAME_CODE = #{gameCode}
-		      </if>
+		      <if test="gameCode != null and gameCode != '' and gameCode != 'all'">
+              AND B.GAME_CODE = #{gameCode}
+            </if>
 		    ORDER BY R.REPLY_NO DESC
 			) T1
 		)WHERE RNUM BETWEEN #{offset} AND #{limit}
@@ -509,9 +515,9 @@
     FROM BOARD
     WHERE USER_NO = #{userNo} 
     AND BOARD_CD = 'Y'
-	    <if test="gameCode != null and gameCode != ''">
-	        AND GAME_CODE = #{gameCode}
-	    </if>
+	    <if test="gameCode != null and gameCode != 'all'">
+		    AND GAME_CODE = #{gameCode}
+		</if>
 	</select>
 
 	<select id="selectMyRepliesCount" resultType="int">
@@ -521,10 +527,22 @@
     WHERE R.USER_NO = #{userNo} 
     AND R.STATUS = 'Y' 
     AND B.BOARD_CD = 'Y'
-	    <if test="gameCode != null and gameCode != ''">
-	        AND B.GAME_CODE = #{gameCode}
-	    </if>
+	    <if test="gameCode != null and gameCode != 'all'">
+		    AND B.GAME_CODE = #{gameCode}
+		</if>
 	</select>
+		
+	<update id="deleteMyReplies">
+	    UPDATE REPLY
+	    SET STATUS = 'N' 
+	    WHERE USER_NO = #{userNo}
+	    AND REPLY_NO IN
+	    <foreach item="rNo" collection="replyNos" open="(" separator="," close=")">
+	        #{rNo}
+	    </foreach>
+	</update>
+	
+	
 	
 	<!-- 인기게시글 -->
 	<select id="selectBestBoards" resultType="boardExt" parameterType="string">

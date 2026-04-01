@@ -46,12 +46,15 @@ public class BoardController {
     private final ResourceLoader resourceLoader;
     private final ServletContext application;
 
+<<<<<<< HEAD
     // 문의 상세 보기
     @GetMapping("/inquiryView")
     public String board_inquiryView() {
         return "board/user_inquiry_view";
     }
 
+=======
+>>>>>>> main
 	@GetMapping("/view")
 	public String board_view(
 	        @RequestParam("boardNo") int boardNo,
@@ -92,6 +95,7 @@ public class BoardController {
 	}
         
 	// 게임코드 변환 헬퍼 메서드
+<<<<<<< HEAD
     private String getDbGameCode(String gameCode) {
         switch(gameCode.toLowerCase()) {
             case "battleground": return "BG";
@@ -101,6 +105,42 @@ public class BoardController {
         }
     }
 	
+=======
+	private String getDbGameCode(String gameCode) {
+	    if (gameCode == null) return "all";
+	    
+	    // 무조건 대문자로 바꿔서 비교
+	    switch(gameCode.toUpperCase()) {
+	        case "BATTLEGROUND":
+	        case "BG":
+	            return "BG";
+	        case "OVERWATCH":
+	        case "OW":
+	            return "OW";
+	        case "LOL":
+	        case "LEAGUEOFLEGENDS":
+	            return "LOL";	
+	        case "ALL":
+	            return "all";
+	        default:
+	            return gameCode.toUpperCase();
+	    }
+	}
+
+    // [헬퍼] DB용 코드 -> 경로용 소문자 ID
+    private String getPathGameId(String dbGameCode) {
+        if (dbGameCode == null) return "all";
+        
+        switch(dbGameCode.toUpperCase()) {
+            case "BG": return "battleground";
+            case "OW": return "overwatch";
+            case "LOL": return "lol";
+            default: return "all";
+        }
+    }
+    
+
+>>>>>>> main
     // 공통 목록 조회 로직
     private void addBoardListToModel(Map<String, Object> paramMap, int cp, Model model) {
         int listCount = boardService.selectListCount(paramMap);
@@ -221,6 +261,7 @@ public class BoardController {
         return "board/board_edit";
     }
 
+<<<<<<< HEAD
     // 게시글 수정 처리
     @PostMapping("/edit")
     public String updateBoard(Board board, 
@@ -231,8 +272,37 @@ public class BoardController {
         String savePath = session.getServletContext().getRealPath("/resources/upload/board/");
         int result = boardService.updateBoard(board, upFiles, deleteFileNos, savePath);
         ra.addFlashAttribute("message", result > 0 ? "수정되었습니다." : "수정 실패");
+=======
+
+    // ================= [수정 완료] 게시글 업데이트 처리 =================
+    @PostMapping("/update") 
+    public String updateBoard(Board board, 
+                             @RequestParam(value="upFile", required=false) List<MultipartFile> upFiles,
+                             @RequestParam(value="deleteFileNos", required=false) List<Integer> deleteFileNos,
+                             Authentication auth, HttpSession session, RedirectAttributes ra) {
+        
+        if (auth == null) return "redirect:/member/login";
+        
+        String savePath = session.getServletContext().getRealPath("/resources/upload/board/");
+        
+        // 서비스 단에서 DB 수정 및 파일 삭제/추가 로직 처리
+        int result = boardService.updateBoard(board, upFiles, deleteFileNos, savePath);
+        
+        if(result > 0) {
+            ra.addFlashAttribute("message", "게시글이 수정되었습니다.");
+        } else {
+            ra.addFlashAttribute("message", "수정 실패하였습니다.");
+        }
+        
+        // 세션 임시 변수 정리
+        session.removeAttribute("tempGameCode");
+        session.removeAttribute("tempCategoryNo");
+        session.removeAttribute("tempBoardType");
+        
+>>>>>>> main
         return "redirect:/board/view?boardNo=" + board.getBoardNo();
     }
+
 
     // 게시글 삭제 처리
     @GetMapping("/delete")
@@ -312,6 +382,7 @@ public class BoardController {
         reply.setUserNo(((MemberExt)auth.getPrincipal()).getUserNo());
         return boardService.insertReply(reply) > 0 ? "success" : "fail";
     }
+<<<<<<< HEAD
 		
 	// 댓글 삭제
 	@ResponseBody
@@ -383,4 +454,144 @@ public class BoardController {
 	            return "redirect:/board/inquiryWrite";
 	        }
 	    }	
+=======
+
+        
+    // 댓글 삭제
+    @ResponseBody
+    @PostMapping("/reply/delete")
+    public String deleteReply(int replyNo, Authentication auth) {
+        if (auth == null || !auth.isAuthenticated()) {
+            return "login"; 
+        }
+        int userNo = ((MemberExt)auth.getPrincipal()).getUserNo();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("replyNo", replyNo);
+        paramMap.put("userNo", userNo);
+        
+        int result = boardService.deleteReply(paramMap);
+        
+        return result > 0 ? "success" : "fail";
+    }
+        
+ // 1:1문의 메인
+    @GetMapping("/inquiry")
+    public String inquiry(@RequestParam(value="game", defaultValue="all") String game,
+            @RequestParam(value="cp", defaultValue="1") int cp, 
+            Authentication auth, 
+            Model model) {
+        
+        if (auth == null) return "redirect:/member/login";
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+        int userNo = loginUser.getUserNo();
+        
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("userNo", userNo);
+        
+        String dbGameCode = game.equalsIgnoreCase("all") ? "all" : getDbGameCode(game);
+        paramMap.put("gameCode", dbGameCode);
+        
+        int listCount = boardService.selectInquiryCount(paramMap);
+        PageInfo pi = Pagination.getPageInfo( listCount,cp, 10, 10);
+        List<Inquiry> inquiryList = boardService.selectInquiryList(pi, paramMap);
+        
+        model.addAttribute("inquiryList", inquiryList);
+        model.addAttribute("pi", pi);
+        
+        model.addAttribute("currentGame", game.toLowerCase());
+        
+        return "board/user_inquiry";
+    }
+    
+    // 1:1 문의 작성 페이지 이동
+    @GetMapping("/inquiryWrite")
+    public String inquiryWrite() {
+        return "board/user_inquiry_write";
+    }
+    
+    @PostMapping("/inquiry/insert")
+    public String insertInquiry(Inquiry inquiry, Authentication auth, RedirectAttributes ra) {
+        
+        if (auth == null) return "redirect:/member/login";
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+        inquiry.setUserNo(loginUser.getUserNo());
+        inquiry.setUserName(loginUser.getUserName());
+        
+        String normalizedCode = getDbGameCode(inquiry.getGameCode());
+        inquiry.setGameCode(normalizedCode);
+        
+        int result = boardService.insertInquiry(inquiry);
+        
+        if(result > 0) {
+            ra.addFlashAttribute("message", "문의가 성공적으로 접수되었습니다.");
+            String pathId = getPathGameId(normalizedCode);
+            return "redirect:/board/inquiry?game=" + pathId;
+        } else {
+            ra.addFlashAttribute("message", "문의 접수에 실패했습니다.");
+            return "redirect:/board/inquiryWrite";
+        }
+    }    
+    
+ // 문의 상세 보기
+    @GetMapping("/inquiryView")
+    public String board_inquiryView(@RequestParam("boardNo") int boardNo,
+                                    @RequestParam(value="game", defaultValue="all") String game,
+                                    Authentication auth,
+                                    Model model,
+                                    RedirectAttributes ra) {
+        
+        // 1. 로그인 체크
+        if (auth == null) {
+            ra.addFlashAttribute("message", "로그인 후 이용 가능합니다.");
+            return "redirect:/member/login";
+        }
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+
+        // 2. DB에서 문의글 상세 정보 가져오기 (Service, DAO에 selectInquiryDetail 메서드 필요!)
+        Inquiry inquiry = boardService.selectInquiryDetail(boardNo);
+
+        // 3. 보안 체크 (게시글이 없거나, 작성자가 본인이 아닐 경우 튕겨내기)
+        if (inquiry == null || inquiry.getUserNo() != loginUser.getUserNo()) {
+            ra.addFlashAttribute("message", "조회 권한이 없거나 존재하지 않는 문의입니다.");
+            // 돌아갈 때 원래 보던 탭으로 돌려보내는 센스!
+            return "redirect:/board/inquiry?game=" + game; 
+        }
+
+        // 4. JSP에 데이터 전달
+        model.addAttribute("inq", inquiry);
+        model.addAttribute("currentGame", game); // "목록으로" 버튼을 눌렀을 때 원래 필터 유지용
+
+        return "board/user_inquiry_view";
+    }
+    
+ // 1:1 문의 삭제 처리
+    @GetMapping("/inquiryDelete")
+    public String inquiryDelete(@RequestParam("boardNo") int boardNo, 
+                                Authentication auth, 
+                                RedirectAttributes ra) {
+        
+        if (auth == null) return "redirect:/member/login";
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+        
+        // 1. 혹시 남의 글을 삭제하려고 하는지 DB에서 작성자 확인
+        Inquiry inquiry = boardService.selectInquiryDetail(boardNo);
+        
+        if (inquiry == null || inquiry.getUserNo() != loginUser.getUserNo()) {
+            ra.addFlashAttribute("message", "삭제 권한이 없습니다.");
+            return "redirect:/board/inquiry";
+        }
+        
+        // 2. 삭제 실행!
+        int result = boardService.deleteInquiry(boardNo);
+        
+        if(result > 0) {
+            ra.addFlashAttribute("message", "문의글이 정상적으로 삭제되었습니다.");
+        } else {
+            ra.addFlashAttribute("message", "삭제에 실패했습니다.");
+        }
+        
+        // 3. 삭제 후 목록으로 (기본 '전체' 탭으로 이동)
+        return "redirect:/board/inquiry";
+    }
+>>>>>>> main
 }

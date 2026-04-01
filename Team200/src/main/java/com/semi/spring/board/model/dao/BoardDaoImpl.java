@@ -156,7 +156,7 @@ public class BoardDaoImpl implements BoardDao {
 		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
 	    RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
 	    
-	    return session.selectList("board.selectInquiry", paramMap, rowBounds);
+	    return session.selectList("board.selectInquiryList", paramMap, rowBounds);
 	}
 
 	@Override
@@ -173,5 +173,54 @@ public class BoardDaoImpl implements BoardDao {
 	public void deleteSelectedFile(int fileNo) {
 		session.delete("board.deleteSelectedFile", fileNo);
 		
+	}
+
+	@Override
+	public Inquiry selectInquiryDetail(int boardNo) {
+		return session.selectOne("board.selectInquiryDetail", boardNo);
+	}
+	
+	@Override
+	public int deleteInquiry(int boardNo) {
+	    return session.delete("board.deleteInquiry", boardNo);
+	}
+
+	@Override
+	public int selectMyBoardsCount(Map<String, Object> paramMap) {
+		return session.selectOne("board.selectMyBoardsCount", paramMap);
+	}
+
+	@Override
+	public List<BoardExt> selectMyBoards(PageInfo pi, Map<String, Object> paramMap) {
+	    // RowBounds를 쓰지 말고, paramMap에 직접 계산해서 넣습니다 (Oracle 방식)
+	    int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit() + 1;
+	    int limit = offset + pi.getBoardLimit() - 1;
+	    
+	    paramMap.put("offset", offset);
+	    paramMap.put("limit", limit);
+	    
+	    // RowBounds를 제거하고 paramMap만 보냅니다.
+	    return session.selectList("board.selectMyBoards", paramMap);
+	}
+
+	@Override
+	public int selectMyRepliesCount(Map<String, Object> paramMap) {
+		return session.selectOne("board.selectMyRepliesCount", paramMap);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectMyReplies(PageInfo pi, Map<String, Object> paramMap) {
+	    int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit() + 1;
+	    int limit = offset + pi.getBoardLimit() - 1;
+	    
+	    paramMap.put("offset", offset);
+	    paramMap.put("limit", limit);
+	    
+	    return session.selectList("board.selectMyReplies", paramMap);
+	}
+	
+	@Override
+	public int deleteMyReplies(Map<String, Object> paramMap) {
+	    return session.update("board.deleteMyReplies", paramMap);
 	}
 }

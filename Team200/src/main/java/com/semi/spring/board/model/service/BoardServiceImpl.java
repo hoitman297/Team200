@@ -292,4 +292,38 @@ public class BoardServiceImpl implements BoardService {
         return boardDao.deleteBoard(boardNo);
     }
 
+	@Override
+	public Inquiry selectInquiryDetail(int boardNo) {
+		return boardDao.selectInquiryDetail(boardNo);
+	}
+
+	@Override
+	public int deleteInquiry(int boardNo) {
+	    return boardDao.deleteInquiry(boardNo);
+	}
+
+	@Override
+	public int selectMyBoardsCount(Map<String, Object> paramMap) {
+		return boardDao.selectMyBoardsCount(paramMap);
+	}
+
+	@Override
+	public List<BoardExt> selectMyBoards(PageInfo pi, Map<String, Object> paramMap) {
+		return boardDao.selectMyBoards(pi, paramMap);
+	}
+
+	@Override
+	public int selectMyRepliesCount(Map<String, Object> paramMap) {
+		return boardDao.selectMyRepliesCount(paramMap);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectMyReplies(PageInfo pi, Map<String, Object> paramMap) {
+		return boardDao.selectMyReplies(pi,paramMap);
+	}
+
+	@Override
+	public int deleteMyReplies(Map<String, Object> paramMap) {
+		return boardDao.deleteMyReplies(paramMap);
+	}
 }

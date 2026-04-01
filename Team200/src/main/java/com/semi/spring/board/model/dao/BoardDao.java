@@ -67,5 +67,17 @@ public interface BoardDao {
 
 	public void deleteSelectedFile(int fileNo);
 
+	public Inquiry selectInquiryDetail(int boardNo);
+
+	public int deleteInquiry(int boardNo);
+
+	public int selectMyBoardsCount(Map<String, Object> paramMap);
+
+	public List<BoardExt> selectMyBoards(PageInfo pi, Map<String, Object> paramMap);
+
+	public int selectMyRepliesCount(Map<String, Object> paramMap);
 	
+	public List<Map<String, Object>> selectMyReplies(PageInfo pi, Map<String, Object> paramMap);
+	
+	public int deleteMyReplies(Map<String, Object> paramMap);
 }
