@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -376,13 +377,21 @@ public class BoardController {
     @ResponseBody
     @PostMapping("/reply/delete")
     public String deleteReply(int replyNo, Authentication auth) {
+        
         if (auth == null || !auth.isAuthenticated()) {
             return "login"; 
         }
+        
         int userNo = ((MemberExt)auth.getPrincipal()).getUserNo();
+        
+        boolean isAdmin = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("ROLE_ADMIN") || role.equals("ADMIN"));
+        
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("replyNo", replyNo);
         paramMap.put("userNo", userNo);
+        paramMap.put("isAdmin", isAdmin); 
         
         int result = boardService.deleteReply(paramMap);
         
