@@ -79,4 +79,6 @@ public interface BoardService {
     int selectGalleryCount(Map<String, Object> paramMap);
     
     int selectCategoryNoByName(Map<String, Object> paramMap);
+
+	List<BoardExt> selectRecentGallery(String gameCode);
 }

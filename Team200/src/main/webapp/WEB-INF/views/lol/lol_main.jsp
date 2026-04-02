@@ -1,6 +1,8 @@
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 
 <%-- 💖 [핵심 수정] 사이드바와 헤더가 길을 잃지 않도록 맨 위에서 쾅쾅! 선언해 줍니다 💖 --%>
 <c:set var="gameId" value="lol" />
@@ -116,10 +118,38 @@
 
 			<div class="bottom-grid">
 				<div class="grid-box">
-					<h4>갤러리</h4>
-					<div class="thumb-container">
-						<div class="thumb"></div>
-						<div class="thumb"></div>
+				    <%-- ✨ 갤러리 제목 & 더보기 버튼 --%>
+				    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+					    <h4 style="margin: 0;">갤러리</h4>
+					    <a href="<c:url value='/gallery/list?gameCode=LOL'/>" style="font-size: 13px; color: #64748b; text-decoration: none; font-weight: 600;">더보기 &gt;</a>
+					</div>
+					
+					<%-- ✨ 동적 썸네일 노출 영역 --%>
+					<div class="thumb-container" style="display: flex; gap: 15px;">
+					    
+					    <c:forEach var="gal" items="${recentGallery}">
+					        <a href="<c:url value='/board/view?boardNo=${gal.boardNo}'/>" style="text-decoration: none; display: block;">
+					            <%-- 기존 .thumb 클래스의 크기를 활용하되, 안에 이미지가 꽉 차도록 세팅 --%>
+					            <div class="thumb" style="width: 140px; height: 140px; border-radius: 12px; overflow: hidden; background: #e2e8f0;">
+					                <c:choose>
+					                    <c:when test="${not empty gal.thumbnail}">
+					                        <img src="<c:url value='/resources/upload/board/${gal.thumbnail}'/>" alt="갤러리 썸네일" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s ease;">
+					                    </c:when>
+					                    <c:otherwise>
+					                        <img src="<c:url value='/resources/images/no_image.png'/>" alt="no-image" style="width: 100%; height: 100%; object-fit: contain; padding: 20px; box-sizing: border-box;">
+					                    </c:otherwise>
+					                </c:choose>
+					            </div>
+					        </a>
+					    </c:forEach>
+
+					    <%-- ✨ 글이 2개가 안 될 경우 레이아웃 유지를 위한 빈 박스 채우기 --%>
+					    <c:forEach begin="${empty recentGallery ? 0 : fn:length(recentGallery)}" end="1">
+					        <div class="thumb" style="width: 140px; height: 140px; border-radius: 12px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 13px; font-weight: 500; border: 1px dashed #cbd5e1; box-sizing: border-box;">
+					            비어있음
+					        </div>
+					    </c:forEach>
+					    
 					</div>
 				</div>
 				<div class="grid-box">

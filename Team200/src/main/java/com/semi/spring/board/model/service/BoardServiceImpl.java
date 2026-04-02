@@ -303,4 +303,9 @@ public class BoardServiceImpl implements BoardService {
     public int selectCategoryNoByName(Map<String, Object> paramMap) {
         return boardDao.selectCategoryNoByName(paramMap);
     }
+    
+    @Override
+    public List<BoardExt> selectRecentGallery(String gameCode) {
+        return boardDao.selectRecentGallery(gameCode);
+    }
 }

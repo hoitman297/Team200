@@ -58,6 +58,10 @@ public class HomeController {
 	    
 	    List<BoardExt> bestList = boardService.selectBestBoards(dbGameCode);
 	    model.addAttribute("bestList", bestList);
+	    
+	    List<BoardExt> recentGallery = boardService.selectRecentGallery(dbGameCode);
+	    model.addAttribute("recentGallery", recentGallery);
+	    
 	    model.addAttribute("gameId", lowerCode);
 	    
 	    String viewPath = "";
