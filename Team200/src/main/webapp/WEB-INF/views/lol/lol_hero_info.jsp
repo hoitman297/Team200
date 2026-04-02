@@ -160,7 +160,7 @@
 				    <div class="comment-row" style="background: #f8fafc; padding: 12px; border-top: 2px solid #1e293b; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569; display: flex; font-size: 13px;">
 				        <div style="flex: 2; text-align: center;">글쓴이</div>
 				        <div style="flex: 5; padding-left: 20px;">내용</div>
-				        <div style="flex: 3; text-align: center;">작성일 | 관리</div>
+				        <div style="flex: 3; text-align: center;">작성일</div>
 				    </div>
 				
 				    <div id="replyList">
@@ -184,6 +184,20 @@
 	<%@ include file="../common/footer.jsp"%>
 	
 	<script>
+	
+	let loginUserNo = 0;
+    let isAdmin = false;
+    
+    <sec:authorize access="isAuthenticated()">
+    // 로그인한 유저의 userNo 세팅
+    loginUserNo = parseInt("<sec:authentication property='principal.userNo' />") || 0;
+	</sec:authorize>
+
+	<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ADMIN')">
+    // 관리자 권한 확인 (본인 프로젝트의 Role 이름에 맞게 조정하세요)
+    isAdmin = true;
+	</sec:authorize>
+
     // [1] 페이지 로드 시 실행
     $(document).ready(function() {
         // 1. 댓글 목록 즉시 불러오기
@@ -223,14 +237,26 @@
                         const dateStr = dateObj.getFullYear() + "." + String(dateObj.getMonth() + 1).padStart(2, '0') + "." + String(dateObj.getDate()).padStart(2, '0');
                         
                         html += "  <div style='flex: 3; text-align: center; color: #94a3b8; font-size: 12px;'>";
-                        html += "    " + dateStr + " | ";
+                        html += "    <div>" + dateStr + "</div>";
                         
-                        // 관리 버튼 (대댓글이 아닐 때만 '답글' 버튼 노출)
-                        if(!isChild) {
-                            html += "<span onclick='toggleReplyForm(" + item.infoReplyNo + ")' style='cursor:pointer; color:#3b82f6;'>답글</span>";
+                        if (loginUserNo > 0) {
+                            
+                        	html += "    <div style='margin-top: 3px;'>";
+                        	
+                            // 답글 버튼 (대댓글이 아닐 때만)
+                            if(!isChild) {
+                                html += "<span onclick='toggleReplyForm(" + item.infoReplyNo + ")' style='cursor:pointer; color:#3b82f6;'>답글</span>";
+                            }
+                            
+                            // 삭제 버튼 (본인 글이거나 관리자일 때만)
+                            if (loginUserNo === item.userNo || isAdmin) {
+                                html += "<span onclick='deleteInfoReply(" + item.infoReplyNo + ")' style='cursor:pointer; color:#ef4444; margin: 0 5px;'>삭제</span>";
+                            }
+                            
+                            // 신고 버튼 (로그인한 유저 누구나)
+                            html += "<span onclick='reportReply(" + item.infoReplyNo + ")' style='cursor:pointer; color:#64748b;'>신고</span>";
+                            html += "    </div>";
                         }
-                        html += "<span onclick='deleteInfoReply(" + item.infoReplyNo + ")' style='cursor:pointer; color:#ef4444; margin: 0 5px;'>삭제</span>";
-                        html += "<span onclick='reportReply(" + item.infoReplyNo + ")' style='cursor:pointer; color:#64748b;'>신고</span>";
                         html += "  </div>";
                         html += "</div>";
 

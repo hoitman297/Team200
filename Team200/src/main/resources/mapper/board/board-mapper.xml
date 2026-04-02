@@ -244,13 +244,14 @@
 	</update>
 	
 	<update id="deleteReply">
-		UPDATE REPLY 
-		SET 
-			STATUS = 'N' 
-			WHERE REPLY_NO = #{replyNo}
-			<if test="userNo != null and userNo != 0">
-        	AND USER_NO = #{userNo}
-    		</if>
+	    UPDATE REPLY 
+	    SET 
+	        STATUS = 'N' 
+	    WHERE REPLY_NO = #{replyNo}
+	    
+	    <if test="!isAdmin and userNo != null and userNo != 0">
+	        AND USER_NO = #{userNo}
+	    </if>
 	</update>
 	
 	<delete id="deleteSelectedFile">
@@ -659,6 +660,8 @@
 	    UPDATE GAME_INFO_REPLY
 	    SET STATUS = 'N'
 	    WHERE INFO_REPLY_NO = #{infoReplyNo}
-	      AND USER_NO = #{userNo}
+	      <if test="!admin">
+		        AND USER_NO = #{userNo}
+		    </if>
 	</update>
 </mapper>

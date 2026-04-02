@@ -1,7 +1,7 @@
 package com.semi.spring.board.model.vo;
 
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat; // ✨ 이거 임포트!
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +23,6 @@ public class Reply {
     private int parentReplyNo;    
     
     private String userName;
+    
+    private boolean admin; 
 }

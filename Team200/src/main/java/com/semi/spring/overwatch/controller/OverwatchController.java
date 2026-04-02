@@ -10,6 +10,7 @@ import javax.servlet.ServletContext;
 
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -143,16 +144,19 @@ public class OverwatchController {
     @ResponseBody
     public String deleteHeroReply(@RequestParam("infoReplyNo") int infoReplyNo, Authentication auth) {
         
-        if (auth == null) {
-            return "login";
-        }
+        if (auth == null) return "login";
         
-        int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+        // 1. 관리자 여부 확인
+        boolean isAdmin = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("ROLE_ADMIN") || role.equals("ADMIN"));
         
         GameInfoReply reply = new GameInfoReply();
-        reply.setInfoReplyNo(infoReplyNo); 
-        reply.setUserNo(userNo); // 본인 글만 삭제할 수 있도록 세팅
-        reply.setGameCode("OW");
+        reply.setInfoReplyNo(infoReplyNo);
+        
+        reply.setUserNo(((MemberExt) auth.getPrincipal()).getUserNo());
+        
+        reply.setAdmin(isAdmin); 
         
         int result = boardService.deleteInfoReply(reply);
         
