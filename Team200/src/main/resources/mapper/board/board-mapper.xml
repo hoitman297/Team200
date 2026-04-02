@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="board">
 	
-	<!-- 목록 -->
 	<sql id="searchCondition">
 		<if test="keyword != null and keyword != ''">
 			AND
@@ -45,8 +44,8 @@
 		
 		<association property="party" javaType="partyRecruit" autoMapping="true">
         <id column="BOARD_NO" property="boardNo"/>
-   	 	</association>
-   	 	
+        </association>
+        
 		<collection property="fileList" 
 			javaType="List"
 			ofType="attachFile" 
@@ -71,17 +70,17 @@
 						(SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount,
                 		(SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
 						(SELECT FILE_PATH || CHANGE_NAME 
-		                 FROM ATTACH_FILE F 
-		                 WHERE F.BOARD_NO = B.BOARD_NO 
-		                   AND ROWNUM = 1) AS thumbnail,
-		                   ROW_NUMBER() OVER (ORDER BY B.BOARD_NO ASC) AS dispNo
+                 FROM ATTACH_FILE F 
+                 WHERE F.BOARD_NO = B.BOARD_NO 
+                   AND ROWNUM = 1) AS thumbnail,
+                   ROW_NUMBER() OVER (ORDER BY B.BOARD_NO ASC) AS dispNo
 					FROM BOARD B
 					LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
 					JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
 					WHERE BOARD_CD = 'Y'
-	  				AND C.GAME_CODE = #{gameCode} 
-	  				<if test="categoryNo != null and categoryNo != 0">
-	      			AND B.CATEGORY_NO = #{categoryNo} </if>
+	 				AND C.GAME_CODE = #{gameCode} 
+	 				<if test="categoryNo != null and categoryNo != 0">
+	   			AND B.CATEGORY_NO = #{categoryNo} </if>
 				<include refid="searchCondition"/>
 			ORDER BY B.BOARD_NO DESC) T1
 			)
@@ -100,7 +99,6 @@
 		<include refid="searchCondition"/>
 	</select>
 	
-	<!-- 선택 -->
 	<select id="selectBoard" resultMap="boardMap">
 		SELECT B.BOARD_NO, B.USER_NO, B.CATEGORY_NO, B.GAME_CODE,
         B.BOARD_TITLE, B.BOARD_CONTENT, B.POST_DATE, B.BOARD_CD, B.READ_COUNT,
@@ -121,7 +119,6 @@
 		WHERE BOARD_NO = #{boardNo}
 	</select>
 
-	<!-- 생성 -->
 	<insert id="insertBoard">
 		<selectKey keyProperty="boardNo" resultType="int"
 			order="BEFORE">
@@ -174,7 +171,6 @@
 		) A
 	</insert>
 
-	<!-- 댓글 -->
 	<insert id="insertReply">
 		INSERT INTO REPLY (
 		REPLY_NO, USER_NO, BOARD_NO, REPLY_CONTENT,PARENT_REPLY_NO
@@ -201,7 +197,6 @@
     ORDER BY NVL(NULLIF(R.PARENT_REPLY_NO, 0), R.REPLY_NO) ASC, R.REPLY_DATE ASC
 	</select>
 	
-	<!-- 조회수 -->
 	<update id="increaseCount">
 		UPDATE BOARD
 		SET 
@@ -209,7 +204,6 @@
 		WHERE BOARD_NO = #{boardNo}
 	</update>
 
-	<!-- 업데이트 -->
 	<update id="updateBoard">
 		UPDATE BOARD
 		SET 
@@ -235,7 +229,6 @@
     WHERE REPLY_NO = #{replyNo}
       AND USER_NO = #{userNo}
 	</update>
-	<!-- 삭제 -->
 	<update id="deleteBoard">
 		UPDATE BOARD 
 		SET 
@@ -259,7 +252,6 @@
     WHERE FILE_NO = #{fileNo}
 	</delete>
 	
-	<!-- 신고 -->
 	<insert id="insertReport">
     INSERT INTO REPORT (
         REPORT_NO, 
@@ -267,7 +259,7 @@
         REPORT_CONTENT, REPORT_TYPE, STATUS
     ) VALUES (
         SEQ_REPORT_NO.NEXTVAL, 
-        #{userNo}, #{boardNo},#{replyNo}, 
+        #{userNo}, #{boardNo, jdbcType=INTEGER}, #{replyNo, jdbcType=INTEGER}, 
         #{reportContent}, #{reportType}, DEFAULT
     )
 	</insert>
@@ -288,7 +280,6 @@
     WHERE REPORT_NO = #{reportNo}
 	</update>
 
-	<!-- 공지사항 -->	
 	<select id="selectNotice" resultType="notice">
 		SELECT 
         	NOTICE_NO, 
@@ -322,7 +313,6 @@
 	</update>
 	
 	
-	<!-- 패치노트 -->
 	<select id="selectPatchnoteList" resultType="patchnote">
     SELECT * FROM PATCHNOTE
     <where>
@@ -361,7 +351,6 @@
     WHERE PATCHNOTE_NO = #{patchnoteNo}
 	</update>
 	
-	<!-- 1:1문의 -->
 	<select id="selectInquiryList" resultType="inquiry">
 	SELECT 
         BOARD_NO, 
@@ -430,7 +419,6 @@
     WHERE BOARD_NO = #{boardNo}
 	</delete>
 	
-	<!-- 공감 -->
 	<insert id="insertBoardLike" parameterType="boardLike">
     INSERT INTO BOARD_LIKES (USER_NO, BOARD_NO) 
     VALUES (#{userNo}, #{boardNo})
@@ -457,7 +445,6 @@
     WHERE USER_NO = #{userNo} AND REPLY_NO = #{replyNo}
 	</select>	
 	
-	<!-- 내 글,댓글 조회 -->
 	<select id="selectMyBoards" resultType="board">
 	SELECT * FROM (
 		SELECT ROWNUM AS RNUM, T1.* FROM (	
@@ -543,9 +530,6 @@
 	    </foreach>
 	</update>
 	
-	
-	
-	<!-- 인기게시글 -->
 	<select id="selectBestBoards" resultType="boardExt" parameterType="string">
     SELECT * FROM (
         SELECT 
@@ -571,7 +555,6 @@
     WHERE ROWNUM &lt;= 5 
     </select>
     	
-    <!-- 갤러리 -->	
     <select id="selectGalleryList" resultType="boardExt">
     SELECT *
     FROM (
@@ -619,7 +602,6 @@
 	</select>
 	
 	
-	<!-- 롤, 옵치 캐릭터 정보 댓글 -->
 	<select id="selectInfoReplies" resultType="gameInfoReply">
 	    SELECT 
 	        R.INFO_REPLY_NO, 
@@ -652,7 +634,7 @@
 	        #{gameCode}, 
 	        #{targetNo}, 
 	        #{replyContent},
-	        DECODE(#{parentReplyNo}, 0, NULL, #{parentReplyNo})
+	        DECODE(#{parentReplyNo}, 0, NULL, #{parentReplyNo, jdbcType=INTEGER})
 	    )
 	</insert>
 	

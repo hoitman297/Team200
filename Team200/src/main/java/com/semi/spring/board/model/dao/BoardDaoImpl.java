@@ -17,6 +17,7 @@ import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
+import com.semi.spring.board.model.vo.Report;
 import com.semi.spring.common.model.vo.PageInfo;
 
 import lombok.RequiredArgsConstructor;
@@ -238,5 +239,9 @@ public class BoardDaoImpl implements BoardDao {
     @Override
     public int deleteInfoReply(GameInfoReply reply) {
         return session.update("board.deleteInfoReply", reply);
+    }
+    
+    public int insertReport(Report report) {
+        return session.insert("board.insertReport", report);
     }
 }
