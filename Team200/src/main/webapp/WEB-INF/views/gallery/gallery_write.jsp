@@ -9,14 +9,17 @@
     <c:when test="${gameParam == 'LOL'}">
         <c:set var="gameName" value="리그 오브 레전드"/>
         <c:set var="gameCode" value="LOL"/>
+        <c:set var="gameId" value="lol"/>
     </c:when>
     <c:when test="${gameParam == 'OW'}">
         <c:set var="gameName" value="오버워치"/>
         <c:set var="gameCode" value="OW"/>
+        <c:set var="gameId" value="overwatch"/>
     </c:when>
     <c:otherwise>
         <c:set var="gameName" value="배틀그라운드"/>
         <c:set var="gameCode" value="BG"/>
+        <c:set var="gameId" value="battleground"/>
     </c:otherwise>
 </c:choose>
 
@@ -41,12 +44,11 @@
 
     <div class="main-layout">
         <aside class="side-left">
-        <c:set var="gameId" value="${fn:toLowerCase(gameCode)}" />
             <%@ include file="../common/sidebar.jsp" %>
         </aside>
 
         <main class="content-area">
-            <div class="logo">LOG.GG</div>
+            <a href="<c:url value='/'/>"><div class="logo">LOG.GG</div></a>
 
             <div class="write-container">
                 <div class="write-header">

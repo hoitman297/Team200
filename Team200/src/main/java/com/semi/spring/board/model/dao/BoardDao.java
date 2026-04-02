@@ -90,4 +90,6 @@ public interface BoardDao {
 	public List<BoardExt> selectGalleryList(Map<String, Object> paramMap);
 
 	public int selectGalleryCount(Map<String, Object> paramMap);
+
+	public List<BoardExt> selectRecentGallery(String gameCode);
 }

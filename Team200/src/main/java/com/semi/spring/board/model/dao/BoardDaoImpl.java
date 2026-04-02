@@ -244,4 +244,9 @@ public class BoardDaoImpl implements BoardDao {
     public int selectGalleryCount(Map<String, Object> paramMap) {
         return session.selectOne("board.selectGalleryCount", paramMap);
     }
+    
+    @Override
+    public List<BoardExt> selectRecentGallery(String gameCode) {
+        return session.selectList("board.selectRecentGallery", gameCode);
+    }
 }

@@ -616,7 +616,23 @@
 	      AND CATEGORY_NAME = #{categoryName}
 	</select>
 	
-	
+	<select id="selectRecentGallery" resultType="BoardExt">
+    SELECT * FROM (
+        SELECT 
+            B.BOARD_NO as boardNo, 
+            B.BOARD_TITLE as boardTitle, 
+            B.GAME_CODE as gameCode, 
+            B.USER_NO as userNo,
+            (SELECT CHANGE_NAME FROM ATTACH_FILE A WHERE A.BOARD_NO = B.BOARD_NO AND ROWNUM = 1) AS thumbnail
+        FROM BOARD B
+        JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+        WHERE C.CATEGORY_NAME = '갤러리'
+        AND B.GAME_CODE = #{gameCode}
+        AND B.BOARD_CD = 'Y' 
+        ORDER BY B.BOARD_NO DESC
+    )
+    WHERE ROWNUM &lt;= 2
+	</select>
 	<!--  -->
 	
 	<select id="selectInfoReplies" resultType="gameInfoReply">
