@@ -555,33 +555,47 @@
     WHERE ROWNUM &lt;= 5 
     </select>
     	
+    <!-- 갤러리 -->	
     <select id="selectGalleryList" resultType="boardExt">
     SELECT *
-    FROM (
-        SELECT ROWNUM AS RNUM, T1.*
-        FROM (
-            SELECT
-                B.BOARD_NO,
-                B.BOARD_TITLE,
-                U.USER_NAME,
-                B.READ_COUNT AS readCount,
-                B.POST_DATE AS postDate,
-                B.GAME_CODE,
-                (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount,
-                (SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
-                (SELECT CHANGE_NAME FROM ATTACH_FILE F WHERE F.BOARD_NO = B.BOARD_NO AND ROWNUM = 1) AS thumbnail
-            FROM BOARD B
-            LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
-            JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
-            WHERE B.BOARD_CD = 'Y'
-              AND C.CATEGORY_NAME = '갤러리' <if test="gameCode != null and gameCode != 'all'">
-                AND B.GAME_CODE = UPPER(#{gameCode})
-              </if>
-            ORDER BY B.BOARD_NO DESC
-        ) T1
-    )
-    WHERE RNUM BETWEEN #{offset} AND #{limit}
+	    FROM (
+	        SELECT ROWNUM AS RNUM, T1.*
+	        FROM (
+	            SELECT
+	                B.BOARD_NO,
+	                B.BOARD_TITLE,
+	                U.USER_NAME,
+	                B.READ_COUNT AS readCount,
+	                B.POST_DATE AS postDate,
+	                B.GAME_CODE,
+	                
+	                (SELECT COUNT(*) FROM BOARD_LIKES L WHERE L.BOARD_NO = B.BOARD_NO) AS likeCount,
+	                
+	                (SELECT COUNT(*) FROM REPLY R WHERE R.BOARD_NO = B.BOARD_NO AND R.STATUS = 'Y') AS replyCount,
+	                
+	                (
+	                    SELECT MAX(CHANGE_NAME) KEEP (DENSE_RANK FIRST ORDER BY FILE_NO ASC)
+	                    FROM ATTACH_FILE F 
+	                    WHERE F.BOARD_NO = B.BOARD_NO
+	                ) AS thumbnail
+	                
+	            FROM BOARD B
+	            LEFT JOIN LOG_GG_USER U ON B.USER_NO = U.USER_NO
+	            JOIN CATEGORY_TABLE C ON B.CATEGORY_NO = C.CATEGORY_NO
+	            
+	            WHERE B.BOARD_CD = 'Y' /* Y: 활성화된 게시글 */
+	              AND C.CATEGORY_NAME = '갤러리'
+	              
+	              <if test="gameCode != null and gameCode != 'all'">
+	                AND B.GAME_CODE = UPPER(#{gameCode})
+	              </if>
+	              
+	            ORDER BY B.BOARD_NO DESC
+	        ) T1
+	    )
+	    WHERE RNUM BETWEEN #{startRow} AND #{endRow}
 	</select>
+	
 	
 	<select id="selectGalleryCount" resultType="int">
 	    SELECT COUNT(*)
@@ -594,13 +608,16 @@
 	      </if>
 	</select>
 	
+	
 	<select id="selectCategoryNoByName" resultType="int">
-    SELECT CATEGORY_NO 
-    FROM CATEGORY_TABLE 
-    WHERE GAME_CODE = UPPER(#{gameCode}) 
-      AND CATEGORY_NAME = #{categoryName}
+	    SELECT CATEGORY_NO 
+	    FROM CATEGORY_TABLE 
+	    WHERE GAME_CODE = UPPER(#{gameCode}) 
+	      AND CATEGORY_NAME = #{categoryName}
 	</select>
 	
+	
+	<!--  -->
 	
 	<select id="selectInfoReplies" resultType="gameInfoReply">
 	    SELECT 
