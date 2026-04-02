@@ -5,10 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_delete_pop/style.css">
-	<script src="${pageContext.request.contextPath}/resources/member/user_delete_pop/script.js"></script>
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_delete_pop/style.css?v=1.1">
-	<script src="${pageContext.request.contextPath}/resources/member/user_delete_pop/script.js?v=1.1"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_delete_pop/style.css?v=1.1">
+    <script src="${pageContext.request.contextPath}/resources/member/user_delete_pop/script.js?v=1.1"></script>
     <title>LOG.GG - 회원 탈퇴</title>
 </head>
 <body>
@@ -34,17 +32,15 @@
             </label>
 
             <div class="btn-group">
-    <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
-    <button type="button" 
-            class="btn btn-submit" 
-            id="submitBtn" 
-            disabled 
-            data-url="<c:url value='/member/delete' />">회원 탈퇴</button>
-			</div>
-                <button class="btn btn-cancel" onclick="history.back()">취소</button>
-                <button class="btn btn-submit"  id="submitBtn" onclick="location.href='../마이페이지/회원탈퇴2.html'">회원 탈퇴</button>
+                <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
+                <button type="button" 
+                        class="btn btn-submit" 
+                        id="submitBtn" 
+                        disabled 
+                        data-url="<c:url value='/member/delete' />">회원 탈퇴</button>
             </div>
         </div>
     </div>
+
 </body>
 </html>

@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_mypage/style.css">
-	<script src="${pageContext.request.contextPath}/resources/member/user_mypage/script.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/member/user_mypage/script.js"></script>
     <sec:authentication property="principal" var="loginUser"/>
     
     <title>마이페이지 - Desktop Dashboard</title>
@@ -16,35 +16,40 @@
 <body>
 
     <div class="dashboard-container">
-		<aside class="sidebar">
-			<div class="profile-img"
-				onclick="document.getElementById('profileInput').click()">
-				<img id="profilePreview"
-					src="${pageContext.request.contextPath}${not empty secUser.profilePath ? secUser.profilePath : '/resources/img/default_profile.png'}"
-					alt="프로필">
-				<div class="overlay">변경</div>
-			</div>
-			<input type="file" id="profileInput" accept="image/*"
-				style="display: none;" onchange="uploadProfile(event)">
+        <div class="left-section">
+            <aside class="sidebar">
+                <div class="profile-img" onclick="document.getElementById('profileInput').click()">
+                    <img id="profilePreview"
+                        src="${pageContext.request.contextPath}${not empty secUser.profilePath ? secUser.profilePath : '/resources/img/default_profile.png'}"
+                        alt="프로필">
+                    <div class="overlay">변경</div>
+                </div>
+                <input type="file" id="profileInput" accept="image/*" style="display: none;" onchange="uploadProfile(event)">
 
-			<div class="user-info">
-				<sec:authentication property="principal" var="secUser" />
-				<h1>${secUser.userName}</h1>
-				<p>
-					일반 회원<br>${secUser.email}</p>
-			</div>
+                <div class="user-info">
+                    <sec:authentication property="principal" var="secUser" />
+                    <h1>${secUser.userName}</h1>
+                    <p>일반 회원<br>${secUser.email}</p>
+                </div>
 
-			<a href="<c:url value = '/member/login' />"><button
-					class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
+                <a href="<c:url value = '/member/login' />"><button
+                        class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
 
-			<div class="logo-bottom">LOG.GG</div>
-		</aside>
+                <div class="logo-bottom">LOG.GG</div>
+            </aside>
 
-		<main class="main-content">
+            <a href="<c:url value='/' />" style="display: block;">
+                <div class="home-box">
+                    메인화면으로 돌아가기
+                </div>
+            </a>
+        </div>
+
+        <main class="main-content">
             <section class="card">
                 <h2>⚙️ <span style="color: #475569;">계정 설정</span></h2>
                 <div class="menu-grid">
-                	<a href="<c:url value = '/member/update' />">
+                    <a href="<c:url value = '/member/update' />">
                     <div class="menu-item" onclick="msg('회원 정보 및 비밀번호 수정')">
                         <strong>회원 정보 수정</strong>
                         <span>이메일, 비밀번호 및 닉네임을 변경합니다.</span>
@@ -56,21 +61,20 @@
             <section class="card">
                 <h2>📝 <span style="color: #475569;">커뮤니티 활동</span></h2>
                 <div class="menu-grid">
-                	<a href="<c:url value = '/member/activity' />">
+                    <a href="<c:url value = '/member/activity' />">
                     <div class="menu-item" onclick="msg('게시글 조회')">
                         <strong>작성한 게시글 / 댓글 조회</strong>
                         <span style="color: #ff5454; font-weight: bold;">
-                        	내가 쓴 글 총 ${totalBoardCount}개 | 댓글 ${totalReplyCount}개</span> 
+                            내가 쓴 글 총 ${totalBoardCount}개 | 댓글 ${totalReplyCount}개</span> 
                     </div>
-                    
                     </a>
+                    
                     <a href="<c:url value = '/member/comment' />">
                     <div class="menu-item" onclick="msg('삭제 관리')">
                         <strong>댓글 일괄 삭제</strong>
                         <span>일괄 삭제 기능을 제공합니다.</span>
                     </div>
                     </a>
-                    
                 </div>
             </section>
 
