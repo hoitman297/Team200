@@ -3,26 +3,31 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<c:set var="gameParam" value="${fn:toUpperCase(empty param.gameCode ? 'BG' : param.gameCode)}" />
+<c:set var="isEdit" value="${not empty gallery}" />
+
+<%-- 🌟 컨트롤러에서 보낸 gameCode가 있으면 그것을 사용, 없으면 파라미터 확인 --%>
+<c:set var="targetCode" value="${not empty gameCode ? gameCode : (not empty param.gameCode ? param.gameCode : (not empty param.game ? param.game : 'BG'))}" />
+<c:set var="gameParam" value="${fn:toUpperCase(targetCode)}" />
 
 <c:choose>
-    <c:when test="${gameParam == 'LOL'}">
+    <c:when test="${fn:contains(gameParam, 'LOL')}">
         <c:set var="gameName" value="리그 오브 레전드"/>
         <c:set var="gameCode" value="LOL"/>
-        <c:set var="gameId" value="lol"/>
+        <c:set var="defaultPathId" value="lol"/>
     </c:when>
-    <c:when test="${gameParam == 'OW'}">
+    <c:when test="${fn:contains(gameParam, 'OW') || fn:contains(gameParam, 'OVERWATCH')}">
         <c:set var="gameName" value="오버워치"/>
         <c:set var="gameCode" value="OW"/>
-        <c:set var="gameId" value="overwatch"/>
+        <c:set var="defaultPathId" value="overwatch"/>
     </c:when>
     <c:otherwise>
         <c:set var="gameName" value="배틀그라운드"/>
         <c:set var="gameCode" value="BG"/>
-        <c:set var="gameId" value="battleground"/>
+        <c:set var="defaultPathId" value="battleground"/>
     </c:otherwise>
 </c:choose>
 
+<c:set var="gameId" value="${not empty gameId ? gameId : defaultPathId}" />
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -30,17 +35,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/gallery/gallery_write/style.css">
-	<script src="${pageContext.request.contextPath}/resources/gallery/gallery_write/script.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
-	<script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
-	
-    <title>LOG.GG - ${gameName} 미디어 업로드</title>
+    <script src="${pageContext.request.contextPath}/resources/gallery/gallery_write/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
+    <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    
+    <title>LOG.GG - ${gameName} 미디어 ${isEdit ? '수정' : '업로드'}</title>
 </head>
 <body>
 
     <c:set var="headerTitle" value="${gameName}" />
-	<%@ include file="../common/header.jsp" %>
+    <%@ include file="../common/header.jsp" %>
 
     <div class="main-layout">
         <aside class="side-left">
@@ -51,23 +56,36 @@
             <a href="<c:url value='/'/>"><div class="logo">LOG.GG</div></a>
 
             <div class="write-container">
-                <div class="write-header">
-                    <h2>사진 / 영상 업로드</h2>
-                </div>
+                <form id="galleryForm" 
+                      action="${pageContext.request.contextPath}/gallery/${isEdit ? 'update' : 'insert'}?${_csrf.parameterName}=${_csrf.token}" 
+                      method="POST" 
+                      enctype="multipart/form-data">
+                
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                    
+                    <c:if test="${isEdit}">
+                        <input type="hidden" name="galleryNo" value="${gallery.galleryNo}" />
+                    </c:if>
 
-                <%-- action 주소 뒤에 CSRF 토큰을 직접 붙여줍니다 --%>
-				<form id="galleryForm" 
-				      action="${pageContext.request.contextPath}/gallery/insert?${_csrf.parameterName}=${_csrf.token}" 
-				      method="POST" 
-				      enctype="multipart/form-data">
-      			
-      			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-      			
-      			<input type="hidden" name="gameCode" value="${gameCode}">
-      			
+                    <div class="category-fixed-bar">
+                        <span class="category-tag">${isEdit ? '수정 중' : '작성 중'}</span>
+                        <div class="category-select-wrapper">
+                            <select name="gameCode" class="category-select" required>
+                                <option value="BG" ${gameCode == 'BG' ? 'selected' : ''}>배틀그라운드</option>
+                                <option value="LOL" ${gameCode == 'LOL' ? 'selected' : ''}>리그 오브 레전드</option>
+                                <option value="OW" ${gameCode == 'OW' ? 'selected' : ''}>오버워치</option>
+                            </select>
+                            <span class="category-text">&gt; 갤러리</span>
+                        </div>
+                    </div>
+
+                    <div class="write-header">
+                        <h2>사진 / 영상 ${isEdit ? '수정' : '업로드'}</h2>
+                    </div>
+                
                     <div class="form-group">
                         <label class="form-label">제목</label>
-                        <input type="text" name="boardTitle" class="input-title" placeholder="제목을 입력하세요" required>
+                        <input type="text" name="boardTitle" class="input-title" placeholder="제목을 입력하세요" value="${gallery.boardTitle}" required>
                     </div>
 
                     <div class="form-group">
@@ -75,26 +93,24 @@
                         <div class="upload-wrapper" onclick="document.getElementById('fileInput').click()">
                             <div class="upload-dropzone" id="dropzone">
                                 <img id="previewImage" src="" alt="미리보기">
-                                
                                 <div class="upload-placeholder" id="placeholder">
                                     <span>📷</span>
                                     <p>클릭하여 사진이나 영상을 첨부하세요<br><small>(파일이 없으면 등록할 수 없습니다)</small></p>
                                 </div>
                             </div>
-                            <input type="file" id="fileInput" name="upFile" accept="image/*, video/*" multiple required>
+                            <input type="file" id="fileInput" name="upFile" accept="image/*, video/*" multiple ${isEdit ? '' : 'required'}>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">설명</label>
-                        <textarea name="boardContent" class="editor-area" placeholder="내용을 입력해 주세요."></textarea>
+                        <textarea name="boardContent" class="editor-area" placeholder="내용을 입력해 주세요.">${gallery.boardContent}</textarea>
                     </div>
 
                     <div class="write-footer">
                         <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
-                        <button type="submit" class="btn btn-submit">등록하기</button>
+                        <button type="submit" class="btn btn-submit">${isEdit ? '수정완료' : '등록하기'}</button>
                     </div>
-                     
                 </form>
             </div>
         </main>
