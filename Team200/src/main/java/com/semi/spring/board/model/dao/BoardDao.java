@@ -53,10 +53,6 @@ public interface BoardDao {
 
 	public int selectCategoryNoByName(Map<String, Object> map);
 
-	public int selectGalleryCount(String game);
-
-	public List<BoardExt> selectGalleryList(Map<String, Object> map);
-
 	public int insertInquiry(Inquiry inquiry);
 
 	public int selectInquiryCount(Map<String, Object> paramMap);
@@ -89,5 +85,9 @@ public interface BoardDao {
 
 	public int deleteInfoReply(GameInfoReply reply);
 	
-	int insertReport(Report report);
+	public int insertReport(Report report);
+
+	public List<BoardExt> selectGalleryList(Map<String, Object> paramMap);
+
+	public int selectGalleryCount(Map<String, Object> paramMap);
 }

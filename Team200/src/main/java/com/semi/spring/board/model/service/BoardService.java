@@ -40,12 +40,6 @@ public interface BoardService {
 
 	int insertReply(Reply reply);
 
-	int selectGalleryCount(String game);
-
-	List<BoardExt> selectGalleryList(PageInfo pi, String game);
-
-	int insertGallery(BoardExt board, List<MultipartFile> upFiles, String savePath);
-
 	int deleteReply(Map<String, Object> paramMap);
 
 	int insertInquiry(Inquiry inquiry);
@@ -79,4 +73,10 @@ public interface BoardService {
     int deleteInfoReply(GameInfoReply reply);
     
     int insertReport(Report report);
-    }
+    
+    List<BoardExt> selectGalleryList(Map<String, Object> paramMap);
+
+    int selectGalleryCount(Map<String, Object> paramMap);
+    
+    int selectCategoryNoByName(Map<String, Object> paramMap);
+}
