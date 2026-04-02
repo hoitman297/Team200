@@ -16,34 +16,47 @@
 	</select>
 
 	<insert id="insertChampion" parameterType="championVO">
-		<selectKey keyProperty="champNo" resultType="int" order="BEFORE">
-			SELECT SEQ_CHAMP_NO.NEXTVAL FROM DUAL
-		</selectKey>
-		INSERT INTO CHAMP_INFO (
-			CHAMP_NO, CHAMP_NAME, CHAMP_POSITION,
-			CHAMP_ROLES, CHAMP_IMG, CHAMP_INTRO
-		) VALUES (
-			#{champNo}, #{champName},
-			#{champPosition}, #{champRoles}, #{champImg}, #{champIntro}
-		)
+		MERGE INTO CHAMP_INFO C
+		USING DUAL
+		ON (C.CHAMP_NAME = #{champName})
+		WHEN MATCHED THEN
+			UPDATE SET
+				CHAMP_POSITION = #{champPosition},
+				CHAMP_ROLES = #{champRoles},
+				CHAMP_IMG = #{champImg},
+				CHAMP_INTRO = #{champIntro}
+		WHEN NOT MATCHED THEN
+			INSERT (CHAMP_NO, CHAMP_NAME, CHAMP_POSITION, CHAMP_ROLES, CHAMP_IMG, CHAMP_INTRO)
+			VALUES (SEQ_CHAMP_NO.NEXTVAL, #{champName}, #{champPosition}, #{champRoles}, #{champImg}, #{champIntro})
 	</insert>
 
 	<insert id="insertChampionSkills" parameterType="skillVO">
-		INSERT INTO CHAMP_SKILLS_INFO (
-			CHAMP_NO,
-			SKILL_P_NAME, SKILL_P_DESC, SKILL_P_IMG,
-			SKILL_Q_NAME, SKILL_Q_DESC, SKILL_Q_IMG,
-			SKILL_W_NAME, SKILL_W_DESC, SKILL_W_IMG,
-			SKILL_E_NAME, SKILL_E_DESC, SKILL_E_IMG,
-			SKILL_R_NAME, SKILL_R_DESC, SKILL_R_IMG
-		) VALUES (
-			#{champNo},
-			#{skillPName}, #{skillPDesc}, #{skillPImg},
-			#{skillQName}, #{skillQDesc}, #{skillQImg},
-			#{skillWName}, #{skillWDesc}, #{skillWImg},
-			#{skillEName}, #{skillEDesc}, #{skillEImg},
-			#{skillRName}, #{skillRDesc}, #{skillRImg}
-		)
+		MERGE INTO CHAMP_SKILLS_INFO S
+		USING DUAL
+		ON (S.CHAMP_NO = #{champNo})
+		WHEN MATCHED THEN
+			UPDATE SET
+				SKILL_P_NAME = #{skillPName}, SKILL_P_DESC = #{skillPDesc}, SKILL_P_IMG = #{skillPImg},
+				SKILL_Q_NAME = #{skillQName}, SKILL_Q_DESC = #{skillQDesc}, SKILL_Q_IMG = #{skillQImg},
+				SKILL_W_NAME = #{skillWName}, SKILL_W_DESC = #{skillWDesc}, SKILL_W_IMG = #{skillWImg},
+				SKILL_E_NAME = #{skillEName}, SKILL_E_DESC = #{skillEDesc}, SKILL_E_IMG = #{skillEImg},
+				SKILL_R_NAME = #{skillRName}, SKILL_R_DESC = #{skillRDesc}, SKILL_R_IMG = #{skillRImg}
+		WHEN NOT MATCHED THEN
+			INSERT (
+				CHAMP_NO,
+				SKILL_P_NAME, SKILL_P_DESC, SKILL_P_IMG,
+				SKILL_Q_NAME, SKILL_Q_DESC, SKILL_Q_IMG,
+				SKILL_W_NAME, SKILL_W_DESC, SKILL_W_IMG,
+				SKILL_E_NAME, SKILL_E_DESC, SKILL_E_IMG,
+				SKILL_R_NAME, SKILL_R_DESC, SKILL_R_IMG
+			) VALUES (
+				#{champNo},
+				#{skillPName}, #{skillPDesc}, #{skillPImg},
+				#{skillQName}, #{skillQDesc}, #{skillQImg},
+				#{skillWName}, #{skillWDesc}, #{skillWImg},
+				#{skillEName}, #{skillEDesc}, #{skillEImg},
+				#{skillRName}, #{skillRDesc}, #{skillRImg}
+			)
 	</insert>
 
 	<insert id="insertChampionSkin" parameterType="skinVO">
@@ -120,21 +133,30 @@
 	</select>
 
 	<insert id="insertItem" parameterType="LolItemVO">
-		MERGE INTO LOL_ITEM_INFO (
-			ITEM_NO, ITEM_NAME, ITEM_PRICE, 
-			ITEM_INFO, ITEM_IMG, ITEM_TAG 
-		) VALUES (
-			#{itemNo}, #{itemName}, #{itemPrice}, 
-			#{itemInfo}, #{itemImg}, #{itemTag} 
-		)
+		MERGE INTO LOL_ITEM_INFO I
+		USING DUAL
+		ON (I.ITEM_NO = #{itemNo})
+		WHEN MATCHED THEN
+			UPDATE SET
+				ITEM_NAME = #{itemName},
+				ITEM_PRICE = #{itemPrice},
+				ITEM_INFO = #{itemInfo},
+				ITEM_IMG = #{itemImg},
+				ITEM_TAG = #{itemTag}
+		WHEN NOT MATCHED THEN
+			INSERT (ITEM_NO, ITEM_NAME, ITEM_PRICE, ITEM_INFO, ITEM_IMG, ITEM_TAG)
+			VALUES (#{itemNo}, #{itemName}, #{itemPrice}, #{itemInfo}, #{itemImg}, #{itemTag})
 	</insert>
 
 	<insert id="insertRune" parameterType="RuneVO">
-		INSERT INTO RUNE_INFO (RUNE_NO, RUNE_NAME, RUNE_INFO, RUNE_IMG)
-		VALUES (SEQ_RUNE_NO.NEXTVAL, #{runeName}, #{runeInfo}, #{runeImg})
-		<selectKey keyProperty="runeNo" resultType="int" order="AFTER">
-			SELECT SEQ_RUNE_NO.CURRVAL FROM DUAL
-		</selectKey>
+		MERGE INTO RUNE_INFO R
+		USING DUAL
+		ON (R.RUNE_NAME = #{runeName})
+		WHEN MATCHED THEN
+			UPDATE SET RUNE_INFO = #{runeInfo}, RUNE_IMG = #{runeImg}
+		WHEN NOT MATCHED THEN
+			INSERT (RUNE_NO, RUNE_NAME, RUNE_INFO, RUNE_IMG)
+			VALUES (SEQ_RUNE_NO.NEXTVAL, #{runeName}, #{runeInfo}, #{runeImg})
 	</insert>
 
 	<insert id="insertTalent" parameterType="TalentVO">
