@@ -129,8 +129,7 @@ public class BattlegroundDataService {
             case "AUG": return "5.56mm 돌격소총으로 탄속이 빠르고 반동 제어가 수월하여 안정성이 뛰어납니다.";
             case "QBZ":
             case "QBZ95": return "사녹 맵 전용 5.56mm 돌격소총으로 SCAR-L을 대체하며, 준수한 안정성을 보여줍니다.";
-            case "BERYL M762":
-            case "M762": return "7.62mm 돌격소총으로 반동이 매우 강하지만, 연사력이 빨라 근접전 최강의 화력을 뽐냅니다.";
+            case "베릴 M762": return "7.62mm 돌격소총으로 반동이 매우 강하지만, 연사력이 빨라 근접전 최강의 화력을 뽐냅니다.";
             case "MK47 MUTANT": return "7.62mm 탄약을 사용하며 2점사와 단발만 지원하는 특수 목적 돌격소총입니다.";
             case "G36C": return "비켄디 맵 전용 5.56mm 돌격소총으로, 무난한 반동과 연사력을 가졌습니다.";
             case "K2": return "태이고 맵 등에서 등장하는 5.56mm 한국형 돌격소총으로, 무난한 성능을 갖췄습니다.";
@@ -149,7 +148,7 @@ public class BattlegroundDataService {
             case "SLR": return "7.62mm 탄약을 사용하는 강력한 DMR로 SKS보다 데미지가 높지만 반동이 큽니다.";
             case "QBU88": return "사녹 전용 5.56mm DMR로 양각대가 달려 있어 엎드려 쏠 때 반동이 극도로 줄어듭니다.";
             case "MK12": return "5.56mm 탄약을 사용하며 엎드려 쏠 때 양각대가 적용되는 매우 안정적인 DMR입니다.";
-            case "DRAGUNOV": return "7.62mm 탄약을 사용하는 강력한 DMR로, 2레벨 헬멧을 쓴 적을 확률적으로 한 방에 눕힐 수 있습니다.";
+            case "드라구노프": return "7.62mm 탄약을 사용하는 강력한 DMR로, 2레벨 헬멧을 쓴 적을 확률적으로 한 방에 눕힐 수 있습니다.";
 
             // ==========================================
             // [3] 저격소총 (SR)
@@ -165,14 +164,16 @@ public class BattlegroundDataService {
             // ==========================================
             // [4] 기관단총 (SMG)
             // ==========================================
-            case "MICRO UZI": return "9mm 탄약을 사용하며 연사력이 매우 빨라 초근접전에서 엄청난 화력을 뿜어내는 기관단총입니다.";
+            case "마이크로 UZI": return "9mm 탄약을 사용하며 연사력이 매우 빨라 초근접전에서 엄청난 화력을 뿜어내는 기관단총입니다.";
             case "UMP45": return ".45 ACP 탄약을 사용하며, SMG 중 가장 안정적이고 사거리가 길어 다루기 쉽습니다.";
-            case "VECTOR": return "엄청난 연사력과 레이저 같은 명중률을 가졌지만, 기본 탄창 용량이 매우 적어 대용량 탄창이 필수입니다.";
+            case "벡터": return "엄청난 연사력과 레이저 같은 명중률을 가졌지만, 기본 탄창 용량이 매우 적어 대용량 탄창이 필수입니다.";
             case "토미건": return ".45 ACP 탄약을 사용하며 대용량 탄창 장착 시 50발의 넉넉한 장탄수를 자랑합니다.";
-            case "PP-19 BIZON": return "9mm 탄약을 사용하며 파츠 없이도 53발의 장탄수를 가진 든든한 기관단총입니다.";
+            case "PP-19 비존": return "9mm 탄약을 사용하며 파츠 없이도 53발의 장탄수를 가진 든든한 기관단총입니다.";
             case "MP5K": return "9mm 기관단총으로 각종 파츠를 달 수 있어 연사력과 안정성이 모두 훌륭합니다.";
             case "P90": return "보급상자 전용 기관단총으로, 전용 5.7mm 탄약을 사용하며 50발의 넉넉한 탄창과 무반동에 가까운 성능을 냅니다.";
             case "JS9": return "론도 맵 전용 9mm 기관단총으로, 강력한 화력과 매우 적은 반동을 자랑합니다.";
+            case "UMP9": return "9mm 탄약을 사용하는 기관단총으로, 반동이 적고 안정성이 뛰어납니다. (현 UMP45의 이전 명칭)";
+            case "MP9": return "9mm 탄약을 사용하는 기관단총으로, 소음기와 레이저 포인터가 기본 장착되어 반동 제어가 매우 쉽습니다.";
 
             // ==========================================
             // [5] 산탄총 (SG)
@@ -197,10 +198,16 @@ public class BattlegroundDataService {
             case "플레어건": return "하늘을 향해 쏘면 무기 보급상자나 방탄 UAZ를 호출하는 매우 희귀한 아이템입니다.";
             case "PANZERFAUST":
             case "판처파우스트": return "일회용 대전차 로켓입니다. 강력한 광역 피해를 주지만, 발사 시 후폭풍이 있어 등 뒤 아군이 다칠 수 있습니다.";
-            case "DESERT EAGLE": return "배틀그라운드에서 가장 강력한 데미지를 자랑하는 권총입니다.";
+            case "데저트이글": return "배틀그라운드에서 가장 강력한 데미지를 자랑하는 권총입니다.";
             case "스콜피온": return "권총 슬롯에 장착할 수 있는 9mm 미니 기관단총으로 연사가 가능합니다.";
             case "P18C": return "9mm 탄약을 사용하며 연사(Auto) 모드를 지원하여 급할 때 SMG처럼 쓸 수 있는 권총입니다.";
             case "소드오프": return "권총 슬롯에 장착되는 소형 더블 배럴 산탄총입니다.";
+            case "박격포" : return "대한민국 국군의 제식 박격포.";
+            case "M79": return "권총 슬롯에 장착하는 특수 무기로, 40mm 연막탄을 발사하여 원거리에 연막을 전개할 수 있습니다.";
+            case "P92": return "9mm 탄약을 사용하는 가장 기본적인 반자동 권총입니다. 대용량 탄창 장착 시 20발까지 사격 가능합니다.";
+            case "R1895": return "7.62mm 탄약을 사용하는 강력한 리볼버로 데미지가 높지만, 한 발씩 장전하므로 속도가 매우 느립니다.";
+            case "P1911": return ".45 ACP 탄약을 사용하는 고전적인 반자동 권총입니다. P92보다 데미지가 강하지만 기본 장탄수가 7발로 적습니다.";
+            case "R45": return ".45 ACP 탄약을 사용하는 6연발 리볼버입니다. 스피드로더를 사용하여 재장전이 빠르고 레드 도트를 장착할 수 있습니다.";
             
             // ==========================================
             // [8] 소모품, 방어구, 부착물 (기존 한글 데이터)
@@ -224,7 +231,7 @@ public class BattlegroundDataService {
             case "구급상자": return "사용 시 체력을 최대 75%까지 한 번에 회복합니다. 시전 시간이 6초로 긴 편입니다.";
             case "의료용 키트": return "사용 시 체력을 100% 끝까지 완전히 회복하는 최고급 회복 아이템입니다.";
             case "연료통": return "탑승물의 연료를 보충하거나 바닥에 흘려 불을 붙일 수 있으며, 쏴서 폭발시킬 수도 있습니다.";
-
+            
             case "헬멧 (LV.1)": return "1레벨 헬멧(오토바이 헬멧)으로, 머리에 받는 피해를 일정 부분 줄여줍니다.";
             case "헬멧 (LV.2)": return "2레벨 헬멧(군용 헬멧)으로, 가장 보편적으로 사용되는 든든한 방어구입니다.";
             case "헬멧 (LV.3)": return "일명 '3뚝'. 강력한 스나이퍼 소총(Kar98k, M24)의 헤드샷을 1회 막아주어 생존력을 극대화합니다.";
@@ -351,7 +358,7 @@ public class BattlegroundDataService {
             if (keyLower.contains("lv1")) return "배낭 (Lv.1)";
             if (keyLower.contains("lv2")) return "배낭 (Lv.2)";
             if (keyLower.contains("lv3")) return "배낭 (Lv.3)";
-            return "배낭";
+            if (origLower.contains("jammer pack")) return "낙하산";
         }
         if (keyLower.contains("ghillie")) return "길리 슈트";
         if (keyLower.contains("parachute")) return "낙하산";
@@ -368,6 +375,7 @@ public class BattlegroundDataService {
             if (keyLower.contains("40mm")) return "40mm 탄약";
             return "탄약";
         }
+         
 
         // 5. 부착물
         if (origLower.contains("15x") || keyLower.contains("15x") || keyLower.contains("pm2")) return "15배율 스코프";
@@ -404,8 +412,30 @@ public class BattlegroundDataService {
         if (origLower.contains("quickdraw mag") || keyLower.contains("quickdraw")) return "퀵드로우 탄창";
 
         // 6. 무기 예외 처리
-
-        if (keyLower.contains("panzerfaust100m")) return "판처파우스트";
+        if (keyLower.contains("m79")) return "M79";
+        if (keyLower.contains("p92")) return "P92";
+        if (keyLower.contains("m1911") || keyLower.contains("p1911")) return "P1911";
+        if (keyLower.contains("rhino") || keyLower.contains("r45")) return "R45";
+        if (keyLower.contains("mp9")) return "MP9";
+        if (keyLower.contains("nagantm1895") || origLower.contains("r1895")) return "R1895";
+        if (keyLower.contains("ump9")) return "UMP9";
+        
+        if (keyLower.contains("aug")) return "AUG";
+        if (origLower.contains("deagle")) return "데저트이글";
+        if (origLower.contains("bizon")) return "PP-19 비존";
+        if (keyLower.contains("beryl")) return "베릴 M762";
+        if (keyLower.contains("crossbow")) return "석궁";
+        if (keyLower.contains("dragunov")) return "드라구노프";
+        if (keyLower.contains("flare")) return "플레어건";
+        if (origLower.contains("lynx amr")) return "링스 AMR";
+        if (origLower.contains("mortar")) return "박격포";
+        if (keyLower.contains("mosin")) return "모신나강";
+        if (origLower.contains("sawed-off")) return "소드오프";
+        if (origLower.contains("tommy gun")) return "토미건";
+        if (keyLower.contains("panzerfaust")) return "판처파우스트";
+        if (keyLower.contains("uzi") && keyLower.contains("weapon")) return "마이크로 UZI";
+        if (keyLower.contains("vector")) return "벡터";
+        if (keyLower.contains("skorpion")) return "스콜피온";
         if (keyLower.contains("m416") || keyLower.contains("hk416")) return "M416";
         if (keyLower.contains("qbu88")) return "QBU88";
         if (keyLower.contains("pan")) return "프라이팬";
