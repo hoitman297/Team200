@@ -19,4 +19,6 @@ public class GameInfoReply {
     
     private String userName;    // 닉네임
     private int parentReplyNo;
+    private boolean admin; 
+    
 }
