@@ -159,65 +159,7 @@ public class BoardServiceImpl implements BoardService {
 		return boardDao.deleteReply(paramMap);
 	}
 
-	@Override
-	public int selectGalleryCount(String game) {
-		return boardDao.selectGalleryCount(game);
-	}
-
-	@Override
-	public List<BoardExt> selectGalleryList(PageInfo pi, String game) {
-	    Map<String, Object> map = new HashMap<>();
-	    map.put("gameCode", game);
-	    map.put("offset", (pi.getCurrentPage() - 1) * pi.getBoardLimit() + 1);
-	    map.put("limit", pi.getCurrentPage() * pi.getBoardLimit());
-	    
-	    return boardDao.selectGalleryList(map);
-	}
 	
-	@Transactional(rollbackFor = Exception.class)
-	@Override
-	public int insertGallery(BoardExt board, List<MultipartFile> upFiles, String savePath) {
-	    
-	    Map<String, Object> map = new HashMap<>();
-	    map.put("gameCode", board.getGameCode().toUpperCase());
-	    map.put("categoryName", "갤러리");
-	    
-	    int categoryNo = boardDao.selectCategoryNoByName(map);
-	    board.setCategoryNo(categoryNo);
-
-	    int result = boardDao.insertBoard(board);
-
-	    if (result > 0 && upFiles != null) {
-	        List<AttachFile> attachFileList = new ArrayList<>();
-	        for (MultipartFile f : upFiles) {
-	            if (f != null && !f.getOriginalFilename().equals("")) {
-	                String originName = f.getOriginalFilename();
-	                String changeName = FileRename(originName); // 후배님이 만든 메서드
-
-	                AttachFile at = new AttachFile();
-	                at.setBoardNo(board.getBoardNo());
-	                at.setGameCode(board.getGameCode());
-	                at.setOriginName(originName);
-	                at.setChangeName(changeName);
-	                at.setFilePath("/resources/upload/board/");
-	                at.setFileSize(f.getSize());
-	                at.setFileExt(originName.substring(originName.lastIndexOf(".")));
-
-	                attachFileList.add(at);
-
-	                try {
-	                    f.transferTo(new File(savePath + changeName));
-	                } catch (IOException e) {
-	                    throw new RuntimeException("갤러리 파일 저장 중 에러 발생", e);
-	                }
-	            }
-	        }
-	        if (!attachFileList.isEmpty()) {
-	            result = boardDao.insertAttachFileList(attachFileList);
-	        }
-	    }
-	    return result;
-	}
 
 	@Override
 	public int insertInquiry(Inquiry inquiry) {
@@ -346,5 +288,19 @@ public class BoardServiceImpl implements BoardService {
     public int insertReport(Report report) {
         return boardDao.insertReport(report);
     }
+    
+    @Override
+    public List<BoardExt> selectGalleryList(Map<String, Object> paramMap) {
+        return boardDao.selectGalleryList(paramMap);
+    }
 
+    @Override
+    public int selectGalleryCount(Map<String, Object> paramMap) {
+        return boardDao.selectGalleryCount(paramMap);
+    }
+    
+    @Override
+    public int selectCategoryNoByName(Map<String, Object> paramMap) {
+        return boardDao.selectCategoryNoByName(paramMap);
+    }
 }

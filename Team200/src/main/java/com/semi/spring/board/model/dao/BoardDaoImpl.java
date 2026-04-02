@@ -134,16 +134,6 @@ public class BoardDaoImpl implements BoardDao {
 	}
 
 	@Override
-	public int selectGalleryCount(String game) {
-		return session.selectOne("board.selectGalleryCount", game);
-	}
-
-	@Override
-	public List<BoardExt> selectGalleryList(Map<String, Object> map) {
-		return session.selectList("board.selectGalleryList", map);
-	}
-
-	@Override
 	public int insertInquiry(Inquiry inquiry) {
 		return session.insert("board.insertInquiry", inquiry);
 	}
@@ -243,5 +233,15 @@ public class BoardDaoImpl implements BoardDao {
     
     public int insertReport(Report report) {
         return session.insert("board.insertReport", report);
+    }
+    
+    @Override
+    public List<BoardExt> selectGalleryList(Map<String, Object> paramMap) {
+        return session.selectList("board.selectGalleryList", paramMap);
+    }
+
+    @Override
+    public int selectGalleryCount(Map<String, Object> paramMap) {
+        return session.selectOne("board.selectGalleryCount", paramMap);
     }
 }

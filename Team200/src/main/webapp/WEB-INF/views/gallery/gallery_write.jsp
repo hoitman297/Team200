@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<c:set var="gameParam" value="${fn:toUpperCase(empty param.game ? 'BG' : param.game)}" />
+<c:set var="gameParam" value="${fn:toUpperCase(empty param.gameCode ? 'BG' : param.gameCode)}" />
 
 <c:choose>
     <c:when test="${gameParam == 'LOL'}">
@@ -53,14 +53,19 @@
                     <h2>사진 / 영상 업로드</h2>
                 </div>
 
-                <form id="galleryForm" action="${pageContext.request.contextPath}/gallery/insert" 
-      			method="POST" enctype="multipart/form-data">
+                <%-- action 주소 뒤에 CSRF 토큰을 직접 붙여줍니다 --%>
+				<form id="galleryForm" 
+				      action="${pageContext.request.contextPath}/gallery/insert?${_csrf.parameterName}=${_csrf.token}" 
+				      method="POST" 
+				      enctype="multipart/form-data">
       			
-      			<input type="hidden" name="gameCode" value="${empty param.game ? 'BG' : param.game.toUpperCase()}">
+      			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+      			
+      			<input type="hidden" name="gameCode" value="${gameCode}">
       			
                     <div class="form-group">
                         <label class="form-label">제목</label>
-                        <input type="text" class="input-title" placeholder="제목을 입력하세요" required>
+                        <input type="text" name="boardTitle" class="input-title" placeholder="제목을 입력하세요" required>
                     </div>
 
                     <div class="form-group">
@@ -74,19 +79,20 @@
                                     <p>클릭하여 사진이나 영상을 첨부하세요<br><small>(파일이 없으면 등록할 수 없습니다)</small></p>
                                 </div>
                             </div>
-                            <input type="file" id="fileInput" accept="image/*, video/*" required>
+                            <input type="file" id="fileInput" name="upFile" accept="image/*, video/*" multiple required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">설명</label>
-                        <textarea class="editor-area" placeholder="내용을 입력해 주세요."></textarea>
+                        <textarea name="boardContent" class="editor-area" placeholder="내용을 입력해 주세요."></textarea>
                     </div>
 
                     <div class="write-footer">
                         <button type="button" class="btn btn-cancel" onclick="history.back()">취소</button>
                         <button type="submit" class="btn btn-submit">등록하기</button>
                     </div>
+                     
                 </form>
             </div>
         </main>
