@@ -85,7 +85,8 @@
 										            <c:choose>
 										                <c:when test="${best.categoryName == '자유게시판'}">[자유]</c:when>
 										                <c:when test="${best.categoryName == '공략게시판'}">[공략]</c:when>
-										                <c:otherwise>[자유]</c:otherwise> 
+										                <c:when test="${best.categoryName == '갤러리'}">[갤러리]</c:when>
+										                <c:otherwise>[기타]</c:otherwise> 
 										            </c:choose>
 										        </span>
 											        ${best.boardTitle}
