@@ -625,6 +625,7 @@
 	        R.USER_NO, 
 	        R.GAME_CODE,
 	        R.TARGET_NO,
+	        R.PARENT_REPLY_NO,
 	        DBMS_LOB.SUBSTR(R.REPLY_CONTENT, 4000, 1) AS REPLY_CONTENT, 
 	        R.REPLY_DATE, 
 	        U.USER_NAME 
@@ -633,7 +634,7 @@
 	    WHERE R.GAME_CODE = #{gameCode} 
 	      AND R.TARGET_NO = #{targetNo}
 	      AND R.STATUS = 'Y'
-	    ORDER BY R.INFO_REPLY_NO DESC
+	    ORDER BY NVL(R.PARENT_REPLY_NO, R.INFO_REPLY_NO) DESC, R.INFO_REPLY_NO ASC
 	</select>
 	
 	<insert id="insertInfoReply">
@@ -642,13 +643,15 @@
 	        USER_NO, 
 	        GAME_CODE, 
 	        TARGET_NO, 
-	        REPLY_CONTENT
+	        REPLY_CONTENT,
+	        PARENT_REPLY_NO
 	    ) VALUES (
 	        SEQ_INFO_REPLY_NO.NEXTVAL, 
 	        #{userNo}, 
 	        #{gameCode}, 
 	        #{targetNo}, 
-	        #{replyContent}
+	        #{replyContent},
+	        DECODE(#{parentReplyNo}, 0, NULL, #{parentReplyNo})
 	    )
 	</insert>
 	

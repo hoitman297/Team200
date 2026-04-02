@@ -78,6 +78,13 @@
 					                    <div class="col-title">
 									
 										    <a href="<c:url value='/board/view?boardNo=${best.boardNo}' />" style="text-decoration: none; color: inherit; vertical-align: middle;">
+										    	 <span style="color: var(--accent-blue); font-weight: 800; margin-right: 6px; font-size: 14px;">
+										            <c:choose>
+										                <c:when test="${best.categoryName == '자유게시판'}">[자유]</c:when>
+										                <c:when test="${best.categoryName == '공략게시판'}">[공략]</c:when>
+										                <c:otherwise>[자유]</c:otherwise> 
+										            </c:choose>
+										        </span>
 										        ${best.boardTitle}
 										        
 										        <c:if test="${best.replyCount > 0}">

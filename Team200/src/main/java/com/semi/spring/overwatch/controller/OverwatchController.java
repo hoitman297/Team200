@@ -152,6 +152,7 @@ public class OverwatchController {
         GameInfoReply reply = new GameInfoReply();
         reply.setInfoReplyNo(infoReplyNo); 
         reply.setUserNo(userNo); // 본인 글만 삭제할 수 있도록 세팅
+        reply.setGameCode("OW");
         
         int result = boardService.deleteInfoReply(reply);
         
