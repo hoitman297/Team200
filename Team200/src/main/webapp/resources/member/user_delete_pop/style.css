@@ -156,7 +156,6 @@ h2 {
     pointer-events: none;
 }
 
-<<<<<<< HEAD
 /* 체크박스 선택 시 활성화 상태: 빨간색 & 불투명 & 클릭 가능 */
 .btn-submit.active {
     background-color: var(--point-red) !important;
@@ -169,9 +168,3 @@ h2 {
     transform: translateY(-2px);
     filter: brightness(1.1);
 }
-=======
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
->>>>>>> parent of bf55e09 (jsp 파일 수정 및 제이쿼리로 변환)
