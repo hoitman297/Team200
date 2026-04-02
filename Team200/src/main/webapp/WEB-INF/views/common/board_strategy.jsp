@@ -17,6 +17,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
+    <script src="${pageContext.request.contextPath}/resources/board/board_main/script.js" defer></script>
     <script src="${pageContext.request.contextPath}/resources/search/script.js" defer></script>
     
     <title>LOG.GG - ${boardTitle}</title>
@@ -86,25 +87,32 @@
                 </tbody>
             </table>
 
-            <div class="pagination">
-                <c:if test="${pi.currentPage > 1}">
-                    <a href="?cp=${pi.currentPage - 1}" class="page-link">&lt; 이전</a>
-                </c:if>
-                <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
-                    <c:choose>
-                        <c:when test="${p == pi.currentPage}">
-                            <span class="page-num active">${p}</span>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="?cp=${p}" class="page-num">${p}</a>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-                <c:if test="${pi.currentPage < pi.maxPage}">
-                    <a href="?cp=${pi.currentPage + 1}" class="page-link">다음 &gt;</a>
-                </c:if>
-            </div>
-        </main>
+			<div class="pagination">
+				<%-- 이전 버튼 --%>
+				<c:if test="${pi.currentPage > 1}">
+					<a href="?cp=${pi.currentPage - 1}&keyword=${param.keyword}"
+						class="page-link">&lt; 이전</a>
+				</c:if>
+
+				<%-- 페이지 번호 --%>
+				<c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
+					<c:choose>
+						<c:when test="${p == pi.currentPage}">
+							<span class="page-num active">${p}</span>
+						</c:when>
+						<c:otherwise>
+							<a href="?cp=${p}&keyword=${param.keyword}" class="page-num">${p}</a>
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+
+				<%-- 다음 버튼 --%>
+				<c:if test="${pi.currentPage < pi.maxPage}">
+					<a href="?cp=${pi.currentPage + 1}&keyword=${param.keyword}"
+						class="page-link">다음 &gt;</a>
+				</c:if>
+			</div>
+		</main>
 
         <aside class="sidebar-right">
             <div class="notice-card">

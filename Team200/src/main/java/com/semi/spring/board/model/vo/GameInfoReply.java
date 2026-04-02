@@ -18,4 +18,7 @@ public class GameInfoReply {
     private String status;      // 상태(Y/N)
     
     private String userName;    // 닉네임
+    private int parentReplyNo;
+    private boolean admin; 
+    
 }

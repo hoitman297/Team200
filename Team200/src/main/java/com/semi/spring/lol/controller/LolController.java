@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -199,13 +200,21 @@ public class LolController {
             return "login"; // 비로그인 상태
         }
         
+        // 1. 현재 로그인한 사람 번호 세팅
         int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+        
+        // ✨ 2. 관리자 여부 확인 (스프링 시큐리티 권한 체크)
+        boolean isAdmin = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("ROLE_ADMIN") || role.equals("ADMIN"));
         
         GameInfoReply reply = new GameInfoReply();
         reply.setInfoReplyNo(infoReplyNo); // 지울 댓글 번호
-        reply.setUserNo(userNo);           // 현재 로그인한 사람 번호 (본인 확인용)
+        reply.setUserNo(userNo);           // 로그인한 유저의 진짜 번호 세팅
         
-        // 매퍼에서 WHERE INFO_REPLY_NO = ? AND USER_NO = ? 로 검사하므로 본인 글만 지워집니다.
+        // ✨ 3. 관리자 깃발 꽂기! (매퍼에서 이 깃발을 보고 본인 검사를 패스함)
+        reply.setAdmin(isAdmin); 
+        
         int result = boardService.deleteInfoReply(reply);
         
         return (result > 0) ? "success" : "fail";

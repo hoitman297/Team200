@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -130,10 +131,11 @@ public class BoardController {
         model.addAttribute("pi", pi);
     }
 
-    // 자유게시판 목록
+ // 자유게시판 목록
     @GetMapping("/free_{gameCode}")
     public String freeGame(@PathVariable("gameCode") String gameCode,
                            @RequestParam(value="cp", defaultValue="1") int cp,
+                           @RequestParam(value="keyword", required=false) String keyword, // ✨ 1. keyword 파라미터 추가
                            @RequestParam Map<String, Object> paramMap, Model model) {
         String dbGameCode = getDbGameCode(gameCode);
         BoardType gameConfig = boardService.getBoardTypeMap(dbGameCode , "자유");
@@ -141,6 +143,12 @@ public class BoardController {
         
         paramMap.put("gameCode", dbGameCode);
         paramMap.put("categoryNo", gameConfig.getCategoryNo());
+        
+        // ✨ 2. 검색어가 들어왔다면 맵에 안전하게 세팅! (매퍼로 전달됨)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            paramMap.put("keyword", keyword.trim());
+        }
+
         model.addAttribute("gameId", gameCode.toLowerCase());
         model.addAttribute("gameName", gameConfig.getCategoryName());
         addBoardListToModel(paramMap, cp, model);
@@ -166,6 +174,7 @@ public class BoardController {
     @GetMapping("/strategy_{gameCode}")
     public String strategyGame(@PathVariable("gameCode") String gameCode,
                                @RequestParam(value="cp", defaultValue="1") int cp,
+                               @RequestParam(value="keyword", required=false) String keyword, // ✨ 1. keyword 파라미터 추가
                                @RequestParam Map<String, Object> paramMap, Model model) {
         String dbGameCode = getDbGameCode(gameCode);
         BoardType gameConfig = boardService.getBoardTypeMap(dbGameCode , "공략");
@@ -173,6 +182,12 @@ public class BoardController {
         
         paramMap.put("gameCode", dbGameCode);
         paramMap.put("categoryNo", gameConfig.getCategoryNo());
+        
+        // ✨ 2. 검색어가 들어왔다면 맵에 안전하게 세팅! (매퍼로 전달됨)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            paramMap.put("keyword", keyword.trim());
+        }
+
         model.addAttribute("gameId", gameCode.toLowerCase());
         model.addAttribute("gameName", gameConfig.getCategoryName());
         addBoardListToModel(paramMap, cp, model);
@@ -362,13 +377,21 @@ public class BoardController {
     @ResponseBody
     @PostMapping("/reply/delete")
     public String deleteReply(int replyNo, Authentication auth) {
+        
         if (auth == null || !auth.isAuthenticated()) {
             return "login"; 
         }
+        
         int userNo = ((MemberExt)auth.getPrincipal()).getUserNo();
+        
+        boolean isAdmin = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("ROLE_ADMIN") || role.equals("ADMIN"));
+        
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("replyNo", replyNo);
         paramMap.put("userNo", userNo);
+        paramMap.put("isAdmin", isAdmin); 
         
         int result = boardService.deleteReply(paramMap);
         

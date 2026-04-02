@@ -148,20 +148,19 @@
 				
 				    <input type="hidden" id="targetNo" value="${champ.champNo}">
 				    
-				
 				    <div class="comment-input-box" style="display: flex; gap: 10px; margin-bottom: 20px;">
 				        <input type="text" id="replyContent" placeholder="이 챔피언에 대한 팁이나 평가를 남겨주세요!" 
 				               style="flex: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none;">
-				        <button type="button" onclick="insertInfoReply()" 
+				        <button type="button" onclick="insertInfoReply(0)" 
 				                style="padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
 				            등록
 				        </button>
 				    </div>
 				
-				    <div class="comment-row" style="background: #f8fafc; padding: 12px; border-top: 2px solid #1e293b; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569; display: flex;">
+				    <div class="comment-row" style="background: #f8fafc; padding: 12px; border-top: 2px solid #1e293b; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569; display: flex; font-size: 13px;">
 				        <div style="flex: 2; text-align: center;">글쓴이</div>
-				        <div class="comment-main" style="flex: 6; padding-left: 20px;">내용</div>
-				        <div class="comment-side" style="flex: 2; text-align: center;">작성일</div>
+				        <div style="flex: 5; padding-left: 20px;">내용</div>
+				        <div style="flex: 3; text-align: center;">작성일</div>
 				    </div>
 				
 				    <div id="replyList">
@@ -185,17 +184,32 @@
 	<%@ include file="../common/footer.jsp"%>
 	
 	<script>
-    // 1. 페이지 로딩 완료 시 자동으로 댓글 목록 조회
+	
+	let loginUserNo = 0;
+    let isAdmin = false;
+    
+    <sec:authorize access="isAuthenticated()">
+    // 로그인한 유저의 userNo 세팅
+    loginUserNo = parseInt("<sec:authentication property='principal.userNo' />") || 0;
+	</sec:authorize>
+
+	<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ADMIN')">
+    // 관리자 권한 확인 (본인 프로젝트의 Role 이름에 맞게 조정하세요)
+    isAdmin = true;
+	</sec:authorize>
+
+    // [1] 페이지 로드 시 실행
     $(document).ready(function() {
+        // 1. 댓글 목록 즉시 불러오기
         loadInfoReplyList();
         
-        // 엔터키 쳤을 때 댓글 등록되게 하는 편의 기능
+        // 2. 메인 입력창에서 엔터키 누르면 등록 실행
         $("#replyContent").on("keyup", function(e) {
-            if (e.key === "Enter") insertInfoReply();
+            if (e.key === "Enter") insertInfoReply(0); // 0은 일반 댓글 의미
         });
     });
 
-    // 2. 댓글 목록 조회 (AJAX GET)
+    // [2] 댓글 목록 조회 (AJAX GET)
     function loadInfoReplyList() {
         const targetNo = $("#targetNo").val();
 
@@ -206,44 +220,73 @@
             success: function(res) {
                 let html = "";
                 if (res.length === 0) {
-                    html = "<div style='padding: 30px; text-align: center; color: #94a3b8;'>아직 작성된 팁이 없습니다. 첫 번째 팁을 남겨보세요!</div>";
+                    html = "<div style='padding: 40px; text-align: center; color: #94a3b8;'>아직 작성된 팁이 없습니다. 첫 팁의 주인공이 되어보세요!</div>";
                 } else {
                     $.each(res, function(i, item) {
-                        html += "<div class='comment-item' style='display: flex; padding: 15px 12px; border-bottom: 1px solid #f1f5f9; align-items: center;'>";
-                        html += "  <div style='flex: 2; text-align: center; font-weight: bold; color: #1e293b;'>" + item.userName + "</div>";
-                        html += "  <div style='flex: 6; padding-left: 20px; color: #334155; word-break: break-all;'>" + item.replyContent + "</div>";
+                        // 대댓글 여부에 따른 스타일 차별화
+                        const isChild = item.parentReplyNo > 0;
+                        const rowStyle = isChild ? "background: #f8fafc; padding-left: 50px;" : "background: white;";
+                        const icon = isChild ? "↳ " : "";
+
+                        html += "<div class='comment-item' style='display: flex; padding: 15px 12px; border-bottom: 1px solid #f1f5f9; align-items: center; " + rowStyle + "'>";
+                        html += "  <div style='flex: 2; text-align: center; font-weight: bold; color: #1e293b; font-size: 13px;'>" + icon + item.userName + "</div>";
+                        html += "  <div style='flex: 5; padding-left: 20px; color: #334155; word-break: break-all; font-size: 14px;'>" + item.replyContent + "</div>";
                         
-                        // 날짜 예쁘게 자르기
+                        // 날짜 포맷팅
                         const dateObj = new Date(item.replyDate);
                         const dateStr = dateObj.getFullYear() + "." + String(dateObj.getMonth() + 1).padStart(2, '0') + "." + String(dateObj.getDate()).padStart(2, '0');
                         
-                        // ✨ 날짜 하단에 [삭제] 버튼 추가 (INFO_REPLY_NO를 인자로 넘김)
-                        html += "  <div style='flex: 2; text-align: center; color: #94a3b8; font-size: 13px;'>" 
-                              + dateStr 
-                              + "<br><span onclick='deleteInfoReply(" + item.infoReplyNo + ")' style='cursor:pointer; color:#ef4444; font-size:11px; margin-top:5px; display:inline-block;'>[삭제]</span>"
-                              + "</div>";
+                        html += "  <div style='flex: 3; text-align: center; color: #94a3b8; font-size: 12px;'>";
+                        html += "    <div>" + dateStr + "</div>";
+                        
+                        if (loginUserNo > 0) {
+                            
+                        	html += "    <div style='margin-top: 3px;'>";
+                        	
+                            // 답글 버튼 (대댓글이 아닐 때만)
+                            if(!isChild) {
+                                html += "<span onclick='toggleReplyForm(" + item.infoReplyNo + ")' style='cursor:pointer; color:#3b82f6;'>답글</span>";
+                            }
+                            
+                            // 삭제 버튼 (본인 글이거나 관리자일 때만)
+                            if (loginUserNo === item.userNo || isAdmin) {
+                                html += "<span onclick='deleteInfoReply(" + item.infoReplyNo + ")' style='cursor:pointer; color:#ef4444; margin: 0 5px;'>삭제</span>";
+                            }
+                            
+                            // 신고 버튼 (로그인한 유저 누구나)
+                            html += "<span onclick='reportReply(" + item.infoReplyNo + ")' style='cursor:pointer; color:#64748b;'>신고</span>";
+                            html += "    </div>";
+                        }
+                        html += "  </div>";
+                        html += "</div>";
+
+                        // 대댓글 입력창 (평소엔 hidden)
+                        html += "<div id='replyForm_" + item.infoReplyNo + "' style='display:none; padding: 10px 10px 10px 50px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0;'>";
+                        html += "  <div style='display: flex; gap: 10px;'>";
+                        html += "    <input type='text' id='childContent_" + item.infoReplyNo + "' placeholder='답글 내용을 입력하세요...' style='flex: 1; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;'>";
+                        html += "    <button onclick='insertInfoReply(" + item.infoReplyNo + ")' style='padding: 8px 15px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;'>등록</button>";
+                        html += "  </div>";
                         html += "</div>";
                     });
                 }
                 $("#replyList").html(html);
             },
-            error: function() {
-                console.log("댓글 목록을 불러오는데 실패했습니다.");
-            }
+            error: function() { console.error("목록 로드 실패"); }
         });
     }
 
-    // 3. 댓글 등록 (AJAX POST)
-    function insertInfoReply() {
+    // [3] 댓글 및 답글 등록 (AJAX POST)
+    function insertInfoReply(parentNo) {
         const targetNo = $("#targetNo").val();
-        const content = $("#replyContent").val();
+        // parentNo가 0이면 메인창, 아니면 답글창에서 내용 가져오기
+        const content = (parentNo === 0) ? $("#replyContent").val() : $("#childContent_" + parentNo).val();
 
         if (content.trim() === "") {
-            alert("팁 내용을 입력해주세요.");
-            $("#replyContent").focus();
+            alert("내용을 입력해주세요.");
             return;
         }
 
+        // CSRF 토큰 세팅
         const token = $("meta[name='_csrf']").attr("content");
         const header = $("meta[name='_csrf_header']").attr("content");
 
@@ -255,53 +298,56 @@
             },
             data: {
                 targetNo: targetNo,
-                replyContent: content
+                replyContent: content,
+                parentReplyNo: parentNo // VO의 필드명과 일치해야 함
             },
             success: function(res) {
                 if (res === "success") {
-                    $("#replyContent").val(""); 
+                    if(parentNo === 0) $("#replyContent").val(""); // 메인창 비우기
                     loadInfoReplyList(); // 목록 갱신
                 } else if (res === "login") {
-                    alert("로그인 후 이용 가능합니다.");
+                    alert("로그인이 필요합니다.");
                 } else {
-                    alert("댓글 등록에 실패했습니다.");
+                    alert("등록에 실패했습니다.");
                 }
             },
-            error: function(xhr) {
-                if(xhr.status === 403) alert("세션이 만료되었거나 로그인 상태가 아닙니다.");
-                else alert("서버 오류가 발생했습니다.");
-            }
+            error: function() { alert("서버 통신 오류"); }
         });
     }
 
-    // 4. ✨ 댓글 삭제 (AJAX POST)
-    function deleteInfoReply(infoReplyNo) {
-        if (!confirm("정말 이 팁을 삭제하시겠습니까?")) return;
+    // [4] 답글 입력창 토글
+    function toggleReplyForm(no) {
+        $("#replyForm_" + no).slideToggle("fast");
+    }
+
+    // [5] 댓글 삭제
+    function deleteInfoReply(no) {
+        if (!confirm("정말 삭제하시겠습니까?")) return;
 
         const token = $("meta[name='_csrf']").attr("content");
         const header = $("meta[name='_csrf_header']").attr("content");
 
         $.ajax({
-            url: "${pageContext.request.contextPath}/lol/deleteReply", // 방금 만든 컨트롤러 주소!
+            url: "${pageContext.request.contextPath}/lol/deleteReply",
             type: "POST",
             beforeSend: function(xhr) {
                 if (header && token) xhr.setRequestHeader(header, token);
             },
-            data: { infoReplyNo: infoReplyNo },
+            data: { infoReplyNo: no },
             success: function(res) {
                 if (res === "success") {
                     alert("삭제되었습니다.");
-                    loadInfoReplyList(); // 화면 즉시 갱신
-                } else if (res === "login") {
-                    alert("로그인이 필요한 서비스입니다.");
+                    loadInfoReplyList();
                 } else {
-                    alert("본인이 작성한 팁만 삭제할 수 있습니다."); // 서버에서 본인 글이 아니라 0건 업데이트 된 경우
+                    alert("본인 글만 삭제할 수 있습니다.");
                 }
-            },
-            error: function() {
-                alert("서버 통신 중 오류가 발생했습니다.");
             }
         });
+    }
+
+    // [6] 신고 기능 (UI)
+    function reportReply(no) {
+        alert(no + "번 댓글을 신고하시겠습니까? 현재 신고 접수 기능을 점검 중입니다.");
     }
 </script>
 </body>

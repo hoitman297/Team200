@@ -93,14 +93,14 @@
 									<div class="col-title">
 									    <a href="<c:url value='/board/view?boardNo=${best.boardNo}' />" style="text-decoration: none; color: inherit; display: block; width: 100%;">
 									        
-<!-- 									        <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px; margin-left: 4px;"> -->
-<%-- 									            [${best.gameCode == 'LOL' ? '롤' : (best.gameCode == 'OW' ? '옵치' : '배그')}] --%>
-<!-- 									        </span> -->
+									        <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px;">
+									            [${best.gameCode == 'LOL' ? '롤' : (best.gameCode == 'OW' ? '옵치' : '배그')}]
+									        </span>
 									
 									        <span style="font-weight: 500;">${best.boardTitle}</span>
 									        
 									        <c:if test="${best.replyCount > 0}">
-									            <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px; margin-left: 4px;">[${best.replyCount}]</span>
+									            <span style="color: var(--accent-blue); font-weight: 800; font-size: 12px;">[${best.replyCount}]</span>
 									        </c:if>
 									    </a>
 									</div>

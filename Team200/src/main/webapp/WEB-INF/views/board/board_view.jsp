@@ -100,7 +100,6 @@
                         <span>조회수: <b>${board.readCount}</b></span>
                     </div>
 
-                    <%-- CSS 로직에 맞춰 상단으로 이동한 우측 상단 수정/삭제 버튼 (.post-util-btns) --%>
                     <div class="post-util-btns">
                         <c:if test="${secUserNo != 0 and secUserNo == board.userNo}">
                             <button type="button" onclick="location.href='<c:url value="/board/edit?boardNo=${board.boardNo}"/>'">수정</button>
@@ -131,16 +130,14 @@
                         👍 공감 <b id="like-count">${board.likeCount}</b>
                     </button>
                     <button class="btn-action" onclick="location.href='<c:url value="/board/${boardTypePath}_${safeGameId}"/>'">목록으로</button>
-                    <button class="btn-action report">🚨 신고</button>
+                    <button class="btn-action report" onclick="openReportModal('board', ${board.boardNo})">🚨 신고</button>
                 </div>
 
-                <%-- 게시글 삭제용 숨김 폼 --%>
                 <form id="deleteForm" action="<c:url value='/board/delete'/>" method="POST" style="display:none;">
                     <input type="hidden" name="boardNo" value="${board.boardNo}">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 </form>
 
-                <%-- 댓글 섹션 --%>
                 <section class="comment-section">
                     <div class="comment-count" id="reply-count-display">댓글 0</div>
                     
@@ -150,7 +147,6 @@
                     </div>
                 
                     <div class="comment-list" id="reply-list-area">
-                        <%-- 초기 댓글 렌더링 영역 (JSTL은 그대로 유지) --%>
                         <c:choose>
                             <c:when test="${empty replyList}">
                                 <div style="text-align: center; color: var(--text-sub); padding: 30px 0;">첫 번째 댓글을 남겨보세요!</div>
@@ -178,7 +174,7 @@
                                                     <span><fmt:formatDate value="${reply.replyDate}" pattern="yyyy.MM.dd HH:mm" /></span>
                                                     
                                                     <span style="cursor:pointer;" onclick="toggleReplyForm(${reply.replyNo})">답글</span> | 
-                                                    <span style="cursor:pointer;">신고</span> | 
+                                                    <span style="cursor:pointer;" onclick="openReportModal('reply', ${reply.replyNo})">신고</span> | 
                                                     <span style="cursor:pointer;" onclick="deleteReply(${reply.replyNo})">삭제</span>
                                                 </div>
                                             </div>
@@ -203,6 +199,34 @@
     
     <footer>© 2026 LOG.GG 배틀그라운드 서비스. 모든 권리 보유.</footer>
 
+    <%-- 신고 창 모달 --%>
+    <div id="reportModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">🚨 신고하기</h3>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">어떤 사유로 신고하시나요?</p>
+
+            <select id="reportReason"
+                style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                <option value="스팸홍보">스팸 / 홍보성 도배</option>
+                <option value="욕설비방">욕설 / 비방 / 혐오</option>
+                <option value="음란물">음란물 / 불법 정보</option>
+                <option value="기타">기타 사유</option>
+            </select>
+
+            <textarea id="reportDetail"
+                placeholder="상세 내용을 적어주시면 처리에 도움이 됩니다. (선택)"
+                style="width: 100%; height: 80px; padding: 10px; margin-bottom: 20px; border: 1px solid #cbd5e1; border-radius: 5px; resize: none;"></textarea>
+
+            <div class="modal-btns"
+                style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeReportModal()"
+                    style="padding: 8px 15px; background: #e2e8f0; color: #333; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+                <button type="button" onclick="submitReport()"
+                    style="padding: 8px 15px; background: #ef4444; color: white; border: none; border-radius: 5px; cursor: pointer;">신고 접수</button>
+            </div>
+        </div>
+    </div>
+
     <%-- 스크립트 로직 --%>
     <script>
     const loginUserNo = "${secUserNo}";
@@ -213,7 +237,6 @@
     </sec:authorize>
     
     $(document).ready(function() {
-        
         selectReplyList();
         
         $("#btn-like").click(function() {
@@ -279,7 +302,8 @@
                             html += "    <div class='comment-utils' style='white-space: nowrap; flex-shrink: 0;'>";
                             html += "        <span style='color: #94a3b8; font-size: 12px; margin-right: 15px;'>" + r.replyDate + "</span>";
                             html += "        <span style='cursor:pointer;' onclick='toggleReplyForm(" + r.replyNo + ")'>답글</span> | ";
-                            html += "        <span style='cursor:pointer;'>신고</span>";
+                            // ✨ AJAX 댓글 신고 버튼 수정 완료!
+                            html += "        <span style='cursor:pointer;' onclick='openReportModal(\"reply\", " + r.replyNo + ")'>신고</span>";
                             
                             if((loginUserNo && loginUserNo == r.userNo) || isAdmin) {
                                 html += " | <span style='cursor:pointer;' onclick='deleteReply(" + r.replyNo + ")'>삭제</span>";
