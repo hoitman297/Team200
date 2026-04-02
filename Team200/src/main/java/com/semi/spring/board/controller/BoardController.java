@@ -130,10 +130,11 @@ public class BoardController {
         model.addAttribute("pi", pi);
     }
 
-    // 자유게시판 목록
+ // 자유게시판 목록
     @GetMapping("/free_{gameCode}")
     public String freeGame(@PathVariable("gameCode") String gameCode,
                            @RequestParam(value="cp", defaultValue="1") int cp,
+                           @RequestParam(value="keyword", required=false) String keyword, // ✨ 1. keyword 파라미터 추가
                            @RequestParam Map<String, Object> paramMap, Model model) {
         String dbGameCode = getDbGameCode(gameCode);
         BoardType gameConfig = boardService.getBoardTypeMap(dbGameCode , "자유");
@@ -141,6 +142,12 @@ public class BoardController {
         
         paramMap.put("gameCode", dbGameCode);
         paramMap.put("categoryNo", gameConfig.getCategoryNo());
+        
+        // ✨ 2. 검색어가 들어왔다면 맵에 안전하게 세팅! (매퍼로 전달됨)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            paramMap.put("keyword", keyword.trim());
+        }
+
         model.addAttribute("gameId", gameCode.toLowerCase());
         model.addAttribute("gameName", gameConfig.getCategoryName());
         addBoardListToModel(paramMap, cp, model);
@@ -166,6 +173,7 @@ public class BoardController {
     @GetMapping("/strategy_{gameCode}")
     public String strategyGame(@PathVariable("gameCode") String gameCode,
                                @RequestParam(value="cp", defaultValue="1") int cp,
+                               @RequestParam(value="keyword", required=false) String keyword, // ✨ 1. keyword 파라미터 추가
                                @RequestParam Map<String, Object> paramMap, Model model) {
         String dbGameCode = getDbGameCode(gameCode);
         BoardType gameConfig = boardService.getBoardTypeMap(dbGameCode , "공략");
@@ -173,6 +181,12 @@ public class BoardController {
         
         paramMap.put("gameCode", dbGameCode);
         paramMap.put("categoryNo", gameConfig.getCategoryNo());
+        
+        // ✨ 2. 검색어가 들어왔다면 맵에 안전하게 세팅! (매퍼로 전달됨)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            paramMap.put("keyword", keyword.trim());
+        }
+
         model.addAttribute("gameId", gameCode.toLowerCase());
         model.addAttribute("gameName", gameConfig.getCategoryName());
         addBoardListToModel(paramMap, cp, model);

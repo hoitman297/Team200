@@ -1,7 +1,9 @@
 $(function() {
     console.log("✅ [LOG.GG] 검색/필터링 시스템 가동!");
 
-    // 게시판 필터링
+    // ❌ [수정됨] 1. 게시판 실시간 필터링 제거 (주석 처리)
+    // 이유: 게시판 검색은 이제 form 태그를 통해 서버(DB)로 파라미터를 넘겨 전체 페이지를 조회하는 방식으로 변경됨.
+    /*
     $(document).on("input keyup", "#boardSearchInput", function() {
         let val = $(this).val().toLowerCase().trim();
         $("#boardTableBody .board-row-item").each(function() {
@@ -9,9 +11,11 @@ $(function() {
             $(this).toggle(text.indexOf(val) > -1);
         });
     });
+    */
 
-    // 영웅/챔피언 필터링
-    $(document).on("input keyup", "#heroSearchInput, .search-input-field", function() {
+    // ✨ 2. 영웅/챔피언 필터링 (기존 클라이언트 사이드 유지)
+    // 수정 포인트: 게시판 검색창과 충돌하지 않도록 ".search-input-field" 클래스는 빼고 ID("#heroSearchInput")만 타겟팅합니다.
+    $(document).on("input keyup", "#heroSearchInput", function() {
         let searchValue = $(this).val().toLowerCase().trim();
         let $items = $(".hero-item"); // JSP에서 넣은 클래스 타겟팅
         
@@ -29,7 +33,7 @@ $(function() {
         }
     });
     
-        // ✨ 3. [신규] 롤 아이템 실시간 필터링 ✨
+    // ✨ 3. [신규] 롤 아이템 실시간 필터링 ✨ (기존 클라이언트 사이드 유지)
     $(document).on("input keyup", "#itemSearchInput", function() {
         let searchValue = $(this).val().toLowerCase().trim();
         
@@ -50,7 +54,7 @@ $(function() {
     // ✨ 4. [보너스] 카테고리 버튼 클릭 시 자동 검색 ✨
     $(document).on("click", ".category-btn", function() {
         let categoryName = $(this).find("span").text().trim();
-        // 검색창에 카테고리명을 넣고 강제로 keyup 이벤트를 발생시켜서 필터링!
-        $("#itemSearchInput").val().trigger("keyup");
+        // 수정 포인트: val() 안에 categoryName을 넣어줘야 검색창에 글자가 들어가면서 검색이 실행됩니다!
+        $("#itemSearchInput").val(categoryName).trigger("keyup");
     });
 });
