@@ -22,6 +22,7 @@ import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
+import com.semi.spring.board.model.vo.Report;
 import com.semi.spring.common.model.vo.PageInfo;
 
 import lombok.RequiredArgsConstructor;
@@ -341,4 +342,9 @@ public class BoardServiceImpl implements BoardService {
     public int deleteInfoReply(GameInfoReply reply) {
         return boardDao.deleteInfoReply(reply);
     }
+
+    public int insertReport(Report report) {
+        return boardDao.insertReport(report);
+    }
+
 }

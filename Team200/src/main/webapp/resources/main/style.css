@@ -415,3 +415,25 @@ footer {
     background: #F1F5F9;
     margin-top: 40px;
 }
+
+.btn-mini {
+    margin-left: 10px;        /* 제목과 버튼 사이 간격 */
+    padding: 4px 12px;        /* 버튼 안쪽 여백 */
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff;
+    cursor: pointer;
+    border: 1px solid #CBD5E1; /* 연한 회색 테두리 */
+    border-radius: 8px;        /* 살짝 둥근 모서리 */
+    color: #64748B;
+    transition: var(--transition);
+}
+
+.btn-mini:hover {
+    border-color: #94A3B8;     /* 마우스 올리면 테두리가 살짝 진해짐 */
+    background-color: #F8FAFC;
+}
+
+.btn-mini a {
+    color: inherit;            /* a 태그가 버튼 색상을 따라가도록 설정 */
+}

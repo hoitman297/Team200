@@ -11,6 +11,7 @@ import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
+import com.semi.spring.board.model.vo.Report;
 import com.semi.spring.common.model.vo.PageInfo;
 
 public interface BoardService {
@@ -76,4 +77,6 @@ public interface BoardService {
     int insertInfoReply(GameInfoReply reply);
     
     int deleteInfoReply(GameInfoReply reply);
-}
+    
+    int insertReport(Report report);
+    }

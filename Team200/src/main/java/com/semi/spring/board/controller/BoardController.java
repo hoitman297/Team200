@@ -30,6 +30,7 @@ import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Reply;
+import com.semi.spring.board.model.vo.Report;
 import com.semi.spring.common.model.vo.PageInfo;
 import com.semi.spring.common.template.Pagination;
 import com.semi.spring.security.model.vo.MemberExt;
@@ -516,5 +517,61 @@ public class BoardController {
         
         // 3. 삭제 후 목록으로 (기본 '전체' 탭으로 이동)
         return "redirect:/board/inquiry";
+    }
+    
+ // ================= [신고 처리] 게시글 신고 =================
+    @PostMapping("/report")
+    @ResponseBody
+    public String reportBoard(
+            @RequestParam("reportReason") String reportReason,
+            @RequestParam("reportDetail") String reportDetail,
+            Report report, 
+            Authentication auth) {
+        
+        // 1. 로그인 체크
+        if (auth == null || !auth.isAuthenticated()) {
+            return "login";
+        }
+        
+        // 2. 로그인 유저 정보 세팅 (MemberExt 사용)
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+        report.setUserNo(loginUser.getUserNo());
+        
+        // 3. 프론트엔드 데이터와 VO 필드명 불일치 수동 매핑
+        report.setReportType(reportReason);
+        report.setReportContent(reportDetail);
+        
+        // 4. 서비스 호출 (Service와 DAO에 insertReport 메서드가 있어야 합니다!)
+        int result = boardService.insertReport(report);
+        
+        return result > 0 ? "success" : "fail";
+    }
+
+    // ================= [신고 처리] 댓글 신고 =================
+    @PostMapping("/reply/report")
+    @ResponseBody
+    public String reportReply(
+            @RequestParam("reportReason") String reportReason,
+            @RequestParam("reportDetail") String reportDetail,
+            Report report, 
+            Authentication auth) {
+        
+        // 1. 로그인 체크
+        if (auth == null || !auth.isAuthenticated()) {
+            return "login";
+        }
+        
+        // 2. 로그인 유저 정보 세팅
+        MemberExt loginUser = (MemberExt) auth.getPrincipal();
+        report.setUserNo(loginUser.getUserNo());
+        
+        // 3. 수동 매핑
+        report.setReportType(reportReason);
+        report.setReportContent(reportDetail);
+        
+        // 4. 서비스 호출
+        int result = boardService.insertReport(report);
+        
+        return result > 0 ? "success" : "fail";
     }
 }
