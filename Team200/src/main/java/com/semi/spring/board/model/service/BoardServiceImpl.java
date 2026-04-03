@@ -308,4 +308,45 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardExt> selectRecentGallery(String gameCode) {
         return boardDao.selectRecentGallery(gameCode);
     }
+
+
+    @Override
+    public int selectPatchnoteCount(Map<String, Object> paramMap) {
+        return boardDao.selectPatchnoteCount(paramMap);
+    }
+
+    @Override
+    public List<BoardExt> selectPatchnoteList(Map<String, Object> paramMap) {
+        return boardDao.selectPatchnoteList(paramMap);
+    }
+    
+    @Override
+    public BoardExt selectPatchnoteDetail(int boardNo) {
+        return boardDao.selectPatchnoteDetail(boardNo);
+    }
+    
+    @Override
+    public int updateOfficialReadCount(String tableName, String pkColumn, int boardNo) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("tableName", tableName);
+        paramMap.put("pkColumn", pkColumn);
+        paramMap.put("boardNo", boardNo);
+        
+        return boardDao.updateOfficialReadCount(paramMap);
+    }
+
+	@Override
+	public List<BoardExt> selectNoticeList(Map<String, Object> paramMap) {
+		return boardDao.selectNoticeList(paramMap);
+	}
+
+	@Override
+	public BoardExt selectNoticeDetail(int boardNo) {
+		return boardDao.selectNoticeDetail(boardNo);
+	}
+
+	@Override
+	public int selectNoticeCount(Map<String, Object> paramMap) {
+		return boardDao.selectNoticeCount(paramMap);
+	}
 }

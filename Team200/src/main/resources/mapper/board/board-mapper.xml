@@ -280,18 +280,34 @@
     WHERE REPORT_NO = #{reportNo}
 	</update>
 
-	<select id="selectNotice" resultType="notice">
-		SELECT 
-        	NOTICE_NO, 
-        	TITLE, 
-        	POST_DATE
-    	FROM NOTICE
-    	ORDER BY NOTICE_NO DESC	
+	<select id="selectNoticeList" resultType="BoardExt">
+    SELECT * FROM (
+        SELECT ROWNUM AS RNUM, A.* FROM (
+            SELECT 
+                NOTICE_NO as boardNo,
+                TITLE as boardTitle,
+                '관리자' as userName,     POST_DATE as postDate,
+                READ_COUNT as readCount, 0 as likeCount,
+                0 as replyCount,
+                '공지사항' as categoryName
+            FROM NOTICE
+            ORDER BY NOTICE_NO DESC
+        ) A
+    )
+    WHERE RNUM BETWEEN #{offset} AND #{limit}
 	</select>
-	
-	<select id="selectNoticeDetail" resultType="notice">
-    	SELECT * FROM NOTICE
-    	WHERE NOTICE_NO = #{noticeNo}
+
+	<select id="selectNoticeDetail" resultType="BoardExt">
+	    SELECT 
+	        NOTICE_NO as boardNo,
+	        TITLE as boardTitle,
+	        NOTICE_CONTENT as boardContent,
+	        POST_DATE as postDate,
+	        READ_COUNT as readCount,
+	        '관리자' as userName,
+	        '공지사항' as categoryName
+	    FROM NOTICE
+	    WHERE NOTICE_NO = #{boardNo}
 	</select>
 	
 	<insert id="insertNotice">
@@ -311,22 +327,67 @@
         NOTICE_CONTENT = #{noticeContent}
     WHERE NOTICE_NO = #{noticeNo}
 	</update>
-	
-	
-	<select id="selectPatchnoteList" resultType="patchnote">
-    SELECT * FROM PATCHNOTE
-    <where>
-        <if test="gameCode != null and gameCode != ''">
-            GAME_CODE = #{gameCode}
-        </if>
-    </where>
-    ORDER BY PATCHNOTE_NO DESC
-	</select>
 
-	<select id="selectPatchnoteDetail" resultType="patchnote">
-    SELECT * FROM PATCHNOTE
-    WHERE PATCHNOTE_NO = #{patchnoteNo}
+	<select id="selectNoticeCount" resultType="_int">
+    SELECT COUNT(*) 
+    FROM NOTICE
+    <if test="keyword != null and keyword != ''">
+        WHERE TITLE LIKE '%' || #{keyword} || '%'
+           OR NOTICE_CONTENT LIKE '%' || #{keyword} || '%'
+    </if>
+</select>
+	<!-- 공지,패치 공통 -->
+	<update id="updateOfficialReadCount" parameterType="map">
+    UPDATE ${tableName}
+    SET READ_COUNT = READ_COUNT + 1
+    WHERE ${pkColumn} = #{boardNo}
+</update>
+
+	<!-- 패치 -->
+	<select id="selectPatchnoteCount" resultType="_int">
+	    SELECT COUNT(*) 
+	    FROM PATCHNOTE 
+	    <if test="gameCode != 'ALL'">
+	        WHERE GAME_CODE = #{gameCode}
+	    </if>
 	</select>
+	
+	<select id="selectPatchnoteList" resultType="BoardExt">
+	    SELECT * FROM (
+	        SELECT ROWNUM AS RNUM, A.* FROM (
+	            SELECT 
+	                PATCHNOTE_NO as boardNo,
+	                TITLE as boardTitle,
+	                '관리자' as userName,
+	                POST_DATE as postDate,
+	                0 as likeCount,
+	                0 as replyCount,
+	                '패치노트' as categoryName,
+	                
+	                GAME_CODE as gameCode,
+	                READ_COUNT as readCount
+	                
+	            FROM PATCHNOTE
+	            <if test="gameCode != 'ALL'">
+	                WHERE GAME_CODE = #{gameCode}
+	            </if>
+	            ORDER BY PATCHNOTE_NO DESC
+	        ) A
+	    )
+	    WHERE RNUM BETWEEN #{offset} AND #{limit}
+	</select>
+	
+	<select id="selectPatchnoteDetail" resultType="BoardExt">
+    SELECT 
+        PATCHNOTE_NO as boardNo,
+        GAME_CODE as gameCode,
+        TITLE as boardTitle,
+        PATCHNOTE_CONTENT as boardContent,
+        POST_DATE as postDate,
+        '관리자' as userName,
+        READ_COUNT as readCount  FROM PATCHNOTE
+    WHERE PATCHNOTE_NO = #{boardNo} 
+    </select>
 
 	<insert id="insertPatchnote">
     INSERT INTO PATCHNOTE (
