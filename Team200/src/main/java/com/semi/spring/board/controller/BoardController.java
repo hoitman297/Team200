@@ -663,6 +663,7 @@ public class BoardController {
         // 5. JSP로 데이터 토스!
         model.addAttribute("board", board);
         model.addAttribute("gameName", "패치노트");
+        model.addAttribute("isNotice", "false");
         
         // 만능 읽기 전용 껍데기 JSP로 이동
         return "board/official_detail"; 
