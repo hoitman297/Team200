@@ -196,7 +196,9 @@ public class AdminController {
 		
 		// 1. 전체 게시글 개수 조회 (필터 조건 포함)
 	    Map<String, Object> filters = new HashMap<>();
+	    
 	    filters.put("type", type);
+	    filters.put("order", order);
 	    
 	    int listCount = adminService.getReportListCount(filters); // GROUP BY 된 결과의 총 개수
 	    
