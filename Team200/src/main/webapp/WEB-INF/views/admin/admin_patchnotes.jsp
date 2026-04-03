@@ -29,7 +29,7 @@
             <div class="register-card">
                 <div class="page-header">
                     <h2 class="page-title">패치노트 등록</h2>
-                    <button class="btn-back">← 목록으로</button>
+                    <button class="btn-back" onclick="history.back()">← 목록으로</button>
                 </div>
                 
 		<form:form modelAttribute="patchnote" action="patchnote" method="POST">
@@ -53,13 +53,13 @@
 		
                 <div class="input-group">
                     <label>패치노트 제목</label>
-               			<form:input path="title" type="text" class="title-input" placeholder="패치 버전 및 핵심 내용을 입력하세요" />
+               			<form:input path="title" type="text" class="title-input" placeholder="패치 버전 및 핵심 내용을 입력하세요" required="true"/>
                 </div>
 
                 <div class="input-group" style="flex-grow: 1;">
                     <label>상세 업데이트 내용</label>
                     <div class="content-editor">
-                		<form:textarea path="patchnoteContent" placeholder="밸런스 조정, 신규 콘텐츠, 버그 수정 내역 등을 상세히 입력해 주세요."/>
+                		<form:textarea path="patchnoteContent" placeholder="밸런스 조정, 신규 콘텐츠, 버그 수정 내역 등을 상세히 입력해 주세요." required="true"/>
                     </div>
                 </div>
 
@@ -71,16 +71,35 @@
         </main>
 
         <aside>
-            <div class="side-card" style="background: #cbd5e1;">
-                <div class="card-header" style="color: #1e293b;">최근 등록 리스트</div>
-                <ul style="list-style: none; padding: 0; font-size: 14px; color: #475569; line-height: 2.2;">
-                    <li>[오버워치] 밸런스 패치 2.0.1</li>
-                    <li>[배그] 맵 로테이션 공지</li>
-                    <li>[롤] 14.5 패치 미리보기</li>
-                    <li>[롤] 아레나 모드 조정</li>
-                </ul>
-            </div>
-        </aside>
+		    <div class="side-card" style="background: #cbd5e1;">
+		        <div class="card-header" style="color: #1e293b; margin-bottom: 10px;">최근 등록 리스트</div>
+		        <ul style="list-style: none; padding: 0; font-size: 14px; color: #475569; line-height: 2.2; margin: 0;">
+		            <c:choose>
+		                <%-- 데이터가 없을 때 --%>
+		                <c:when test="${empty recentPatchList}">
+		                    <li>등록된 패치노트가 없습니다.</li>
+		                </c:when>
+		                
+		                <%-- 데이터가 있을 때 반복 출력 --%>
+		                <c:otherwise>
+		                    <c:forEach var="p" items="${recentPatchList}">
+		                        <%-- 제목이 길면 말줄임(...) 처리 + 클릭 시 상세페이지 이동 --%>
+		                        <li style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;"
+		                            title="${p.boardTitle}"
+		                            onclick="location.href='<c:url value='/board/patchnoteView?boardNo=${p.boardNo}'/>'">
+		                            
+		                            <%-- 게임 코드에 따른 말머리 변환 --%>
+		                            <strong>
+		                                [${p.gameCode == 'LOL' ? '롤' : (p.gameCode == 'OW' ? '오버워치' : '배그')}]
+		                            </strong> 
+		                            ${p.boardTitle}
+		                        </li>
+		                    </c:forEach>
+		                </c:otherwise>
+		            </c:choose>
+		        </ul>
+		    </div>
+		</aside>
     </div>
 </body>
 </html>

@@ -107,7 +107,7 @@
                     <div class="footer-right">
                         <%-- 본인 작성글일 경우에만 수정/삭제 노출 --%>
                         <c:if test="${inq.answerStatus == 'W'}">
-                            <button type="button" class="btn-edit" onclick="location.href='<c:url value='/board/inquiryEdit?boardNo=${inq.boardNo}' />'">수정</button>
+<%--                             <button type="button" class="btn-edit" onclick="location.href='<c:url value='/board/inquiryEdit?boardNo=${inq.boardNo}' />'">수정</button> --%>
                             <button type="button" class="btn-delete" onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='<c:url value='/board/inquiryDelete?boardNo=${inq.boardNo}' />'">삭제</button>
                         </c:if>
                     </div>

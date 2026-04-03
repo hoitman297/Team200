@@ -740,4 +740,35 @@
 		        AND USER_NO = #{userNo}
 		    </if>
 	</update>
+	
+	<select id="selectMainPatchNotes" resultType="BoardExt">
+        SELECT 
+            boardNo,
+            boardTitle,
+            postDate,
+            gameCode
+        FROM (
+            SELECT 
+                PATCHNOTE_NO as boardNo,
+                TITLE as boardTitle,
+                POST_DATE as postDate,
+                GAME_CODE as gameCode,
+                ROW_NUMBER() OVER(PARTITION BY GAME_CODE ORDER BY POST_DATE DESC) as R_NUM
+            FROM PATCHNOTE
+        ) 
+        WHERE R_NUM = 1
+        ORDER BY postDate DESC
+    </select>
+
+    <select id="selectMainNotices" resultType="BoardExt">
+        SELECT * FROM (
+            SELECT 
+                NOTICE_NO as boardNo,
+                TITLE as boardTitle,
+                POST_DATE as postDate
+            FROM NOTICE
+            ORDER BY NOTICE_NO DESC
+        )
+        WHERE ROWNUM &lt;= 3
+    </select>
 </mapper>

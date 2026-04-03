@@ -668,7 +668,6 @@ public class BoardController {
         return "board/official_detail"; 
     }
     
- // ✨ 패치노트 상세 조회 (공통 조회수 증가 로직 탑재!)
     @GetMapping("/noticeView")
     public String noticeDetail(
             @RequestParam("boardNo") int boardNo, 
@@ -676,44 +675,46 @@ public class BoardController {
             HttpServletResponse response, 
             Model model) {
         
-        // 1. 쿠키 검사: 이 패치노트를 이미 읽었는지 확인
+        // 1. 쿠키 검사: 패치노트랑 안 겹치게 notice로 이름 통일!
         Cookie[] cookies = request.getCookies();
         boolean isViewed = false;
         
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("viewed_patchnote_" + boardNo)) {
+                // ✨ [수정 1] patchnote가 아니라 notice로 체크해야 합니다.
+                if (cookie.getName().equals("viewed_notice_" + boardNo)) {
                     isViewed = true;
                     break; 
                 }
             }
         }
         
-        // 2. 안 읽었던 글이라면 조회수 증가 후 쿠키 굽기!
+        // 2. 안 읽었던 글이라면 조회수 증가
         if (!isViewed) {
-            // ✨ [핵심 수정 포인트] 
-            // 기존 전용 메서드 대신, 파라미터 3개를 던지는 공통 메서드를 호출합니다!
             boardService.updateOfficialReadCount("NOTICE", "NOTICE_NO", boardNo); 
             
+            // ✨ [수정 2] 쿠키 이름도 notice로 구워야죠!
             Cookie newCookie = new Cookie("viewed_notice_" + boardNo, "true");
-            newCookie.setMaxAge(60 * 60); // 1시간 유지
+            newCookie.setMaxAge(60 * 60); 
             newCookie.setPath("/"); 
             response.addCookie(newCookie);
         }
         
-        // 3. 최신 데이터 가져오기
-        BoardExt board = boardService.selectPatchnoteDetail(boardNo);
+        // 3. 최신 데이터 가져오기 (가장 중요한 부분! ⭐️⭐️⭐️)
+        // ✨ [수정 3] selectPatchnoteDetail이 아니라 selectNoticeDetail을 불러야 합니다!
+        // 패치노트 테이블에서 공지사항을 찾으니까 계속 null이 나왔던 거예요.
+        BoardExt board = boardService.selectNoticeDetail(boardNo);
         
-        // 4. 만약 삭제되었거나 없는 글이면 메인으로 튕겨내기
+        // 4. 데이터가 없으면 메인으로
         if (board == null) {
             return "redirect:/";
         }   
         
-        // 5. JSP로 데이터 토스!
+        // 5. JSP 데이터 세팅
         model.addAttribute("board", board);
-        model.addAttribute("gameName", "패치노트");
+        model.addAttribute("gameName", "공지사항"); // 패치노트 -> 공지사항으로 문구 수정
+        model.addAttribute("isNotice", "true");   // 공지사항 깃발 들어갑니다~
         
-        // 만능 읽기 전용 껍데기 JSP로 이동
         return "board/official_detail"; 
     }
     

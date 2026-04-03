@@ -107,6 +107,10 @@ public interface BoardDao {
 	public BoardExt selectNoticeDetail(int boardNo);
 
 	public int selectNoticeCount(Map<String, Object> paramMap);
+
+	public List<BoardExt> selectMainPatchNotes();
+
+	public List<BoardExt> selectMainNotices();
 	
 	
 }
