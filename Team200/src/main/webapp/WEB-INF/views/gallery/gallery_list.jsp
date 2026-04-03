@@ -28,6 +28,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main/style.css">
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
     <title>LOG.GG - 갤러리</title>
+
+    <%-- ✨ 추가된 부분: 파라미터 없이 접속 시 자동으로 '전체' 탭으로 이동시킵니다 ✨ --%>
+    <c:if test="${empty param.gameCode}">
+        <script>
+            location.replace("${pageContext.request.contextPath}/gallery/list?gameCode=all");
+        </script>
+    </c:if>
 </head>
 <body>
     <%-- 헤더에 게임 이름 전달 --%>
