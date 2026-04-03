@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -27,10 +26,14 @@
                 <input type="file" id="profileInput" accept="image/*" style="display: none;" onchange="uploadProfile(event)">
 
                 <div class="user-info">
-                    <sec:authentication property="principal" var="secUser" />
-                    <h1>${secUser.userName}</h1>
-                    <p>일반 회원<br>${secUser.email}</p>
-                </div>
+				    <sec:authentication property="principal" var="secUser" />
+				    <h1>${secUser.userName}</h1>
+				    <p>
+				        <sec:authorize access="hasRole('ROLE_ADMIN')">관리자 회원</sec:authorize>
+        				<sec:authorize access="!hasRole('ROLE_ADMIN')">일반 회원</sec:authorize><br>
+				        ${secUser.email}
+				    </p>
+				</div>
 
                 <a href="<c:url value = '/member/login' />"><button
                         class="logout-btn" onclick="msg('로그아웃')">로그아웃</button></a>
@@ -69,12 +72,12 @@
                     </div>
                     </a>
                     
-                    <a href="<c:url value = '/member/comment' />">
-                    <div class="menu-item" onclick="msg('삭제 관리')">
-                        <strong>댓글 일괄 삭제</strong>
-                        <span>일괄 삭제 기능을 제공합니다.</span>
-                    </div>
-                    </a>
+<%--                     <a href="<c:url value = '/member/comment' />"> --%>
+<!--                     <div class="menu-item" onclick="msg('삭제 관리')"> -->
+<!--                         <strong>댓글 일괄 삭제</strong> -->
+<!--                         <span>일괄 삭제 기능을 제공합니다.</span> -->
+<!--                     </div> -->
+<!--                     </a> -->
                 </div>
             </section>
 

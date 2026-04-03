@@ -63,10 +63,10 @@
 				                    <td class="text-left">
 				                        <div style="display: flex; flex-direction: column; gap: 4px;">
 				                            <%-- 상세 페이지 링크: type에 따라 경로와 번호를 다르게 바인딩 --%>
-				                            <a href="${pageContext.request.contextPath}/${type eq 'post' ? 'board' : 'reply'}/view?${type eq 'post' ? 'boardNo' : 'replyNo'}=${type eq 'post' ? r.boardNo : r.replyNo}" 
-				                               style="text-decoration:none; color:#333; font-weight:600;">
-				                                ${r.title}
-				                            </a>
+				                            <a href="${pageContext.request.contextPath}/board/view?boardNo=${r.boardNo}" 
+									           style="text-decoration:none; color:#333; font-weight:600;" target="_blank">
+									            ${r.title}
+									        </a>
 				                            <%-- 신고 사유 요약 (선택 사항) --%>
 				                            <small style="color:#888; font-size:12px;">사유: ${r.reportType}</small>
 				                        </div>
@@ -112,41 +112,40 @@
 				</tbody>
             </table>
 
-            <div class="pagination" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px;">
-			
+			            <div class="pagination" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px;">
+			    
 			    <c:if test="${pi.startPage > 1}">
-			        <a href="user_report?cpage=${pi.startPage - 1}" title="이전 그룹" style="text-decoration: none; color: #444; font-weight: bold; padding: 0 5px;">&lt;&lt;</a>
+			        <a href="user_report?currentPage=${pi.startPage - 1}&type=${type}&order=${order}" title="이전 그룹" style="text-decoration: none; color: #444; font-weight: bold; padding: 0 5px;">&lt;&lt;</a>
 			    </c:if>
 			
 			    <c:if test="${pi.currentPage > 1}">
-			        <a href="user_report?cpage=${pi.currentPage - 1}" title="이전 페이지" style="text-decoration: none; color: #444; font-weight: bold; padding: 0 5px;">&lt;</a>
+			        <a href="user_report?currentPage=${pi.currentPage - 1}&type=${type}&order=${order}" title="이전 페이지" style="text-decoration: none; color: #444; font-weight: bold; padding: 0 5px;">&lt;</a>
 			    </c:if>
 			
 			    <span class="page-numbers" style="margin: 0 5px; color: #333; font-size: 16px;">
-			        &lt; 
 			        <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
-					    <c:choose>
-					        <c:when test="${p eq pi.currentPage}">
-					            <strong style="...">${p}</strong>
-					        </c:when>
-					        <c:otherwise>
-					            <a href="user_report?cpage=${p}&gameCode=${gameCode}&answerStatus=${answerStatus}" 
-					               style="text-decoration: none; color: #666; margin: 0 2px;">${p}</a>
-					        </c:otherwise>
-					    </c:choose>
-					</c:forEach>
-			        &gt;
+			            <c:choose>
+			                <c:when test="${p eq pi.currentPage}">
+			                    <strong style="color: #3b82f6;">${p}</strong>
+			                </c:when>
+			                <c:otherwise>
+			                    <%-- ✨ 수정됨: 이동할 때마다 현재 탭(type)과 정렬(order)을 데리고 다닙니다! --%>
+			                    <a href="user_report?currentPage=${p}&type=${type}&order=${order}" 
+			                       style="text-decoration: none; color: #666; margin: 0 2px;">${p}</a>
+			                </c:otherwise>
+			            </c:choose>
+			        </c:forEach>
 			    </span>
 			
 			    <c:if test="${pi.currentPage < pi.maxPage}">
-			        <a href="user_report?cpage=${pi.currentPage + 1}" title="다음 페이지" style="text-decoration: none; color: #444; font-weight: bold; padding: 0 5px;">&gt;</a>
+			        <a href="user_report?currentPage=${pi.currentPage + 1}&type=${type}&order=${order}" title="다음 페이지" style="text-decoration: none; color: #444; font-weight: bold; padding: 0 5px;">&gt;</a>
 			    </c:if>
 			
 			    <c:if test="${pi.endPage < pi.maxPage}">
-			        <a href="user_report?cpage=${pi.endPage + 1}" title="다음 그룹" style="text-decoration: none; color: #444; font-weight: bold; padding: 0 5px;">&gt;&gt;</a>
+			        <a href="user_report?currentPage=${pi.endPage + 1}&type=${type}&order=${order}" title="다음 그룹" style="text-decoration: none; color: #444; font-weight: bold; padding: 0 5px;">&gt;&gt;</a>
 			    </c:if>
-			
 			</div>
+			
         </div>
     </div>
 </body>

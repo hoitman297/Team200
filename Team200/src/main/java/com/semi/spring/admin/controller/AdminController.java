@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.semi.spring.admin.service.AdminService;
 import com.semi.spring.board.model.service.BoardService;
+import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Notice;
 import com.semi.spring.board.model.vo.Patchnote;
@@ -42,15 +43,12 @@ public class AdminController {
 	@GetMapping("/main")
 	public String adminMain(Model model) {
 		
-//		Notice recentNotice = adminService.selectRecentNotice(recentNotice);
-//		
-//		model.addAttribute("title", recentNotice.getTitle()); 
-//	    model.addAttribute("postDate", recentNotice.getPostDate());
-//	    
-//	    Patchnote recentPatchnote = adminService.selectRecentPatchnote(recentPatchnote);
-//	    
-//	    model.addAttribute("title", recentPatchnote.getTitle()); 
-//	    model.addAttribute("postDate", recentPatchnote.getPostDate());
+		List<BoardExt> patchList = boardService.selectMainPatchNotes();
+	    model.addAttribute("patchList", patchList);
+
+	    // 2. 최신 공지사항 리스트 조회 (최신순 3개)
+	    List<BoardExt> noticeList = boardService.selectMainNotices();
+	    model.addAttribute("noticeList", noticeList);
 	    
 		return "admin/admin_main";
 	}
@@ -115,9 +113,21 @@ public class AdminController {
 		return "admin/admin_mypage";
 	}
 	
-	@GetMapping("/notice")
-	public String adminNotice(@ModelAttribute("notice") Notice notice) {
-		return "admin/admin_notice";
+	@GetMapping("/notice") // (혹은 매핑해둔 주소)
+	public String adminNoticeForm(Model model) {
+	    
+	    // 1. 공지 등록 폼을 위한 빈 객체
+	    model.addAttribute("notice", new Notice());
+
+	    // 2. 왼쪽 사이드바용: 게임별 최신 패치노트 (총 3개)
+	    List<BoardExt> recentPatchList = boardService.selectMainPatchNotes();
+	    model.addAttribute("recentPatchList", recentPatchList);
+
+	    // 3. 오른쪽 사이드바용: 최근 공지사항 (최신 3~5개)
+	    List<BoardExt> recentNoticeList = boardService.selectMainNotices();
+	    model.addAttribute("recentNoticeList", recentNoticeList);
+
+	    return "admin/admin_notice";
 	}
 	
 	@PostMapping("/notice")
@@ -138,8 +148,20 @@ public class AdminController {
 	}
 	
 	@GetMapping("/patchnote")
-	public String adminPatchnote(@ModelAttribute("patchnote") Patchnote patchnote){
-		return "admin/admin_patchnotes";
+	public String adminPatchnote(Model model) {
+	    
+	    // 1. 등록 폼을 위한 빈 객체
+	    model.addAttribute("patchnote", new Patchnote());
+
+	    // 2. ✨ 최근 등록된 패치노트 리스트 가져오기
+	    // (만약 boardService.selectMainPatchNotes()를 쓰면 게임별 최신 1개씩 총 3개가 옵니다)
+	    // (또는 공지사항처럼 offset, limit 파라미터를 넘겨 최신순 5개를 가져오는 메서드를 쓰셔도 좋습니다!)
+	    List<BoardExt> recentPatchList = boardService.selectMainPatchNotes(); 
+	    
+	    // 3. 모델에 담아서 JSP로 토스!
+	    model.addAttribute("recentPatchList", recentPatchList);
+
+	    return "admin/admin_patchnotes";
 	}
 	
 	@PostMapping("/patchnote")
@@ -174,7 +196,9 @@ public class AdminController {
 		
 		// 1. 전체 게시글 개수 조회 (필터 조건 포함)
 	    Map<String, Object> filters = new HashMap<>();
+	    
 	    filters.put("type", type);
+	    filters.put("order", order);
 	    
 	    int listCount = adminService.getReportListCount(filters); // GROUP BY 된 결과의 총 개수
 	    
@@ -299,5 +323,6 @@ public class AdminController {
 	    // 성공 시 "success" 문자열 반환
 	    return (result > 0) ? "success" : "fail";
 	}
+	
 	
 }

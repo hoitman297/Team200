@@ -96,4 +96,7 @@ public interface BoardService {
 	int updateOfficialReadCount(String tableName, String pkColumn, int boardNo);
 
 	int selectNoticeCount(Map<String, Object> paramMap);
+	
+	List<BoardExt> selectMainPatchNotes();
+	List<BoardExt> selectMainNotices();
 }

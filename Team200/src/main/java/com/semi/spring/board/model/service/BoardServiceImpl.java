@@ -349,4 +349,14 @@ public class BoardServiceImpl implements BoardService {
 	public int selectNoticeCount(Map<String, Object> paramMap) {
 		return boardDao.selectNoticeCount(paramMap);
 	}
+	
+	@Override
+    public List<BoardExt> selectMainPatchNotes() {
+        return boardDao.selectMainPatchNotes();
+    }
+
+    @Override
+    public List<BoardExt> selectMainNotices() {
+        return boardDao.selectMainNotices();
+    }
 }

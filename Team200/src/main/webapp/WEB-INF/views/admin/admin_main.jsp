@@ -1,5 +1,6 @@
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -23,18 +24,34 @@
                 <h3>게임별 패치노트 <button class="btn-mini">
                  <a href="<c:url value = '/admin/patchnote'/>">패치노트 등록</a></button></h3>
                 <ul class="patch-list">
-                    <li><strong>오버워치</strong><span>2026.03.05</span></li>
-                    <li><strong>배틀그라운드</strong><span>2026.02.05</span></li>
-                    <li><strong>리그 오브 레전드</strong><span>2026.01.15</span></li>
+                    <c:choose>
+                        <c:when test="${empty patchList}">
+                            <li>패치노트 데이터가 없습니다.</li>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="patch" items="${patchList}">
+                                <%-- 클릭 시 해당 패치노트 상세 페이지로 이동 --%>
+                                <li onclick="location.href='<c:url value='/board/patchnoteView?boardNo=${patch.boardNo}'/>'" style="cursor:pointer;">
+                                    <strong>
+                                        <c:choose>
+                                            <c:when test="${patch.gameCode == 'LOL'}">리그 오브 레전드</c:when>
+                                            <c:when test="${patch.gameCode == 'OW'}">오버워치</c:when>
+                                            <c:otherwise>배틀그라운드</c:otherwise>
+                                        </c:choose>
+                                    </strong>
+                                    <span><fmt:formatDate value="${patch.postDate}" pattern="yyyy.MM.dd"/></span>
+                                </li>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
             </div>
         </aside>
 
         <main class="main-content">
-            <div class="brand-search">
-                <h1>LOG.GG</h1>
-            </div>
-
+			<a href="<c:url value='/' />">
+                <div class="logo">LOG.GG</div>
+            </a>
             <div class="content-card">
                 <nav class="tab-nav">
                     <button class="tab-btn active" onclick="openTab(event, 'tab-board')">관리자 페이지</button>
@@ -65,8 +82,23 @@
                 <a href="<c:url value = '/admin/notice'/>">공지 등록</a></button>
                 </h3>
                 <ul class="patch-list">
-                    <li style="border-color: #94a3b8;">${title}<span>${postDate}</span></li>
-                    <li style="border-color: #94a3b8;">웹사이트 업데이트 내역<span>2026.03.01</span></li>
+                    <c:choose>
+                        <c:when test="${empty noticeList}">
+                            <li style="border-color: #94a3b8;">등록된 공지가 없습니다.</li>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="notice" items="${noticeList}">
+                                <%-- 클릭 시 해당 공지사항 상세 페이지로 이동 --%>
+                                <li style="border-color: #94a3b8; cursor:pointer;" 
+                                    onclick="location.href='<c:url value='/board/noticeView?boardNo=${notice.boardNo}'/>'">
+                                    <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:150px;" title="${notice.boardTitle}">
+                                        ${notice.boardTitle}
+                                    </div>
+                                    <span><fmt:formatDate value="${notice.postDate}" pattern="MM.dd"/></span>
+                                </li>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
             </div>
         </aside>

@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/member/user_activity/style.css">
 	<script src="${pageContext.request.contextPath}/resources/member/user_activity/script.js"></script>
 	
+	<meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <title>LOG.GG - 나의 활동 내역</title>
 </head>
 <body>
@@ -32,6 +36,12 @@
             <button class="filter-btn ${currentGame == 'overwatch' ? 'active' : ''}" onclick="location.href='?type=${currentType}&game=overwatch'">오버워치</button>
         </div>
 
+		<c:if test="${currentType == 'reply'}">
+		    <div style="text-align: right; margin-bottom: 10px;">
+		        <button class="filter-btn active" style="background-color: #ef4444; color: white; border-color: #ef4444; cursor: pointer;" onclick="deleteSelected()">선택 삭제</button>
+		    </div>
+		</c:if>
+
         <table class="activity-table">
             <thead>
                 <tr>
@@ -44,9 +54,11 @@
                             <th style="width: 10%;">공감</th>
                         </c:when>
                         <c:otherwise>
-                            <th style="width: 60%;">댓글 내용</th>
-                            <th style="width: 20%;">작성일</th>
-                            <th style="width: 20%;">게시판</th>
+                            <th style="width: 5%;"><input type="checkbox" id="checkAll"></th>
+						    <th style="width: 55%;">댓글 내용</th>
+						    <th style="width: 15%;">작성일</th>
+						    <th style="width: 15%;">게시판</th>
+						    <th style="width: 10%;">관리</th>
                         </c:otherwise>
                     </c:choose>
                 </tr>
@@ -70,6 +82,11 @@
                             <c:set var="upCode" value="${fn:toUpperCase(gameCode)}" />
                             
                             <tr>
+                            	<c:if test="${currentType == 'reply'}">
+							        <td style="text-align: center;">
+							            <input type="checkbox" class="chk" value="${item.REPLY_NO}">
+							        </td>
+							    </c:if>
                                 <td>
                                     <%-- 게임 태그 뱃지 색상 동적 변경 --%>
                                     <c:choose>
@@ -110,6 +127,11 @@
                                         <td class="meta-info"><c:out value="${item.CATEGORY_NAME}"/></td>
                                     </c:otherwise>
                                 </c:choose>
+                                <c:if test="${currentType == 'reply'}">
+							        <td style="text-align: center;">
+							            <button style="border: none; background: transparent; color: #ef4444; cursor: pointer; font-weight: bold;" onclick="deleteSingle(${item.REPLY_NO})">삭제</button>
+							        </td>
+							    </c:if>
                             </tr>
                         </c:forEach>
                     </c:otherwise>
@@ -136,6 +158,63 @@
 
         <a href="${pageContext.request.contextPath}/member/mypage" class="btn-back" style="display: inline-block; margin-top: 20px;">이전 페이지</a>
     </div>
+	<script>
+    // 1. 전체 선택/해제
+    $(document).on('change', '#checkAll', function() {
+        $('.chk').prop('checked', $(this).is(':checked'));
+    });
 
+    // 2. 선택 삭제
+    function deleteSelected() {
+        const checked = $('.chk:checked');
+        if (checked.length === 0) {
+            alert("삭제할 댓글을 선택해주세요.");
+            return;
+        }
+        if (!confirm(checked.length + "개의 댓글을 삭제하시겠습니까?")) return;
+
+        const replyNos = [];
+        checked.each(function() {
+            replyNos.push($(this).val());
+        });
+        sendDeleteRequest(replyNos);
+    }
+
+    // 3. 단건 삭제
+    function deleteSingle(replyNo) {
+        if (!confirm("이 댓글을 삭제하시겠습니까?")) return;
+        sendDeleteRequest([replyNo]);
+    }
+
+    // 4. AJAX 전송
+    function sendDeleteRequest(replyNos) {
+        const token = $("meta[name='_csrf']").attr("content");
+        const header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            url: "${pageContext.request.contextPath}/member/deleteReplies",
+            type: "POST",
+            traditional: true,
+            beforeSend: function(xhr) {
+                if(header && token) {
+                    xhr.setRequestHeader(header, token);
+                }
+            },
+            data: { replyNos: replyNos },
+            success: function(res) {
+                if (res === "success") {
+                    alert("성공적으로 삭제되었습니다.");
+                    location.reload();
+                } else {
+                    alert("삭제에 실패했습니다. 다시 시도해주세요.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("에러 코드 : " + xhr.status);
+                alert("서버와 통신 중 에러가 발생했습니다.");
+            }
+        });
+    }
+</script>
 </body>
 </html>
