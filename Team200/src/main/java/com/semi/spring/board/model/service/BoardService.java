@@ -99,4 +99,6 @@ public interface BoardService {
 	
 	List<BoardExt> selectMainPatchNotes();
 	List<BoardExt> selectMainNotices();
+
+	List<BoardExt> selectRecentPatchNotesByGame(String dbGameCode);
 }
