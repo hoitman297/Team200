@@ -16,6 +16,7 @@ import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
+import com.semi.spring.board.model.vo.Patchnote;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.board.model.vo.Report;
 import com.semi.spring.common.model.vo.PageInfo;
@@ -249,4 +250,39 @@ public class BoardDaoImpl implements BoardDao {
     public List<BoardExt> selectRecentGallery(String gameCode) {
         return session.selectList("board.selectRecentGallery", gameCode);
     }
+    
+    @Override
+    public int selectPatchnoteCount(Map<String, Object> paramMap) {
+        return session.selectOne("board.selectPatchnoteCount", paramMap);
+    }
+
+    @Override
+    public List<BoardExt> selectPatchnoteList(Map<String, Object> paramMap) {
+        return session.selectList("board.selectPatchnoteList", paramMap);
+    }
+    
+    @Override
+    public BoardExt selectPatchnoteDetail(int boardNo) {
+        return session.selectOne("board.selectPatchnoteDetail", boardNo);
+    }
+    
+    @Override
+    public int updateOfficialReadCount(Map<String, Object> paramMap) {
+        return session.update("board.updateOfficialReadCount", paramMap);
+    }
+
+	@Override
+	public List<BoardExt> selectNoticeList(Map<String, Object> paramMap) {
+		 return session.selectList("board.selectNoticeList", paramMap);
+	}
+
+	@Override
+	public BoardExt selectNoticeDetail(int boardNo) {
+		return session.selectOne("board.selectNoticeDetail", boardNo);
+	}
+
+	@Override
+	public int selectNoticeCount(Map<String, Object> paramMap) {
+		return session.selectOne("board.selectNoticeCount", paramMap);
+	}
 }

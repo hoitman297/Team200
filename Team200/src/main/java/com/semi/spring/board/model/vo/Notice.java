@@ -14,4 +14,6 @@ public class Notice {
     private String title;         
     private Date postDate;         
     private String noticeContent;
+    private int readCount; // READ_COUNT
+	public int getViews() { return readCount; }
 }

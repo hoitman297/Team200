@@ -35,15 +35,29 @@
 
         <main class="content-area">
             <div class="board-top-row">
-                <a href="<c:url value ='/${gameId}/main'/>"><div class="logo">LOG.GG</div></a>
+			    <%-- ✨ [수정] 패치노트 혹은 공지사항(isNotice)일 때는 통합 메인으로! --%>
+                <c:choose>
+                    <c:when test="${not empty isPatchnote or not empty isNotice or gameName == '공지사항'}">
+                        <a href="<c:url value='/'/>"><div class="logo">LOG.GG</div></a>
+                    </c:when>
+                    <c:otherwise>	
+                        <a href="<c:url value='/${gameId}/main'/>"><div class="logo">LOG.GG</div></a>
+                    </c:otherwise>
+                </c:choose>
                 <c:set var="searchType" value="board" />
                 <%@ include file="../common/search_bar.jsp" %>
             </div>
 
             <div class="board-header">
-                <div class="board-title">${boardTitle}</div>
-                <a href="<c:url value='${writeUrl}' />" class="btn-write">글쓰기</a>
-            </div>
+			    <div class="board-title">${boardTitle}</div>
+			    
+			   <%-- ✨ [수정] 패치노트 혹은 공지사항일 때는 글쓰기 버튼 숨기기 --%>
+                <c:if test="${empty isPatchnote and empty isNotice}">
+                    <sec:authorize access="isAuthenticated()">
+                        <a href="<c:url value='${writeUrl}' />" class="btn-write">글쓰기</a>
+                    </sec:authorize>
+                </c:if>
+			</div>
 
             <table class="list-table">
                 <thead>
@@ -53,7 +67,9 @@
                         <th style="width: 100px;">글쓴이</th>
                         <th style="width: 100px;">날짜</th>
                         <th style="width: 80px;">조회수</th>
-                        <th style="width: 60px;">공감</th>
+                        <c:if test="${empty isPatchnote and empty isNotice}">
+                            <th style="width: 60px;">공감</th>
+                        </c:if>
                     </tr>
                 </thead>
                 <tbody id="boardTableBody">
@@ -65,23 +81,58 @@
                         </c:when>
                         <c:otherwise>
                             <c:forEach var="post" items="${boardList}">
-                                <tr class="board-row-item" data-href="${pageContext.request.contextPath}/board/view?boardNo=${post.boardNo}">
-                                    <td>${post.id}</td>
+                            	
+                            	<%-- ✨ [핵심 수정] 클릭 시 상세 페이지 경로 분기 처리 --%>
+                                <c:choose>
+									    <c:when test="${not empty isPatchnote}">
+									        <c:set var="detailLink" value="/board/patchnoteView?boardNo=${post.boardNo}" />
+									    </c:when>
+									    
+									    <%-- 2. 공지사항일 때 가는 길 (이걸 추가해야 합니다! ⭐️) --%>
+									    <c:when test="${not empty isNotice or gameName == '공지사항'}">
+									        <c:set var="detailLink" value="/board/noticeView?boardNo=${post.boardNo}" />
+									    </c:when>
+									    
+									    <%-- 3. 일반 게시판일 때 가는 길 --%>
+									    <c:otherwise>
+									        <c:set var="detailLink" value="/board/view?boardNo=${post.boardNo}" />
+									    </c:otherwise>
+									</c:choose>
+                            
+                            
+                                <tr class="board-row-item" data-href="${pageContext.request.contextPath}${detailLink}">
+                                    <td>${post.boardNo}</td>
                                     <td class="td-title">
-                                        <a href="${pageContext.request.contextPath}/board/view?boardNo=${post.boardNo}">${post.boardTitle}</a>
+									    <%-- ✨ 전체 패치노트 화면일 때만 말머리(태그) 표시! --%>
+									    <c:if test="${gameId == 'all' and gameName == '패치노트'}">
+									        <c:choose>
+									            <c:when test="${post.gameCode == 'LOL'}">
+									                <span style="color: #00a8ff; font-weight: bold; margin-right: 5px; font-size: 13px;">[LOL]</span>
+									            </c:when>
+									            <c:when test="${post.gameCode == 'OW'}">
+									                <span style="color: #ff9f43; font-weight: bold; margin-right: 5px; font-size: 13px;">[OW]</span>
+									            </c:when>
+									            <c:when test="${post.gameCode == 'BG'}">
+									                <span style="color: #ffb142;   font-size: 13px; margin-right: 5px; font-size: 13px;">[배그]</span>
+									            </c:when>
+									        </c:choose>
+									    </c:if>
+                                        <a href="${pageContext.request.contextPath}${detailLink}">${post.boardTitle}</a>
                                         <c:if test="${loginUserNo == post.userNo}">
                                             <span class="my-post-tag" style="color: #3b82f6; font-size: 11px; font-weight: bold; margin-left: 5px;">[내 글]</span>
                                         </c:if> 
-                                        <c:if test="${post.replyCount > 0}">
-                                            <span style="color: var(--accent-blue); font-weight: bold; font-size: 13px; margin-left: 5px;">
-                                                [${post.replyCount}]
-                                            </span>
+                                        <%-- ✨ [수정] 공지사항도 보통 댓글이 없으므로, 패치노트처럼 댓글 수도 숨기고 싶다면 체크! --%>
+                                        <c:if test="${post.replyCount > 0 and empty isNotice}">
+                                            <span style="color: var(--accent-blue); font-weight: bold; font-size: 13px; margin-left: 5px;">[${post.replyCount}]</span>
                                         </c:if>
                                     </td>
                                     <td>${post.userName}</td>
                                     <td><fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd" /></td>
                                     <td>${post.readCount}</td>
-                                    <td>${post.likeCount}</td>
+                                    <%-- ✨ [수정] 공지사항도 공감 데이터 숨기기 --%>
+                                    <c:if test="${empty isPatchnote and empty isNotice}">
+                                        <td>${post.likeCount}</td>
+                                    </c:if>
                                 </tr>
                             </c:forEach>
                         </c:otherwise>
