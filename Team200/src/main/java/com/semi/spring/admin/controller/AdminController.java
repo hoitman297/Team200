@@ -1,6 +1,8 @@
 package com.semi.spring.admin.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -19,6 +22,9 @@ import com.semi.spring.board.model.service.BoardService;
 import com.semi.spring.board.model.vo.Inquiry;
 import com.semi.spring.board.model.vo.Notice;
 import com.semi.spring.board.model.vo.Patchnote;
+import com.semi.spring.board.model.vo.Report;
+import com.semi.spring.common.model.vo.PageInfo;
+import com.semi.spring.common.template.Pagination;
 import com.semi.spring.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -50,11 +56,51 @@ public class AdminController {
 	}
 	
 	@GetMapping("/inquiry")
-	public String adminInquiry(Model model) {
+	public String adminInquiry(
+			@RequestParam(value="cpage", defaultValue="1") int currentPage,
+			@RequestParam(value="gameCode", defaultValue="ALL") String gameCode,
+	        @RequestParam(value="answerStatus", defaultValue="ALL") String answerStatus,
+			Model model) {
 		
-		List<Inquiry> list = adminService.selectInquiryList();
+		// 고객문의 필터
+		Map<String, Object> filters = new HashMap<>();
+	    filters.put("gameCode", gameCode);
+	    filters.put("answerStatus", answerStatus);
+		
+		PageInfo pi = new PageInfo();
+		
+		// 1. 전체 회원 수 조회 (DB에서 가져오기)
+  	    int listCount = adminService.selectInquiryListCount(filters);
+		
+	    // 2. 페이징 설정값 변수 선언
+	    int pageLimit = 5;    // 하단 페이징바에 표시할 페이지 개수
+	    int boardLimit = 10;  // 한 페이지에 보여줄 회원 수
+	    
+	    // 3. PageInfo 계산 로직
+	    int maxPage = (int)Math.ceil((double)listCount / boardLimit);
+	    
+	    if (maxPage == 0) maxPage = 1;
+	    
+	    int startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
+	    int endPage = startPage + pageLimit - 1;
+	    
+	    if(endPage > maxPage) endPage = maxPage;
+	    
+	    pi.setListCount(listCount);
+	    pi.setCurrentPage(currentPage);
+	    pi.setPageLimit(pageLimit);
+	    pi.setBoardLimit(boardLimit);
+	    pi.setMaxPage(maxPage);
+	    pi.setStartPage(startPage);
+	    pi.setEndPage(endPage);
+		
+		List<Inquiry> list = adminService.selectInquiryList(pi, filters);
 		
 		model.addAttribute("inquiryList", list);
+		model.addAttribute("pi", pi);
+		model.addAttribute("gameCode", gameCode); 		
+	    model.addAttribute("answerStatus", answerStatus);     
+		
 		return "admin/admin_inquiry";
 	}
 	
@@ -119,17 +165,82 @@ public class AdminController {
 		return "admin/admin_postlist";
 	}
 	
-	@GetMapping("/user_content_management")
-	public String userContentManagerMent() {
-		return "admin/user_content_management";
+	@GetMapping("/user_report")
+	public String userReport(
+			@RequestParam(value="type", defaultValue="post") String type,     // post(글), comment(댓글)
+	        @RequestParam(value="order", defaultValue="recent") String order, // recent(최신), count(신고많은)
+	        @RequestParam(value="currentPage", defaultValue="1") int currentPage,
+	        Model model) {
+		
+		// 1. 전체 게시글 개수 조회 (필터 조건 포함)
+	    Map<String, Object> filters = new HashMap<>();
+	    filters.put("type", type);
+	    
+	    int listCount = adminService.getReportListCount(filters); // GROUP BY 된 결과의 총 개수
+	    
+	    // 2. 페이징 계산 로직 (페이지당 10개씩 보여준다고 가정)
+	    // PageInfo는 보통 별도의 클래스로 구현합니다 (아래 설명 참조)
+	    PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 10, 5);
+		
+	    // 3. 해당 페이지의 데이터만 조회
+	    List<Report> reportList = adminService.selectReportList(filters, pi, order);
+		
+	    System.out.println("데이터 확인: " + reportList);
+		// 4. 데이터 전달
+		model.addAttribute("reportList", reportList);
+	    model.addAttribute("pi", pi); // 페이징 정보 (startPage, endPage, maxPage 등)
+	    model.addAttribute("type", type);
+	    model.addAttribute("order", order);
+	    
+	    return "admin/user_report";
 	}
 	
 	@GetMapping("/user_management")
-	public String userManagement(Model model) {
+	public String userManagement(
+			@RequestParam(value="cpage", defaultValue="1") int currentPage,
+			@RequestParam(value="keyword", defaultValue="") String keyword,
+	        @RequestParam(value="order", defaultValue="date") String order,
+	        @RequestParam(value="withdraw", defaultValue="ALL") String withdraw,
+			Model model) {
 		
-		List<Member> userList = adminService.selectMemberList();
+		Map<String, Object> filters = new HashMap<>();
+	    filters.put("keyword", keyword);
+	    filters.put("order", order);
+	    filters.put("withdraw", withdraw); // Key 변경
+		
+	    int listCount = adminService.selectMemberListCount(filters);
+		PageInfo pi = new PageInfo();
+		// 1. 전체 회원 수 조회 (DB에서 가져오기)
+		
+	    // 2. 페이징 설정값 변수 선언
+	    int pageLimit = 5;    // 하단 페이징바에 표시할 페이지 개수
+	    int boardLimit = 10;  // 한 페이지에 보여줄 회원 수
+	    
+	 // 3. PageInfo 계산 로직
+	    int maxPage = (int)Math.ceil((double)listCount / boardLimit);
+	    
+	    if (maxPage == 0) maxPage = 1;
+	    
+	    int startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
+	    int endPage = startPage + pageLimit - 1;
+	    
+	    if(endPage > maxPage) endPage = maxPage;
+	    
+	    pi.setListCount(listCount);
+	    pi.setCurrentPage(currentPage);
+	    pi.setPageLimit(pageLimit);
+	    pi.setBoardLimit(boardLimit);
+	    pi.setMaxPage(maxPage);
+	    pi.setStartPage(startPage);
+	    pi.setEndPage(endPage);
+		
+		List<Member> userList = adminService.selectMemberList(pi , filters);
 		
 		model.addAttribute("userList", userList);
+		model.addAttribute("pi", pi);
+		model.addAttribute("keyword", keyword);
+	    model.addAttribute("order", order);
+	    model.addAttribute("withdraw", withdraw);
 		return "admin/user_management";
 	}
 	
@@ -141,20 +252,51 @@ public class AdminController {
 		return (userList > 0) ? "success" : "fail";
 	}
 	
+	@GetMapping("/deleteContent")
+	public String deleteContent(String type, int no, RedirectAttributes ra) {
+	    // type: "post" 또는 "comment"
+	    // no: boardNo 또는 replyNo
+	    
+	    int result = adminService.deleteContent(type, no);
+	    
+	    if (result > 0) {
+	        ra.addFlashAttribute("alertMsg", "콘텐츠 삭제 및 관련 신고 처리가 완료되었습니다.");
+	    } else {
+	        ra.addFlashAttribute("alertMsg", "삭제 처리 중 오류가 발생했습니다.");
+	    }
+	    
+	    // 처리가 끝나면 다시 신고 리스트 페이지로 리다이렉트
+	    return "redirect:/admin/user_report?type=" + type;
+	}
+	
 	@ResponseBody
 	@PostMapping("/updateUserWithdraw")
 	public String updateUserWithdraw(int userNo, String withdraw) {
 		
 		String withdrawValue = "N"; 
-		if ("Y".equalsIgnoreCase(withdrawValue) || "정지".equals(withdrawValue)) {
+		if ("Y".equalsIgnoreCase(withdraw) || "정지".equals(withdraw)) {
 	        withdrawValue = "Y";
-	    } else if ("N".equalsIgnoreCase(withdrawValue) || "활성화".equals(withdrawValue)) {
+	    } else {
 	        withdrawValue = "N";
 	    }
 		
 	    int result = adminService.updateUserWithdraw(userNo, withdrawValue);
 	    
 	    // AJAX의 success 반환
+	    return (result > 0) ? "success" : "fail";
+	}
+	
+	@PostMapping("/insertAnswer")
+	@ResponseBody // AJAX 응답을 위해 필수
+	public String insertAnswer(@RequestParam("boardNo") int boardNo, 
+	                           @RequestParam("answerContent") String answer) {
+	    
+		System.out.println("넘어온 번호: " + boardNo);
+	    System.out.println("넘어온 내용: " + answer);
+	    // 비즈니스 로직 실행
+	    int result = adminService.insertAnswer(boardNo, answer);
+	    System.out.println("DB 결과(행 개수): " + result); // 여기서 0이 나오면 조건절(WHERE) 문제임
+	    // 성공 시 "success" 문자열 반환
 	    return (result > 0) ? "success" : "fail";
 	}
 	

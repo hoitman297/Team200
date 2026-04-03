@@ -33,18 +33,14 @@
         <main class="main-content">
             <div class="brand-search">
                 <h1>LOG.GG</h1>
-                <div class="search-box">
-                    <input type="text" placeholder="관심 있는 글을 검색해보세요.">
-                </div>
             </div>
 
             <div class="content-card">
                 <nav class="tab-nav">
                     <button class="tab-btn active" onclick="openTab(event, 'tab-board')">관리자 페이지</button>
                     <button class="tab-btn" onclick="location.href='<c:url value='/admin/user_management' />'">회원관리</button>
-<%--                <button class="tab-btn" onclick="location.href='<c:url value='/admin/user_content_management' />'">회원게시물 댓글 관리</button> --%>
-                    <button class="tab-btn" onclick="location.href='<c:url value='/admin/inquiry' />'">문의사항</button>
-                    <button class="tab-btn" onclick="openTab(event, 'tab-wiki')">신고내역</button>
+                    <button class="tab-btn" onclick="location.href='<c:url value='/admin/inquiry' />'">고객지원</button>
+                    <button class="tab-btn" onclick="location.href='<c:url value='/admin/user_report'/>'">신고내역</button>
                 </nav>
 
                 <div id="tab-board" class="tab-pane active">
@@ -59,8 +55,6 @@
                     <div class="footer-visual">
                     </div>
                 </div>
-
-             
 
         </main>
 

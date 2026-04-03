@@ -14,17 +14,6 @@
     <%@ include file="../common/header.jsp"%>
 </head>
 <body>
-<!--     <header> -->
-<!--         <div class="header-left">☰ 메인페이지 ▾</div> -->
-<!--         <div class="user-nav"> -->
-<!--             <span>게시글 추가</span> -->
-<!--             <span>마이페이지</span> -->
-<!--             <span>개인정보 수정</span> -->
-<!--             <b>⚙️ ADMIN01 님</b> -->
-<!--             <button class="btn-logout">로그아웃</button> -->
-<!--         </div> -->
-<!--     </header> -->
-
     <div class="main-layout">
         <aside class="side-left">
             <div class="side-card">
@@ -54,13 +43,13 @@
 		 <form:form modelAttribute="notice" action="notice" method="POST">
                 <div class="input-group">
                     <label>공지 제목</label>
-                    <form:input path="title" type="text" class="title-input" placeholder="공지사항의 제목을 입력하세요."/>
+                    <form:input path="title" type="text" class="title-input" placeholder="공지사항의 제목을 입력하세요." required/>
                 </div>
 
                 <div class="input-group">
                     <label>본문 내용</label>
                     <div class="content-editor">
-                        <form:textarea path="noticeContent" placeholder="사용자들에게 전달할 상세 내용을 작성하세요."/>
+                        <form:textarea path="noticeContent" placeholder="사용자들에게 전달할 상세 내용을 작성하세요." required/>
                     </div>
                 </div>
 

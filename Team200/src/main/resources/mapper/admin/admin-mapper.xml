@@ -39,7 +39,7 @@
 	        FROM NOTICE
 	        ORDER BY NOTICE_NO DESC
 	    )
-	    WHERE ROWNUM = 1
+	    WHERE ROWNUM = 3
 	</select>
 	
 	<select id="selectRecentPatchnote" resultType="patchnote">
@@ -48,7 +48,7 @@
 	        FROM PATCHNOTE
 	        ORDER BY PATCHNOTE_NO DESC
 	    )
-	    WHERE ROWNUM = 1
+	    WHERE ROWNUM = 3
 	</select>
 
 	<select id="selectInquiryList" resultType="inquiry">
@@ -58,20 +58,90 @@
 		 	   BOARD_TITLE AS boardTitle,
 		 	   USER_NAME AS userName ,
 		 	   POST_DATE AS postDate ,
-		 	   ANSWER_STATUS AS answerStatus
+		 	   ANSWER_STATUS AS answerStatus ,
+		 	   ANSWER as answer
 		FROM INQUIRY
-		ORDER BY BOARD_NO DESC
+		WHERE 1=1
+		<if test="gameCode != 'ALL'">
+	        AND GAME_CODE = #{gameCode}
+	    </if>
+	    <if test="answerStatus != 'ALL'">
+	        AND ANSWER_STATUS = #{answerStatus}
+	    </if>
+	    ORDER BY BOARD_NO DESC
 	</select>
 	
 	<select id="selectMemberList" resultType="member">
-		SELECT USER_NO AS userNo ,
-			   USER_ID as userId ,
-			   USER_NAME as userName ,
-			   EMAIL as email ,
-			   WITHDRAW as withdraw ,
-			   ENROLL_DATE as enrollDate
-		FROM LOG_GG_USER
-		ORDER BY USER_NO DESC
+	    SELECT 
+	        USER_NO as userNo,
+	        USER_ID as userId,
+	        USER_NAME as userName,
+	        EMAIL as email,
+	        WITHDRAW as withdraw,
+	        ENROLL_DATE as enrollDate
+	    FROM LOG_GG_USER
+	    <where>
+	        <if test="keyword != null and keyword != ''">
+	            AND (USER_ID LIKE '%' || #{keyword} || '%' 
+	                 OR USER_NAME LIKE '%' || #{keyword} || '%' 
+	                 OR EMAIL LIKE '%' || #{keyword} || '%')
+	        </if>
+	        
+	        <if test="withdraw != null and withdraw != 'ALL'">
+	            AND WITHDRAW = #{withdraw}
+	        </if>
+	    </where>
+	    
+	    <choose>
+	        <when test="order == 'name'">
+	            ORDER BY USER_NAME ASC
+	        </when>
+	        <otherwise>
+	            ORDER BY ENROLL_DATE DESC
+	        </otherwise>
+	    </choose>
+	</select>
+	
+	<select id="selectReportList" resultType="Report">
+	    SELECT 
+	        MAX(RP.REPORT_NO) as reportNo,
+	        RP.USER_NO as userNo,
+	        RP.BOARD_NO as boardNo,
+	        RP.REPLY_NO as replyNo,
+	        MAX(RP.REPORT_COUNT) as reportCount,
+	        MAX(RP.REPORT_CONTENT) as reportContent,
+	        MAX(RP.REPORT_TYPE) as reportType,
+	        MAX(RP.DONE_DATE) as doneDate,
+	        <choose>
+	            <when test="type == 'post'">
+	                B.BOARD_TITLE as title
+	            </when>
+	            <otherwise>
+	                RE.REPLY_CONTENT as title
+	            </otherwise>
+	        </choose>
+	    FROM REPORT RP
+	    <choose>
+	        <when test="type == 'post'">
+	            JOIN BOARD B ON (RP.BOARD_NO = B.BOARD_NO)
+	            WHERE RP.STATUS = 'N'
+	            GROUP BY RP.BOARD_NO, RP.REPLY_NO, RP.USER_NO, B.BOARD_TITLE
+	        </when>
+	        <otherwise>
+	            JOIN REPLY RE ON (RP.REPLY_NO = RE.REPLY_NO)
+	            WHERE RP.STATUS = 'N'
+	            GROUP BY RP.REPLY_NO, RP.BOARD_NO, RP.USER_NO, RE.REPLY_CONTENT
+	        </otherwise>
+	    </choose>
+	    
+	    <choose>
+	        <when test="order == 'count'">
+	            ORDER BY reportCount DESC
+	        </when>
+	        <otherwise>
+	            ORDER BY reportNo DESC
+	        </otherwise>
+	    </choose>
 	</select>
 	
 	<update id="deleteMember">
@@ -86,11 +156,88 @@
 	    WHERE USER_NO = #{userNo}
 	</update>
 	
-
-
-
-
-
+	<update id="insertAnswer" parameterType="map">
+	    UPDATE INQUIRY
+	       SET ANSWER = #{answer},
+	           ANSWER_STATUS = 'C'
+	    WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<select id="selectMemberListCount" resultType="_int">
+	    SELECT COUNT(*) 
+	    FROM LOG_GG_USER
+	    <where>
+	        <if test="keyword != null and keyword != ''">
+	            AND (USER_ID LIKE '%' || #{keyword} || '%' 
+	                 OR USER_NAME LIKE '%' || #{keyword} || '%' 
+	                 OR EMAIL LIKE '%' || #{keyword} || '%')
+	        </if>
+	        
+	        <if test="withdraw != null and withdraw != 'ALL'">
+	            AND WITHDRAW = #{withdraw}
+	        </if>
+	    </where>
+	</select>
+	
+	<select id="selectInquiryListCount" resultType="int">
+	    SELECT COUNT(*)
+	    FROM INQUIRY
+	    WHERE 1=1
+	    <if test="gameCode != 'ALL'">
+	        AND GAME_CODE = #{gameCode}
+	    </if>
+	    <if test="answerStatus != 'ALL'">
+	        AND ANSWER_STATUS = #{answerStatus}
+	    </if>
+	</select>
+	
+	<!-- 안쪽 SELECT: GROUP BY를 통해 중복된 신고를 게시글당 1개로 합칩니다. (예: 5번 신고된 2번 게시글 -> 1행으로 압축) -->
+	<!-- 바깥쪽 COUNT: 그렇게 압축된 전체 행이 몇 개인지를 최종적으로 반환합니다. 이 숫자가 PageInfo의 listCount로 들어가서 정확한 페이징 숫자를 만들어냅니다. -->
+	<select id="selectReportListCount" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM (
+	        SELECT BOARD_NO, REPLY_NO
+	        FROM REPORT
+	        WHERE STATUS = 'N'
+	        
+	        <choose>
+	            <when test="type == 'comment'">AND REPORT_TYPE = '댓글'</when>
+	            <otherwise>AND REPORT_TYPE = '글'</otherwise>
+	        </choose>
+	        
+	        <if test="game != null and game != 'ALL'">
+	            AND GAME_CODE = #{game}
+	        </if>
+	        
+	        GROUP BY BOARD_NO, REPLY_NO, REPORT_TYPE
+	    )
+	</select>
+	
+	<update id="deleteBoard">
+	    UPDATE BOARD 
+	    SET BOARD_CD = 'N' 
+	    WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<update id="deleteReply">
+	    UPDATE REPLY 
+	    SET STATUS = 'N' 
+	    WHERE REPLY_NO = #{replyNo}
+	</update>
+	
+	<update id="updateReportStatusByBoardNo">
+	    UPDATE REPORT 
+	    SET DONE_DATE = SYSDATE 
+	    WHERE BOARD_NO = #{boardNo} 
+	      AND DONE_DATE IS NULL
+	</update>
+	
+	<update id="updateReportStatusByReplyNo">
+	    UPDATE REPORT 
+	    SET DONE_DATE = SYSDATE 
+	    WHERE REPLY_NO = #{replyNo} 
+	      AND DONE_DATE IS NULL
+	</update>
 
 
 
