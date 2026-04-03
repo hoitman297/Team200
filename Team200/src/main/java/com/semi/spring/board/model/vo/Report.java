@@ -17,5 +17,8 @@ public class Report {
 	    private String status;  
 	    private Date doneDate;
 	    private String reportType; 
-	
+	    
+	    private String title;
+	    
+	    private int reportCount;
 }

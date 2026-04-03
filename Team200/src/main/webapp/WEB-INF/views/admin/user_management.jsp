@@ -6,8 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/user_management/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/admin/user_management/style.css?v=1.1">
     <script src="${pageContext.request.contextPath}/resources/admin/user_management/script.js"></script>
     
     <title>LOG.GG - 관리자 회원 관리</title>
@@ -17,23 +17,37 @@
 <body>
 
     <div class="admin-header">
-        <h2>전체 회원 목록 조회</h2>
-        <button class="btn-back-home" onclick="history.back()">마이페이지로 돌아가기</button>
-    </div>
+	    <h2>전체 회원 목록 조회</h2>
+	    <button type="button" class="btn-back-home" onclick="location.href='${pageContext.request.contextPath}/admin/main'">
+	        관리자 페이지로
+	    </button>
+	</div>
+    
+<div class="member-list-container">
+    <div class="list-controls">
+	    <div class="search-box">
+	        <input type="text" id="keyword" value="${keyword}" placeholder="아이디, 이름, 이메일 검색" 
+	               onkeyup="if(window.event.keyCode==13){applyUserFilter()}">
+	        <button class="btn-action" onclick="applyUserFilter()">검색</button>
+	    </div>
+	    
+	    <div class="filter-box">
+	        <select class="btn-action" id="withdrawFilter" onchange="applyUserFilter()">
+	            <option value="ALL" ${withdraw eq 'ALL' ? 'selected' : ''}>전체 상태</option>
+	            <option value="N" ${withdraw eq 'N' ? 'selected' : ''}>활성 회원</option>
+	            <option value="Y" ${withdraw eq 'Y' ? 'selected' : ''}>정지 회원</option>
+	        </select>
+	
+	        <select class="btn-action" id="orderFilter" onchange="applyUserFilter()">
+	            <option value="date" ${order eq 'date' ? 'selected' : ''}>가입일순</option>
+	            <option value="name" ${order eq 'name' ? 'selected' : ''}>이름순</option>
+	        </select>
+	    </div>
+	</div>
 
-    <div class="member-list-container">
-        <div class="list-controls">
-            <div class="search-box">
-                <input type="text" placeholder="아이디, 이름, 이메일 검색">
-                <button class="btn-action">검색</button>
-            </div>
-            <div class="filter-box">
-                <select class="btn-action">
-                    <option>가입일순</option>
-                    <option>최근접속순</option>
-                </select>
-            </div>
-        </div>
+		<div style="color: red; font-weight: bold;">
+		    전체 회원 수: ${pi.listCount} 명 <br>
+		</div>
 
         <table class="member-table">
             <thead>
@@ -61,7 +75,7 @@
 		                        <span class="status-badge status-active">활성</span>
 		                    </c:when>
 		                    <c:otherwise>
-		                        <span class="status-badge status-inactive">정지</span>
+		                        <span class="status-badge status-suspended">정지</span>
 		                    </c:otherwise>
 		                </c:choose>
 					</td>
@@ -78,17 +92,49 @@
            </tbody>
         </table>
 
-        <div class="pagination">
-            <span>&lt; 이전</span>
-            <span class="active">1</span>
-            <span>2</span>
-            <span>3</span>
-            <span>4</span>
-            <span>5</span>
-            <span>다음 &gt;</span>
-        </div>
+<!-- 		<div style="background: #eee; padding: 10px;"> -->
+<%-- 		    디버깅 - 시작페이지: [${pi.startPage}], 끝페이지: [${pi.endPage}], 총페이지: [${pi.maxPage}] --%>
+<!-- 		</div> -->
+
+        <div class="pagination" style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+		
+		    <c:if test="${pi.startPage > 1}">
+		        <a href="user_management?cpage=${pi.startPage - 1}&keyword=${keyword}&order=${order}&withdraw=${withdraw}" title="이전 5개 그룹으로">&lt;&lt;</a>
+		    </c:if>
+		
+		    <c:if test="${pi.currentPage > 1}">
+		        <a href="user_management?cpage=${pi.currentPage - 1}&keyword=${keyword}&order=${order}&withdraw=${withdraw}" title="이전 페이지">&lt;</a>
+		    </c:if>
+		
+		    <span class="page-numbers" style="margin: 0 5px;">
+		        &lt; 
+		        <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}" varStatus="status">
+		            <c:choose>
+		                <c:when test="${p eq pi.currentPage}">
+		                    <strong style="color: #000; font-weight: 800; margin: 0 2px;">${p}</strong>
+		                </c:when>
+		                <c:otherwise>
+		                    <a href="user_management?cpage=${p}&keyword=${keyword}&order=${order}&withdraw=${withdraw}" style="text-decoration: none; color: #666; margin: 0 2px;">${p}</a>
+		                </c:otherwise>
+		            </c:choose>
+		            <c:if test="${not status.last}">
+		                <span style="color: #ccc;">,</span>
+		            </c:if>
+		        </c:forEach>
+		        &gt;
+		    </span>
+		
+		    <c:if test="${pi.currentPage < pi.maxPage}">
+		        <a href="user_management?cpage=${pi.currentPage + 1}&keyword=${keyword}&order=${order}&withdraw=${withdraw}" title="다음 페이지">&gt;</a>
+		    </c:if>
+		
+		    <c:if test="${pi.endPage < pi.maxPage}">
+		        <a href="user_management?cpage=${pi.endPage + 1}&keyword=${keyword}&order=${order}&withdraw=${withdraw}" title="다음 5개 그룹으로">&gt;&gt;</a>
+		    </c:if>
+		
+		</div>
     </div>
-    
+  
      <script>
     /**
      * 1. 회원 상태(정지/활성) 토글 함수 (애니메이션 효과 포함)
@@ -175,6 +221,18 @@
     	        },
     	        error: function() { alert("삭제 실패"); }
     	    });
+    	}
+     
+     
+     function applyUserFilter() {
+    	    const keyword = document.getElementById('keyword').value;
+    	    const order = document.getElementById('orderFilter').value;
+    	    const withdraw = document.getElementById('withdrawFilter').value; // 변수명 변경
+    	    
+    	    location.href = "user_management?cpage=1" 
+    	                  + "&keyword=" + encodeURIComponent(keyword) 
+    	                  + "&order=" + order 
+    	                  + "&withdraw=" + withdraw; // 파라미터명 변경
     	}
     </script>
     
