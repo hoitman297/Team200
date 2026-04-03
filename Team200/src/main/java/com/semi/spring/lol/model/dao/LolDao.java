@@ -28,4 +28,7 @@ public interface LolDao {
 	
     int insertRecommendBuild(RecommendBuildVO buildVO);
     int replaceRecommendBuild(RecommendBuildVO buildVO);
+    
+    int selectChampNoByName(String champName);
+    int selectRuneNoByName(String runeName);
 }

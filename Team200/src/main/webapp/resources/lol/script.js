@@ -1,26 +1,21 @@
 $(document).ready(function() {
-
     // =========================================================================
     // 1. 테이블 페이징 및 필터링 관련 변수
     // =========================================================================
     let currentPage = 0;
-    const rowsPerPage = 6; // 아래로 6개씩!
+    const rowsPerPage = 6; 
     let visibleRows = [];
     
-    // ✨ [추가] 현재 선택된 카테고리 태그들을 기억하는 변수
     let currentSearchTags = 'all'; 
     let activeCategory = ""; 
 
-    // 화면에 6개씩 끊어서 보여주는 함수
     function updateTablePaging() {
         const start = currentPage * rowsPerPage;
         const end = start + rowsPerPage;
 
-        // 모든 행을 숨기고 현재 페이지 범위만 표시
         $('.item-row').hide();
         visibleRows.slice(start, end).forEach(row => $(row).show());
 
-        // UI 업데이트 (페이지 번호 및 버튼 활성화 상태)
         const totalPages = Math.ceil(visibleRows.length / rowsPerPage) || 1;
         $('#currentPage').text(currentPage + 1);
         $('#totalPage').text(totalPages);
@@ -29,30 +24,25 @@ $(document).ready(function() {
         $('#nextBtn').prop('disabled', end >= visibleRows.length);
     }
 
-    // ✨ [핵심 수정] 검색어와 카테고리를 "동시에" 검사하는 통합 필터 함수 ✨
     function applyCombinedFilters() {
-        // 1. 현재 검색창에 적힌 글자 가져오기
         const searchTerm = $('#itemSearchInput').val().toLowerCase();
-        visibleRows = []; // 보여줄 목록 초기화
+        visibleRows = []; 
 
-        // 2. 모든 아이템을 하나씩 검사
         $('.item-row').each(function() {
             const itemTags = $(this).data('tags') || ""; 
             const itemName = ($(this).data('name') || "").toLowerCase();
 
-            // 조건 A: 카테고리가 맞거나 전체보기 상태인가?
+            // 조건 A: 태그 필터 ('all'이면 모두 통과)
             let isCategoryMatch = (currentSearchTags === 'all') || currentSearchTags.some(t => itemTags.includes(t));
-            
-            // 조건 B: 검색어가 이름에 포함되어 있는가?
+            // 조건 B: 검색어 필터
             let isSearchMatch = itemName.includes(searchTerm);
 
-            // 두 조건을 모두 만족해야만 화면에 표시할 목록(visibleRows)에 추가!
             if (isCategoryMatch && isSearchMatch) {
                 visibleRows.push(this);
             }
         });
 
-        // 필터링이 끝났으니 무조건 1페이지(인덱스 0)로 돌려놓고 화면 갱신
+        // 필터링된 배열(visibleRows)을 가지고 페이징 처리를 수행
         currentPage = 0;
         updateTablePaging();
     }
@@ -60,28 +50,35 @@ $(document).ready(function() {
     // =========================================================================
     // 2. 이벤트 리스너 (카테고리 클릭, 검색창 입력, 이전/다음 버튼)
     // =========================================================================
-
-    // 카테고리 버튼 클릭 이벤트
-    $('.category-btn').on('click', function() {
+    
+    // ✨ 핵심: 이벤트 객체(e)를 받아옵니다.
+    $('.category-btn').on('click', function(e) {
+        
+        // ✨ [방어 로직 1] 클릭 이벤트가 search/script.js 등으로 퍼져나가는 것을 완벽 차단!
+        e.stopPropagation(); 
+        
         const $this = $(this);
         const categoryName = $this.find('span').text().trim();
         
         $('.category-btn').removeClass('active').css('opacity', '0.4');
 
-        // 이미 켜진 버튼을 다시 누르면 '전체 보기'로 해제
+        // 이미 선택된 카테고리를 다시 누른 경우 -> '전체보기'로 전환
         if (activeCategory === categoryName) {
             activeCategory = ""; 
             $('.category-btn').css('opacity', '1'); 
-            currentSearchTags = 'all'; // 태그 초기화
-            applyCombinedFilters(); // 필터 재적용
+            currentSearchTags = 'all'; 
+            
+            // ✨ [방어 로직 2] 카테고리 해제 시 검색창 초기화
+            $('#itemSearchInput').val(''); 
+            
+            applyCombinedFilters(); 
             return; 
         }
 
-        // 새로운 버튼 클릭 시
+        // 새로운 카테고리 선택 시
         activeCategory = categoryName; 
         $this.addClass('active').css('opacity', '1'); 
 
-        // 카테고리에 맞는 검색 태그 설정
         switch(categoryName) {
             case "전사": currentSearchTags = ["Damage", "Health"]; break;
             case "원거리 딜러": currentSearchTags = ["AttackSpeed", "CriticalStrike"]; break;
@@ -91,15 +88,17 @@ $(document).ready(function() {
             case "서포터": currentSearchTags = ["ManaRegen", "Vision", "Active"]; break;
         }
         
-        applyCombinedFilters(); // 필터 재적용
+        // ✨ [방어 로직 3] 다른 스크립트가 값을 억지로 밀어넣었을 만일의 사태를 대비해 
+        // 카테고리 이동 시 검색창을 항상 깨끗하게 지워줍니다.
+        $('#itemSearchInput').val('');
+        
+        applyCombinedFilters(); 
     });
 
-    // 검색창 입력 이벤트 (글자를 칠 때마다 즉시 적용)
     $('#itemSearchInput').on('input', function() {
         applyCombinedFilters();
     });
 
-    // 이전/다음 버튼 이벤트
     $('#nextBtn').on('click', function() {
         currentPage++;
         updateTablePaging();
@@ -110,11 +109,11 @@ $(document).ready(function() {
         updateTablePaging();
     });
 
-    // 페이지가 처음 로딩될 때 전체 목록을 6개씩 잘라서 보여주기
-    applyCombinedFilters();
+    // 첫 로드 시 '모두보기' 상태로 페이징 적용
+    applyCombinedFilters(); 
 
     // =========================================================================
-    // 3. 아이템 설명 마우스 툴팁 (기존 코드 유지)
+    // 3. 아이템 설명 마우스 툴팁 
     // =========================================================================
     const $tooltip = $('#item-tooltip');
 
@@ -139,15 +138,14 @@ $(document).ready(function() {
     $('.item-row').css('cursor', 'pointer');
 
     // =========================================================================
-    // 4. 룬 (특성) 로딩 기능 (기존 코드 유지)
-    // ========================================================================
-
-if ($(".path-icon").length > 0) {
-    $(".path-icon").first().click();
-}
+    // 4. 룬 (특성) 로딩 기능
+    // =========================================================================
+    if ($(".path-icon").length > 0) {
+        $(".path-icon").first().click();
+    }
 });
 
-// 전역 함수 (기존 코드 유지)
+// 전역 함수 
 function loadTalents(runeNo, runeName, element) {
     $(".path-icon").removeClass("active");
     $(element).addClass("active");
@@ -177,13 +175,11 @@ function loadTalents(runeNo, runeName, element) {
                 mainRunesHtml += `</div>`;
                 subRunesHtml += `</div>`;
                 
-                // HTML을 화면에 그려줍니다.
                 $("#primary-slots-container").html(mainRunesHtml + subRunesHtml);
                 
-                // ✨ [핵심 수정] setTimeout을 없애고 HTML이 그려진 직후 바로 첫 번째 룬을 클릭합니다.
                 let firstSlot = $(".talent-slot").first();
                 if(firstSlot.length > 0) {
-                    firstSlot[0].click(); // 첫 번째 특성 상세정보 자동 표시
+                    firstSlot[0].click(); 
                 }
             } else {
                 $("#primary-slots-container").html("<p style='color:#94a3b8; text-align:center;'>데이터가 없습니다.</p>");
