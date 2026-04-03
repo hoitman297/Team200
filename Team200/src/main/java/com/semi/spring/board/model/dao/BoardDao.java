@@ -13,6 +13,7 @@ import com.semi.spring.board.model.vo.BoardLike;
 import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
+import com.semi.spring.board.model.vo.Patchnote;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.board.model.vo.Report;
 import com.semi.spring.common.model.vo.PageInfo;
@@ -92,4 +93,20 @@ public interface BoardDao {
 	public int selectGalleryCount(Map<String, Object> paramMap);
 
 	public List<BoardExt> selectRecentGallery(String gameCode);
+
+	public int selectPatchnoteCount(Map<String, Object> paramMap);
+
+	public List<BoardExt> selectPatchnoteList(Map<String, Object> paramMap);
+	
+	public BoardExt selectPatchnoteDetail(int boardNo);
+	
+	public int updateOfficialReadCount(Map<String, Object> paramMap);
+
+	public List<BoardExt> selectNoticeList(Map<String, Object> paramMap);
+
+	public BoardExt selectNoticeDetail(int boardNo);
+
+	public int selectNoticeCount(Map<String, Object> paramMap);
+	
+	
 }

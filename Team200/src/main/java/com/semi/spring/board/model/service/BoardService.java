@@ -10,6 +10,7 @@ import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.board.model.vo.GameInfoReply;
 import com.semi.spring.board.model.vo.Inquiry;
+import com.semi.spring.board.model.vo.Patchnote;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.board.model.vo.Report;
 import com.semi.spring.common.model.vo.PageInfo;
@@ -81,4 +82,18 @@ public interface BoardService {
     int selectCategoryNoByName(Map<String, Object> paramMap);
 
 	List<BoardExt> selectRecentGallery(String gameCode);
+
+	List<BoardExt> selectPatchnoteList(Map<String, Object> paramMap);
+
+	BoardExt selectPatchnoteDetail(int boardNo);
+	
+	List<BoardExt> selectNoticeList(Map<String, Object> paramMap);
+
+	BoardExt selectNoticeDetail(int boardNo);
+	
+	int selectPatchnoteCount(Map<String, Object> paramMap);
+	
+	int updateOfficialReadCount(String tableName, String pkColumn, int boardNo);
+
+	int selectNoticeCount(Map<String, Object> paramMap);
 }

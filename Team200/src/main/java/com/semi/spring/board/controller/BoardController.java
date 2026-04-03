@@ -29,6 +29,7 @@ import com.semi.spring.board.model.vo.Board;
 import com.semi.spring.board.model.vo.BoardExt;
 import com.semi.spring.board.model.vo.BoardType;
 import com.semi.spring.board.model.vo.Inquiry;
+import com.semi.spring.board.model.vo.Patchnote;
 import com.semi.spring.board.model.vo.Reply;
 import com.semi.spring.board.model.vo.Report;
 import com.semi.spring.common.model.vo.PageInfo;
@@ -573,5 +574,186 @@ public class BoardController {
         int result = boardService.insertReport(report);
         
         return result > 0 ? "success" : "fail";
+    }
+    
+ // ✨ 누군가 꼬리표 없이 /patchnote 로 들어오면 /patchnote_all 로 토스!
+    @GetMapping("/patchnote")
+    public String patchnoteRedirect() {
+        return "redirect:/board/patchnote_all";
+    }
+    
+    @GetMapping("/patchnote_{gameCode}")
+    public String patchnoteGame(
+            @PathVariable("gameCode") String gameCode,
+            @RequestParam(value="cp", defaultValue="1") int cp,
+            @RequestParam Map<String, Object> paramMap, 
+            Model model) {
+        
+        // 1. URL의 소문자 gameCode를 DB용 대문자로 변환
+        // (만약 'all'로 들어오면 'ALL'로 변환되어 Mapper의 <if> 조건에 걸리지 않게 됩니다!)
+        String dbGameCode = gameCode.toUpperCase();
+        if(dbGameCode.equals("OVERWATCH")) dbGameCode = "OW";
+        if(dbGameCode.equals("BATTLEGROUND")) dbGameCode = "BG";
+        
+        paramMap.put("gameCode", dbGameCode);
+        
+        // 2. 전체 게시글 수 조회 및 페이징 객체(PageInfo) 생성
+        int listCount = boardService.selectPatchnoteCount(paramMap);
+        PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
+        
+        // 💡 매퍼에서 사용할 offset과 limit 세팅
+        int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit() + 1;
+        int limit = offset + pi.getBoardLimit() - 1;
+        paramMap.put("offset", offset);
+        paramMap.put("limit", limit);
+        
+        // 3. 패치노트 목록 조회
+        List<BoardExt> list = boardService.selectPatchnoteList(paramMap);
+        
+        // 4. JSP로 데이터 전달
+        model.addAttribute("boardList", list);
+        model.addAttribute("pi", pi);
+        model.addAttribute("gameId", gameCode.toLowerCase()); // JSP 분기용 소문자 원본
+        
+        // ✨ 우리가 만든 단 1개의 '통합 패치노트 JSP'로 이동!
+        return "board/patchnote_main"; 
+    }
+    
+ // ✨ 패치노트 상세 조회 (공통 조회수 증가 로직 탑재!)
+    @GetMapping("/patchnoteView")
+    public String patchnoteDetail(
+            @RequestParam("boardNo") int boardNo, 
+            HttpServletRequest request, 
+            HttpServletResponse response, 
+            Model model) {
+        
+        // 1. 쿠키 검사: 이 패치노트를 이미 읽었는지 확인
+        Cookie[] cookies = request.getCookies();
+        boolean isViewed = false;
+        
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("viewed_patchnote_" + boardNo)) {
+                    isViewed = true;
+                    break; 
+                }
+            }
+        }
+        
+        // 2. 안 읽었던 글이라면 조회수 증가 후 쿠키 굽기!
+        if (!isViewed) {
+            // ✨ [핵심 수정 포인트] 
+            // 기존 전용 메서드 대신, 파라미터 3개를 던지는 공통 메서드를 호출합니다!
+            boardService.updateOfficialReadCount("PATCHNOTE", "PATCHNOTE_NO", boardNo); 
+            
+            Cookie newCookie = new Cookie("viewed_patchnote_" + boardNo, "true");
+            newCookie.setMaxAge(60 * 60); // 1시간 유지
+            newCookie.setPath("/"); 
+            response.addCookie(newCookie);
+        }
+        
+        // 3. 최신 데이터 가져오기
+        BoardExt board = boardService.selectPatchnoteDetail(boardNo);
+        
+        // 4. 만약 삭제되었거나 없는 글이면 메인으로 튕겨내기
+        if (board == null) {
+            return "redirect:/";
+        }   
+        
+        // 5. JSP로 데이터 토스!
+        model.addAttribute("board", board);
+        model.addAttribute("gameName", "패치노트");
+        
+        // 만능 읽기 전용 껍데기 JSP로 이동
+        return "board/official_detail"; 
+    }
+    
+ // ✨ 패치노트 상세 조회 (공통 조회수 증가 로직 탑재!)
+    @GetMapping("/noticeView")
+    public String noticeDetail(
+            @RequestParam("boardNo") int boardNo, 
+            HttpServletRequest request, 
+            HttpServletResponse response, 
+            Model model) {
+        
+        // 1. 쿠키 검사: 이 패치노트를 이미 읽었는지 확인
+        Cookie[] cookies = request.getCookies();
+        boolean isViewed = false;
+        
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("viewed_patchnote_" + boardNo)) {
+                    isViewed = true;
+                    break; 
+                }
+            }
+        }
+        
+        // 2. 안 읽었던 글이라면 조회수 증가 후 쿠키 굽기!
+        if (!isViewed) {
+            // ✨ [핵심 수정 포인트] 
+            // 기존 전용 메서드 대신, 파라미터 3개를 던지는 공통 메서드를 호출합니다!
+            boardService.updateOfficialReadCount("NOTICE", "NOTICE_NO", boardNo); 
+            
+            Cookie newCookie = new Cookie("viewed_notice_" + boardNo, "true");
+            newCookie.setMaxAge(60 * 60); // 1시간 유지
+            newCookie.setPath("/"); 
+            response.addCookie(newCookie);
+        }
+        
+        // 3. 최신 데이터 가져오기
+        BoardExt board = boardService.selectPatchnoteDetail(boardNo);
+        
+        // 4. 만약 삭제되었거나 없는 글이면 메인으로 튕겨내기
+        if (board == null) {
+            return "redirect:/";
+        }   
+        
+        // 5. JSP로 데이터 토스!
+        model.addAttribute("board", board);
+        model.addAttribute("gameName", "패치노트");
+        
+        // 만능 읽기 전용 껍데기 JSP로 이동
+        return "board/official_detail"; 
+    }
+    
+ // 1. /notice 로 접속하면 /notice_list 로 강제 이동!
+    @GetMapping("/notice")
+    public String noticeRedirect() {
+        return "redirect:/board/notice_list";
+    }
+
+    // 2. 공지사항 전체 목록 조회
+    @GetMapping("/notice_list")
+    public String noticeList(
+            @RequestParam(value="cp", defaultValue="1") int cp,
+            @RequestParam Map<String, Object> paramMap, 
+            Model model) {
+        
+        // ✨ 공지사항은 게임 구분이 없으므로 gameCode 변환 로직은 싹 뺐습니다!
+        
+        // 1. 전체 공지사항 개수 조회 및 페이징 객체 생성
+        // (boardService.selectNoticeCount 메서드가 필요합니다!)
+        int listCount = boardService.selectNoticeCount(paramMap);
+        PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
+        
+        // 2. 매퍼에서 사용할 offset과 limit 세팅 (오라클용)
+        int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit() + 1;
+        int limit = offset + pi.getBoardLimit() - 1;
+        paramMap.put("offset", offset);
+        paramMap.put("limit", limit);
+        
+        // 3. 공지사항 목록 조회 (boardService.selectNoticeList 메서드 호출)
+        List<BoardExt> list = boardService.selectNoticeList(paramMap);
+        
+        // 4. JSP로 데이터 전달
+        model.addAttribute("boardList", list);
+        model.addAttribute("pi", pi);
+        model.addAttribute("boardTitle", "공지사항"); // 상단 제목용
+        model.addAttribute("gameName", "공지사항");  // 사이드바/헤더용
+        model.addAttribute("isNotice", "true");      // 📌 중요: 패치노트의 isPatchnote 처럼 쓰일 깃발!
+        
+        // 5. 공지사항 전용 목록 JSP로 이동! (패치노트 JSP를 복붙해서 만드시면 됩니다)
+        return "board/notice_main"; 
     }
 }

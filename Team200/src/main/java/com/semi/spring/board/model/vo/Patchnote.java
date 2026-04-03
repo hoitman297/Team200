@@ -15,4 +15,6 @@ public class Patchnote {
     private String title;             
     private Date postDate;            
     private String patchnoteContent;
+    private int readCount; // READ_COUNT
+	public int getViews() { return readCount; }
 }

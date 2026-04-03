@@ -107,7 +107,7 @@
                     </div>
 
                     <div class="post-util-btns">
-                        <c:if test="${secUserNo != 0 and secUserNo == board.userNo}">
+                        <c:if test="${(secUserNo != 0 and secUserNo == board.userNo) or isAdmin}">
                             <button type="button" onclick="location.href='<c:url value="/board/edit?boardNo=${board.boardNo}"/>'">수정</button>
                             <button type="button" class="delete" onclick="if(confirm('정말 삭제하시겠습니까?')) { location.href='<c:url value="/board/delete?boardNo=${board.boardNo}"/>'; }">삭제</button>
                         </c:if>
@@ -132,12 +132,20 @@
                 </div>
 
                 <div class="post-action">
-                    <button type="button" class="btn-action like" id="btn-like" data-boardno="${board.boardNo}">
-                        👍 공감 <b id="like-count">${board.likeCount}</b>
-                    </button>
+                    <c:if test="${empty isPatchnote and empty isNotice}">
+                        <button type="button" class="btn-action like" id="btn-like" data-boardno="${board.boardNo}">
+                            👍 공감 <b id="like-count">${board.likeCount}</b>
+                        </button>
+                    </c:if>
                     
                     <%-- 3. 목록으로 버튼 경로 수정: 갤러리일 때와 아닐 때를 구분 --%>
                     <c:choose>
+                        <c:when test="${not empty isPatchnote}">
+                            <button class="btn-action" onclick="location.href='<c:url value="/board/patchnote_all"/>'">목록으로</button>
+                        </c:when>
+                        <c:when test="${not empty isNotice}">
+                            <button class="btn-action" onclick="location.href='<c:url value="/board/notice_list"/>'">목록으로</button>
+                        </c:when>
                         <c:when test="${boardTypePath == 'gallery'}">
                             <button class="btn-action" onclick="location.href='<c:url value="/gallery/list?gameCode=${board.gameCode}"/>'">목록으로</button>
                         </c:when>
@@ -146,7 +154,9 @@
                         </c:otherwise>
                     </c:choose>
                     
-                    <button class="btn-action report" onclick="openReportModal('board', ${board.boardNo})">🚨 신고</button>
+                    <c:if test="${empty isPatchnote and empty isNotice}">
+                        <button class="btn-action report" onclick="openReportModal('board', ${board.boardNo})">🚨 신고</button>
+                    </c:if>
                 </div>
 
                 <form id="deleteForm" action="<c:url value='/board/delete'/>" method="POST" style="display:none;">
@@ -154,14 +164,16 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 </form>
 
-                <section class="comment-section">
-                    <div class="comment-count" id="reply-count-display">댓글 0</div>
-                    <div class="comment-form">
-                        <textarea id="replyContent" placeholder="댓글을 남겨보세요."></textarea>
-                        <button type="button" class="comment-submit" onclick="insertReply();">등록</button>
-                    </div>
-                    <div class="comment-list" id="reply-list-area"></div>
-                </section>
+                <c:if test="${empty isPatchnote and empty isNotice}">
+                    <section class="comment-section">
+                        <div class="comment-count" id="reply-count-display">댓글 0</div>
+                        <div class="comment-form">
+                            <textarea id="replyContent" placeholder="댓글을 남겨보세요."></textarea>
+                            <button type="button" class="comment-submit" onclick="insertReply();">등록</button>
+                        </div>
+                        <div class="comment-list" id="reply-list-area"></div>
+                    </section>
+                </c:if>
             </article>
         </main>
         
@@ -171,21 +183,253 @@
     <footer>© 2026 LOG.GG ${gameName} 서비스. 모든 권리 보유.</footer>
 
     <%-- 신고 모달 및 스크립트 생략 (기존과 동일) --%>
-    <div id="reportModal" class="modal-overlay" style="display: none;">
-        </div>
+        <div id="reportModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 style="margin-top: 0;">🚨 신고하기</h3>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">어떤 사유로 신고하시나요?</p>
 
-    <script>
-        // ...기존 AJAX 및 스크립트 코드...
-        const loginUserNo = "${secUserNo}";
-        let isAdmin = false;
-        <sec:authorize access="hasRole('ADMIN')">isAdmin = true;</sec:authorize>
+            <select id="reportReason"
+                style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 5px;">
+                <option value="스팸홍보">스팸 / 홍보성 도배</option>
+                <option value="욕설비방">욕설 / 비방 / 혐오</option>
+                <option value="음란물">음란물 / 불법 정보</option>
+                <option value="기타">기타 사유</option>
+            </select>
+
+            <textarea id="reportDetail"
+                placeholder="상세 내용을 적어주시면 처리에 도움이 됩니다. (선택)"
+                style="width: 100%; height: 80px; padding: 10px; margin-bottom: 20px; border: 1px solid #cbd5e1; border-radius: 5px; resize: none;"></textarea>
+
+            <div class="modal-btns"
+                style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeReportModal()"
+                    style="padding: 8px 15px; background: #e2e8f0; color: #333; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+                <button type="button" onclick="submitReport()"
+                    style="padding: 8px 15px; background: #ef4444; color: white; border: none; border-radius: 5px; cursor: pointer;">신고 접수</button>
+            </div>
+        </div>
+    </div>
         
-        $(document).ready(function() {
-            selectReplyList();
-            // ... 좋아요 및 댓글 AJAX 로직들 ...
+        <script>
+    const loginUserNo = "${secUserNo}";
+    
+    let isAdmin = false;
+    <sec:authorize access="hasRole('ADMIN')">
+        isAdmin = true;
+    </sec:authorize>
+    
+    // ==========================================
+    // 1. 화면이 로드되면 실행할 내용들 (이벤트 걸기)
+    // ==========================================
+    $(document).ready(function() {
+        // 화면 뜨자마자 댓글 목록 불러오기
+        selectReplyList();
+        
+        // 좋아요 버튼 클릭 이벤트
+        $("#btn-like").click(function() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var boardNo = $(this).data("boardno");
+    
+            $.ajax({
+                url: "<c:url value='/board/addLike'/>",
+                type: "POST",
+                data: { boardNo: boardNo },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function(result) {
+                    if(result.status === "success") {
+                        $("#like-count").text(result.newLikeCount);
+                        alert("게시글에 공감했습니다! 👍");
+                    } else if (result.status === "already") {
+                        alert(result.message); 
+                    } else {
+                        alert(result.message);
+                    }
+                },
+                error: function() {
+                    alert("서버와 통신 중 문제가 발생했습니다.");
+                }
+            });
+        }); // <-- btn-like 클릭 이벤트 닫기
+        
+    }); // 🚨 [가장 중요!!!] 여기서 ready 함수를 완전히 닫아줘야 합니다!!!
+
+
+    // ==========================================
+    // 2. 밖에서(onclick) 부를 수 있는 전역 함수들
+    // ==========================================
+    
+    function selectReplyList() {
+        $.ajax({
+            url: "${pageContext.request.contextPath}/board/reply/list",
+            data: { boardNo: ${board.boardNo} },
+            success: function(list) {
+                let activeCount = list.filter(r => r.status === 'Y').length;
+                $("#reply-count-display").html("댓글 " + activeCount);
+                
+                let html = "";
+                if(list.length === 0) {
+                    html = "<div style='text-align: center; color: #94a3b8; padding: 30px 0;'>첫 번째 댓글을 남겨보세요!</div>";
+                } else {
+                    for(let i=0; i<list.length; i++) {
+                        let r = list[i];
+                        let rootId = r.parentReplyNo > 0 ? r.parentReplyNo : r.replyNo;
+                        
+                        if (r.status === 'N') {
+                            html += "<div class='comment-item' style='color: #cbd5e1;'>";
+                            html += "    <div class='comment-author'></div>";
+                            html += "    <div class='comment-text'>🚫 삭제된 댓글입니다.</div>";
+                            html += "    <div class='comment-utils'></div>";
+                            html += "</div>";
+                        } else {
+                            let isReplyClass = r.parentReplyNo > 0 ? "reply" : "";
+                            let arrow = r.parentReplyNo > 0 ? "↳ " : "";
+    
+                            html += "<div class='comment-item " + isReplyClass + "'>";
+                            html += "    <div class='comment-author'>" + arrow + r.userName + "</div>";
+                            html += "    <div class='comment-text'>" + r.replyContent + "</div>";
+                            
+                            html += "    <div class='comment-utils' style='white-space: nowrap; flex-shrink: 0;'>";
+                            html += "        <span style='color: #94a3b8; font-size: 12px; margin-right: 15px;'>" + r.replyDate + "</span>";
+                            html += "        <span style='cursor:pointer;' onclick='toggleReplyForm(" + r.replyNo + ")'>답글</span> | ";
+                            html += "        <span style='cursor:pointer;' onclick='openReportModal(\"reply\", " + r.replyNo + ")'>신고</span>";
+                            
+                            if((loginUserNo && loginUserNo == r.userNo) || isAdmin) {
+                                html += " | <span style='cursor:pointer;' onclick='deleteReply(" + r.replyNo + ")'>삭제</span>";
+                            }
+                            
+                            html += "    </div>";
+                            html += "</div>";
+    
+                            html += "<div id='nested-form-" + r.replyNo + "' class='comment-form' style='display: none; margin-top: 5px; margin-left: 40px; margin-bottom: 10px; padding: 15px;'>";
+                            html += "    <textarea id='nested-content-" + r.replyNo + "' placeholder='답글을 남겨보세요.' style='height: 50px;'></textarea>";
+                            html += "    <button type='button' class='comment-submit' onclick='insertNestedReply(" + r.replyNo + ", " + rootId + ")' style='padding: 8px 16px;'>등록</button>";
+                            html += "</div>";
+                        }
+                    }
+                }
+                
+                $("#reply-list-area").html(html);
+            },
+            error: function() {
+                console.log("댓글 목록 조회 실패");
+            }
         });
+    }
+    
+    function insertReply() {
+        let content = $("#replyContent").val();
         
-        // (기존 스크립트 내용 유지)
-    </script>
+        if(content.trim() === "") {
+            alert("댓글 내용을 입력해주세요!");
+            $("#replyContent").focus();
+            return;
+        }
+    
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+    
+        $.ajax({
+            url: "${pageContext.request.contextPath}/board/reply/insert",
+            type: "POST",
+            data: { 
+                boardNo: ${board.boardNo}, 
+                replyContent: content 
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(result) {
+                if(result === "success") {
+                    $("#replyContent").val(""); 
+                    selectReplyList(); 
+                } else if(result === "login") {
+                    alert("로그인 후 이용 가능합니다.");
+                    location.href = "${pageContext.request.contextPath}/member/login";
+                } else {
+                    alert("댓글 등록에 실패했습니다.");
+                }
+            },
+            error: function() {
+                alert("댓글 등록 중 서버 오류가 발생했습니다.");
+            }
+        });
+    }
+    
+    function toggleReplyForm(replyNo) {
+        let form = $("#nested-form-" + replyNo);
+        form.slideToggle(200, function() {
+            if(form.is(":visible")) {
+                $("#nested-content-" + replyNo).focus();
+            }
+        });
+    }
+    
+    function insertNestedReply(formId, rootParentNo) {
+        let content = $("#nested-content-" + formId).val();
+        
+        if(content.trim() === "") {
+            alert("답글 내용을 입력해주세요!");
+            return;
+        }
+    
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+    
+        $.ajax({
+            url: "${pageContext.request.contextPath}/board/reply/insert",
+            type: "POST",
+            data: { 
+                boardNo: ${board.boardNo}, 
+                replyContent: content,
+                parentReplyNo: rootParentNo 
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token); 
+            },
+            success: function(result) {
+                if(result === "success") {
+                    window.location.reload();
+                } else if(result === "login") {
+                    alert("로그인 후 이용 가능합니다.");
+                }
+            },
+            error: function() { alert("답글 등록에 실패했습니다."); }
+        });
+    }
+    
+    function deleteReply(replyNo) {
+        if(!confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+            return;
+        }
+    
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+    
+        $.ajax({
+            url: "${pageContext.request.contextPath}/board/reply/delete",
+            type: "POST",
+            data: { 
+                replyNo: replyNo,
+                userNo: loginUserNo
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token); 
+            },
+            success: function(result) {
+                if(result === "success") {
+                    selectReplyList(); 
+                } else if(result === "login") {
+                    alert("로그인 후 이용 가능합니다.");
+                } else {
+                    alert("삭제 실패! 권한이 없거나 이미 삭제된 댓글입니다.");
+                }
+            },
+            error: function() { alert("통신 중 오류가 발생했습니다."); }
+        });
+    }
+</script>
 </body>
 </html>
