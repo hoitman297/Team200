@@ -48,7 +48,6 @@ public class BattlegroundDataService {
             ObjectMapper objectMapper = new ObjectMapper(); 
 
             String jsonUrl = "https://raw.githubusercontent.com/pubg/api-assets/master/dictionaries/telemetry/item/itemId.json";
-            log.info(">>> PUBG 공식 아이템 데이터 다운로드 중...");
             
             String jsonResponse = restTemplate.getForObject(jsonUrl, String.class);
 
@@ -82,7 +81,6 @@ public class BattlegroundDataService {
                     String imgUrl = generateImageUrl(itemKey);
                     
                     if (imgUrl == null || imgUrl.isEmpty() || !isValidImageUrl(imgUrl)) {
-                        log.debug(">>> [저장 스킵] 이미지 없음: {} ({})", koreanName, imgUrl);
                         skipCount++;
                         continue; 
                     }
@@ -102,7 +100,6 @@ public class BattlegroundDataService {
                         dao.insertBagItem(item);
                         count++;
                     } catch (Exception e) {
-                        log.error(">>> [DB 저장 실패] 아이템명: {}", koreanName);
                     }
                 }
                 log.info("=== [배틀그라운드] 아이템 저장 완료! (저장됨: {}, 스킵됨(이미지없음): {}) ===", count, skipCount);

@@ -95,4 +95,14 @@ public class LolDaoImpl implements LolDao {
         // namespace는 본인의 mapper 설정에 맞게 변경해 줘! (예: lolMapper)
         return session.insert("lolMapper.replaceRecommendBuild", buildVO);
     }
+	
+	@Override
+	public int selectChampNoByName(String champName) {
+	    return session.selectOne("lolMapper.selectChampNoByName", champName);
+	}
+
+	@Override
+	public int selectRuneNoByName(String runeName) {
+	    return session.selectOne("lolMapper.selectRuneNoByName", runeName);
+	}
 }

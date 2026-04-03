@@ -30,6 +30,10 @@
 			VALUES (SEQ_CHAMP_NO.NEXTVAL, #{champName}, #{champPosition}, #{champRoles}, #{champImg}, #{champIntro})
 	</insert>
 
+	<select id="selectChampNoByName" parameterType="string" resultType="int">
+		SELECT CHAMP_NO FROM CHAMP_INFO WHERE CHAMP_NAME = #{champName}
+	</select>
+
 	<insert id="insertChampionSkills" parameterType="skillVO">
 		MERGE INTO CHAMP_SKILLS_INFO S
 		USING DUAL
@@ -153,11 +157,17 @@
 		USING DUAL
 		ON (R.RUNE_NAME = #{runeName})
 		WHEN MATCHED THEN
-			UPDATE SET RUNE_INFO = #{runeInfo}, RUNE_IMG = #{runeImg}
+			UPDATE SET 
+				RUNE_INFO = #{runeInfo}, 
+				RUNE_IMG = #{runeImg}
 		WHEN NOT MATCHED THEN
 			INSERT (RUNE_NO, RUNE_NAME, RUNE_INFO, RUNE_IMG)
 			VALUES (SEQ_RUNE_NO.NEXTVAL, #{runeName}, #{runeInfo}, #{runeImg})
 	</insert>
+
+	<select id="selectRuneNoByName" parameterType="string" resultType="int">
+		SELECT RUNE_NO FROM RUNE_INFO WHERE RUNE_NAME = #{runeName}
+	</select>
 
 	<insert id="insertTalent" parameterType="TalentVO">
 		INSERT INTO TALENT_INFO (

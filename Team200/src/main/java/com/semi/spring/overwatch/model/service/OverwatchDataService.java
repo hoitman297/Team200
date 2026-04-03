@@ -56,7 +56,6 @@ public class OverwatchDataService {
 					String heroName = detailNode.path("name").asText("");
 
 					if (heroName.isEmpty()) {
-						System.err.println(">>> [" + heroKey + "] API 응답에 이름이 없어 건너뜁니다.");
 						continue;
 					}
 
@@ -83,7 +82,6 @@ public class OverwatchDataService {
 
 					// --- [3단계] 차단 방지를 위한 랜덤 지연 ---
 					long delay = (long) (Math.random() * 3000) + 3000;
-					System.out.println(">>> [" + heroName + "] 처리 완료. " + delay + "ms 대기...");
 					Thread.sleep(delay);
 
 				} catch (org.springframework.dao.DuplicateKeyException e) {

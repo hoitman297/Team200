@@ -60,12 +60,11 @@
 }
 
 .item-table tbody td {
-    /* ✨ 이미지 확대에 따라 세로 패딩을 줄여 행 높이 조절 (기존 15px -> 8px) ✨ */
     padding: 8px 10px;
     border-bottom: 1px solid #f1f5f9;
     text-align: center;
     font-size: 14px;
-    vertical-align: middle; /* 세로 중앙 정렬 보장 */
+    vertical-align: middle; 
 }
 
 .item-row:hover {
@@ -95,7 +94,9 @@
     cursor: not-allowed;
 }
 
-/* 알약(Pill) 형태 카테고리 버튼 */
+/* =========================================================================
+   ✨ 알약(Pill) 형태 카테고리 버튼 (부드러운 전환 효과 추가) ✨
+   ========================================================================= */
 .item-categories {
     display: flex;
     flex-direction: column;
@@ -117,7 +118,9 @@
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-    transition: all 0.2s ease-in-out;
+    /* ✨ 부드러운 전환을 위해 transition 속도 조정 및 초기 투명도 설정 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
 }
 
 .category-icon {
@@ -125,27 +128,47 @@
     height: 8px;
     background-color: #cbd5e1;
     border-radius: 50%;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+}
+
+/* ✨ [핵심 CSS 마법] 부모 영역 안에 active(선택된) 버튼이 하나라도 존재하면,
+   active가 아닌 나머지 형제 버튼들을 모조리 0.4 투명도로 스르륵 흐리게 만듭니다. */
+.item-categories:has(.category-btn.active) .category-btn:not(.active) {
+    opacity: 0.4;
+}
+
+/* 마우스를 올렸을 때 효과 */
+.category-btn:hover {
+    background-color: #ffffff;
+    border-color: var(--accent-blue);
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    color: var(--accent-blue);
+    /* 흐려진 상태에서 마우스를 올리면 그 버튼만 다시 선명해짐 */
+    opacity: 1 !important; 
 }
 
 .category-btn:hover .category-icon {
     background-color: var(--accent-blue);
 }
 
-.category-btn:hover,
+/* 클릭되어 선택(활성화)된 효과 */
 .category-btn.active {
     background-color: #ffffff;
     border-color: var(--accent-blue);
     transform: translateX(8px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
     color: var(--accent-blue);
+    opacity: 1;
 }
 
 .category-btn.active .category-icon {
     background-color: var(--accent-blue);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); /* ✨ 선택된 카테고리 점에 약간의 빛 효과 추가 */
 }
 
-/* ✨ 이미지 컨테이너 크기 확대 (기존 50px -> 64px) ✨ */
+/* ========================================================================= */
+
 .item-img-placeholder {
     width: 64px;
     height: 64px;
