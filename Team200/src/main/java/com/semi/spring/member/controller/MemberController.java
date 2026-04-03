@@ -104,97 +104,153 @@ public class MemberController {
 		    }
 		}
 		
-    @GetMapping("/activity")
-    public String myActivity(
-            @RequestParam(value="type", defaultValue="board") String type, // 탭 종류 (board 또는 reply)
-            @RequestParam(value="game", defaultValue="all") String game,   // 게임 필터 (전체/롤/배그/옵치)
-            @RequestParam(value="cp", defaultValue="1") int cp,
-            Authentication auth, 
-            Model model) {
-
-        // 1. 로그인 체크 및 유저 번호 가져오기
-        if (auth == null) {
-            return "redirect:/member/login";
-        }
-        int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
-
-        // 2. 쿼리에 넘겨줄 파라미터 맵 세팅
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("userNo", userNo);
-        
-        String dbGameCode = game.equalsIgnoreCase("all") ? "all" : getDbGameCode(game);
-        paramMap.put("gameCode", dbGameCode);
-
-        // 3. 탭(type)에 따른 데이터 조회 분기
-        if (type.equals("board")) {
-            // [작성한 게시글] 탭일 때
-            int listCount = boardService.selectMyBoardsCount(paramMap);
-            PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
-            List<BoardExt> list = boardService.selectMyBoards(pi, paramMap);
-            
-            model.addAttribute("list", list);
-            model.addAttribute("pi", pi);
-            
-        } else if (type.equals("reply")) {
-            // [작성한 댓글] 탭일 때 (맵 리스트로 받습니다!)
-            int listCount = boardService.selectMyRepliesCount(paramMap);
-            PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
-            List<Map<String, Object>> list = boardService.selectMyReplies(pi, paramMap);
-            
-            model.addAttribute("list", list);
-            model.addAttribute("pi", pi);
-        }
-
-        // 4. 우측 상단 '총 개수'를 위한 별도 조회 (이건 필터 상관없이 항상 전체 개수를 보여줘야 함)
-        Map<String, Object> totalParam = new HashMap<>();
-        totalParam.put("userNo", userNo);
-        totalParam.put("gameCode", "all"); // 게임 필터 무시하고 전체 개수 조회
-        
-        model.addAttribute("totalBoardCount", boardService.selectMyBoardsCount(totalParam));
-        model.addAttribute("totalReplyCount", boardService.selectMyRepliesCount(totalParam));
-
-        // 5. 화면(JSP)에서 탭과 필터 파란불(active)을 켜주기 위한 상태 유지 변수
-        model.addAttribute("currentType", type);
-        model.addAttribute("currentGame", game.toLowerCase());
-        
-        return "member/user_activity"; 
-    }
+//    @GetMapping("/activity")
+//    public String myActivity(
+//            @RequestParam(value="type", defaultValue="board") String type, // 탭 종류 (board 또는 reply)
+//            @RequestParam(value="game", defaultValue="all") String game,   // 게임 필터 (전체/롤/배그/옵치)
+//            @RequestParam(value="cp", defaultValue="1") int cp,
+//            Authentication auth, 
+//            Model model) {
+//
+//        // 1. 로그인 체크 및 유저 번호 가져오기
+//        if (auth == null) {
+//            return "redirect:/member/login";
+//        }
+//        int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+//
+//        // 2. 쿼리에 넘겨줄 파라미터 맵 세팅
+//        Map<String, Object> paramMap = new HashMap<>();
+//        paramMap.put("userNo", userNo);
+//        
+//        String dbGameCode = game.equalsIgnoreCase("all") ? "all" : getDbGameCode(game);
+//        paramMap.put("gameCode", dbGameCode);
+//
+//        // 3. 탭(type)에 따른 데이터 조회 분기
+//        if (type.equals("board")) {
+//            // [작성한 게시글] 탭일 때
+//            int listCount = boardService.selectMyBoardsCount(paramMap);
+//            PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
+//            List<BoardExt> list = boardService.selectMyBoards(pi, paramMap);
+//            
+//            model.addAttribute("list", list);
+//            model.addAttribute("pi", pi);
+//            
+//        } else if (type.equals("reply")) {
+//            // [작성한 댓글] 탭일 때 (맵 리스트로 받습니다!)
+//            int listCount = boardService.selectMyRepliesCount(paramMap);
+//            PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
+//            List<Map<String, Object>> list = boardService.selectMyReplies(pi, paramMap);
+//            
+//            model.addAttribute("list", list);
+//            model.addAttribute("pi", pi);
+//        }
+//
+//        // 4. 우측 상단 '총 개수'를 위한 별도 조회 (이건 필터 상관없이 항상 전체 개수를 보여줘야 함)
+//        Map<String, Object> totalParam = new HashMap<>();
+//        totalParam.put("userNo", userNo);
+//        totalParam.put("gameCode", "all"); // 게임 필터 무시하고 전체 개수 조회
+//        
+//        model.addAttribute("totalBoardCount", boardService.selectMyBoardsCount(totalParam));
+//        model.addAttribute("totalReplyCount", boardService.selectMyRepliesCount(totalParam));
+//
+//        // 5. 화면(JSP)에서 탭과 필터 파란불(active)을 켜주기 위한 상태 유지 변수
+//        model.addAttribute("currentType", type);
+//        model.addAttribute("currentGame", game.toLowerCase());
+//        
+//        return "member/user_activity"; 
+//    }
 	
  // =================================================================
     // [마이페이지] 댓글 수정 및 삭제 관리 (조회 및 일괄 삭제)
     // =================================================================
 
 	// 1. 댓글 관리 페이지 조회 (목록 + 페이징)
-	@GetMapping("/comment")
-	public String MemberComment(
-	        @RequestParam(value="cp", defaultValue="1") int cp, 
-	        Authentication auth, 
-	        Model model) {
-	    
-	    if (auth == null) return "redirect:/member/login";
-	    int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
-
-	    // 전체 조회를 위한 파라미터 (게임 구분 없이 내 모든 댓글)
-	    Map<String, Object> paramMap = new HashMap<>();
-	    paramMap.put("userNo", userNo);
-
-	    // 전체 댓글 개수 조회
-	    int listCount = boardService.selectMyRepliesCount(paramMap);
-	    
-	    // 페이징 및 목록 조회 (한 페이지에 10개씩)
-	    PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
-        
-        // ✨ DAO에서 offset/limit 계산 처리를 해두었으므로 그대로 호출
-	    List<Map<String, Object>> list = boardService.selectMyReplies(pi, paramMap);
-
-	    model.addAttribute("list", list);
-	    model.addAttribute("pi", pi);
-	    model.addAttribute("totalReplyCount", listCount);
-
-	    return "member/comment_edit";
-	}
+//	@GetMapping("/comment")
+//	public String MemberComment(
+//	        @RequestParam(value="cp", defaultValue="1") int cp, 
+//	        Authentication auth, 
+//	        Model model) {
+//	    
+//	    if (auth == null) return "redirect:/member/login";
+//	    int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+//
+//	    // 전체 조회를 위한 파라미터 (게임 구분 없이 내 모든 댓글)
+//	    Map<String, Object> paramMap = new HashMap<>();
+//	    paramMap.put("userNo", userNo);
+//
+//	    // 전체 댓글 개수 조회
+//	    int listCount = boardService.selectMyRepliesCount(paramMap);
+//	    
+//	    // 페이징 및 목록 조회 (한 페이지에 10개씩)
+//	    PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
+//        
+//        // ✨ DAO에서 offset/limit 계산 처리를 해두었으므로 그대로 호출
+//	    List<Map<String, Object>> list = boardService.selectMyReplies(pi, paramMap);
+//
+//	    model.addAttribute("list", list);
+//	    model.addAttribute("pi", pi);
+//	    model.addAttribute("totalReplyCount", listCount);
+//
+//	    return "member/comment_edit";
+//	}
 	
-	// 2. 선택 댓글 일괄 삭제 (AJAX 전용)
+		@GetMapping("/activity")
+	    public String myActivity(
+	            @RequestParam(value="type", defaultValue="board") String type, // 탭 종류 (board 또는 reply)
+	            @RequestParam(value="game", defaultValue="all") String game,   // 게임 필터 (전체/롤/배그/옵치)
+	            @RequestParam(value="cp", defaultValue="1") int cp,
+	            Authentication auth, 
+	            Model model) {
+
+	        // 1. 로그인 체크 및 유저 번호 가져오기
+	        if (auth == null) {
+	            return "redirect:/member/login";
+	        }
+	        int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+
+	        // 2. 쿼리에 넘겨줄 파라미터 맵 세팅
+	        Map<String, Object> paramMap = new HashMap<>();
+	        paramMap.put("userNo", userNo);
+	        
+	        // (팁) URL의 소문자 game을 DB용 대문자 코드로 변환
+	        String dbGameCode = game.equalsIgnoreCase("all") ? "all" : getDbGameCode(game);
+	        paramMap.put("gameCode", dbGameCode);
+
+	        // 3. 탭(type)에 따른 데이터 조회 분기
+	        if (type.equals("board")) {
+	            // [작성한 게시글] 탭일 때
+	            int listCount = boardService.selectMyBoardsCount(paramMap);
+	            PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
+	            List<BoardExt> list = boardService.selectMyBoards(pi, paramMap);
+	            
+	            model.addAttribute("list", list);
+	            model.addAttribute("pi", pi);
+	            
+	        } else if (type.equals("reply")) {
+	            // [작성한 댓글] 탭일 때
+	            int listCount = boardService.selectMyRepliesCount(paramMap);
+	            PageInfo pi = Pagination.getPageInfo(listCount, cp, 10, 10);
+	            List<Map<String, Object>> list = boardService.selectMyReplies(pi, paramMap);
+	            
+	            model.addAttribute("list", list);
+	            model.addAttribute("pi", pi);
+	        }
+
+	        // 4. 우측 상단 '총 개수'를 위한 별도 조회 (필터 상관없이 항상 전체 개수)
+	        Map<String, Object> totalParam = new HashMap<>();
+	        totalParam.put("userNo", userNo);
+	        totalParam.put("gameCode", "all"); 
+	        
+	        model.addAttribute("totalBoardCount", boardService.selectMyBoardsCount(totalParam));
+	        model.addAttribute("totalReplyCount", boardService.selectMyRepliesCount(totalParam));
+
+	        // 5. 화면(JSP) 상태 유지를 위한 변수 전달
+	        model.addAttribute("currentType", type);
+	        model.addAttribute("currentGame", game.toLowerCase());
+	        
+	        return "member/user_activity"; 
+	    }	
+		
 	@PostMapping("/deleteReplies")
 	@ResponseBody 
 	public String deleteReplies(
