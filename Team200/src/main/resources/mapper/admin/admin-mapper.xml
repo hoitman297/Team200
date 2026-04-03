@@ -53,13 +53,13 @@
 
 	<select id="selectInquiryList" resultType="inquiry">
 		SELECT BOARD_NO AS boardNo ,
-		 	   GAME_CODE AS gameCode ,
-		 	   BOARD_CONTENT AS boardContent ,
-		 	   BOARD_TITLE AS boardTitle,
-		 	   USER_NAME AS userName ,
-		 	   POST_DATE AS postDate ,
-		 	   ANSWER_STATUS AS answerStatus ,
-		 	   ANSWER as answer
+		       GAME_CODE AS gameCode ,
+		       BOARD_CONTENT AS boardContent ,
+		       BOARD_TITLE AS boardTitle,
+		       USER_NAME AS userName ,
+		       POST_DATE AS postDate ,
+		       ANSWER_STATUS AS answerStatus ,
+		       ANSWER as answer
 		FROM INQUIRY
 		WHERE 1=1
 		<if test="gameCode != 'ALL'">
@@ -108,8 +108,8 @@
 	        RP.USER_NO as userNo,
 	        RP.BOARD_NO as boardNo,
 	        RP.REPLY_NO as replyNo,
-	        MAX(RP.REPORT_COUNT) as reportCount,
-	        MAX(RP.REPORT_CONTENT) as reportContent,
+	        COUNT(RP.REPORT_NO) as reportCount,
+	        MAX(TO_CHAR(RP.REPORT_CONTENT)) as reportContent,
 	        MAX(RP.REPORT_TYPE) as reportType,
 	        MAX(RP.DONE_DATE) as doneDate,
 	        <choose>
@@ -117,7 +117,7 @@
 	                B.BOARD_TITLE as title
 	            </when>
 	            <otherwise>
-	                RE.REPLY_CONTENT as title
+	                TO_CHAR(RE.REPLY_CONTENT) as title
 	            </otherwise>
 	        </choose>
 	    FROM REPORT RP
@@ -130,7 +130,7 @@
 	        <otherwise>
 	            JOIN REPLY RE ON (RP.REPLY_NO = RE.REPLY_NO)
 	            WHERE RP.STATUS = 'N'
-	            GROUP BY RP.REPLY_NO, RP.BOARD_NO, RP.USER_NO, RE.REPLY_CONTENT
+	            GROUP BY RP.REPLY_NO, RP.BOARD_NO, RP.USER_NO, TO_CHAR(RE.REPLY_CONTENT)
 	        </otherwise>
 	    </choose>
 	    
@@ -191,8 +191,6 @@
 	    </if>
 	</select>
 	
-	<!-- 안쪽 SELECT: GROUP BY를 통해 중복된 신고를 게시글당 1개로 합칩니다. (예: 5번 신고된 2번 게시글 -> 1행으로 압축) -->
-	<!-- 바깥쪽 COUNT: 그렇게 압축된 전체 행이 몇 개인지를 최종적으로 반환합니다. 이 숫자가 PageInfo의 listCount로 들어가서 정확한 페이징 숫자를 만들어냅니다. -->
 	<select id="selectReportListCount" resultType="int">
 	    SELECT COUNT(*) 
 	    FROM (
@@ -238,18 +236,5 @@
 	    WHERE REPLY_NO = #{replyNo} 
 	      AND DONE_DATE IS NULL
 	</update>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </mapper>

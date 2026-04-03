@@ -40,16 +40,16 @@
                         <option>알림</option>
                     </select>
                 </div>
-		 <form:form modelAttribute="notice" action="notice" method="POST">
+         <form:form modelAttribute="notice" action="notice" method="POST">
                 <div class="input-group">
                     <label>공지 제목</label>
-                    <form:input path="title" type="text" class="title-input" placeholder="공지사항의 제목을 입력하세요." required/>
+                    <form:input path="title" type="text" class="title-input" placeholder="공지사항의 제목을 입력하세요." required="required"/>
                 </div>
 
                 <div class="input-group">
                     <label>본문 내용</label>
                     <div class="content-editor">
-                        <form:textarea path="noticeContent" placeholder="사용자들에게 전달할 상세 내용을 작성하세요." required/>
+                        <form:textarea path="noticeContent" placeholder="사용자들에게 전달할 상세 내용을 작성하세요." required="required"/>
                     </div>
                 </div>
 
