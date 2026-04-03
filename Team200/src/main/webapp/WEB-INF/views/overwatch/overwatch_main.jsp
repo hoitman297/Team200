@@ -154,39 +154,11 @@
         </main>
 
         <aside class="sidebar-right">
-		    <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #1e293b;">
-		        <h3 style="margin: 0; font-size: 16px; color: #1e293b;">최근 패치노트</h3>
-		    </div>
-		
-		    <ul style="list-style: none; padding: 0; margin: 0;">
-		        <c:choose>
-		            <c:when test="${empty patchList}">
-		                <li style="text-align: center; color: #94a3b8; padding: 40px 0; font-size: 13px;">
-		                    등록된 패치노트가 없습니다.
-		                </li>
-		            </c:when>
-		
-		            <c:otherwise>
-		                <c:forEach var="patch" items="${patchList}">
-		                    <%-- 🚨 주소 부분을 patchnoteView로 수정했습니다! --%>
-		                    <li style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer;" 
-		                        onclick="location.href='${pageContext.request.contextPath}/board/patchnoteView?boardNo=${patch.boardNo}'">
-		                        
-		                        <div class="patch-title" 
-		                             style="font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-		                             title="${patch.boardTitle}">
-		                            ${patch.boardTitle}
-		                        </div>
-		                        
-		                        <div style="font-size: 11px; color: #94a3b8;">
-		                            <fmt:formatDate value="${patch.postDate}" pattern="yyyy.MM.dd"/>
-		                        </div>
-		                    </li>
-		                </c:forEach>
-		            </c:otherwise>
-		        </c:choose>
-		    </ul>
-		</aside>
+            <h3>최근 업데이트</h3>
+            <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                최신 업데이트 내용을 확인하세요.
+            </div>
+        </aside>
     </div>
     
     <%@ include file="../common/footer.jsp"%>

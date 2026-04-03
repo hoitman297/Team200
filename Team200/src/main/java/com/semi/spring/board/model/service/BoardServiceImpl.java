@@ -359,15 +359,4 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardExt> selectMainNotices() {
         return boardDao.selectMainNotices();
     }
-    
-    @Override
-    public List<BoardExt> selectRecentPatchNotesByGame(String gameCode) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("gameCode", gameCode);
-        
-        paramMap.put("offset", 1); 
-        paramMap.put("limit", 5); 
-        
-        return boardDao.selectPatchnoteListForSide(paramMap);
-    }
 }
