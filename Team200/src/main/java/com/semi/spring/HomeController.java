@@ -73,6 +73,9 @@ public class HomeController {
 	    List<BoardExt> recentGallery = boardService.selectRecentGallery(dbGameCode);
 	    model.addAttribute("recentGallery", recentGallery);
 	    
+	    List<BoardExt> patchList = boardService.selectRecentPatchNotesByGame(dbGameCode);
+	    model.addAttribute("patchList", patchList);
+	    
 	    model.addAttribute("gameId", lowerCode);
 	    
 	    String viewPath = "";

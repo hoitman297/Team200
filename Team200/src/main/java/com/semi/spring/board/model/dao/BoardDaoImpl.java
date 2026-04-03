@@ -295,4 +295,10 @@ public class BoardDaoImpl implements BoardDao {
     public List<BoardExt> selectMainNotices() {
         return session.selectList("board.selectMainNotices");
     }
+    
+    @Override
+    public List<BoardExt> selectPatchnoteListForSide(Map<String, Object> paramMap) {
+        return session.selectList("board.selectPatchnoteList", paramMap);
+    }
 }
+
