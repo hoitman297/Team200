@@ -30,9 +30,21 @@
 				<h3>패치 노트<button class="btn-mini" style="background:#fff">
                 <a href="<c:url value = '/board/patchnote'/>">목록</a></button></h3>
 				
-				<div class="list-item">2026.03.05 [오버워치]</div>
-				<div class="list-item">2026.02.05 [배틀그라운드]</div>
-				<div class="list-item">2026.01.15 [롤]</div>
+				<c:choose>
+            <c:when test="${empty patchList}">
+                <div class="list-item" style="color: #94a3b8;">데이터가 없습니다.</div>
+            </c:when>
+            <c:otherwise>
+                <c:forEach var="patch" items="${patchList}">
+                    <%-- 클릭 시 해당 패치노트 상세보기로 이동 --%>
+                    <div class="list-item" style="cursor:pointer;" 
+                         onclick="location.href='<c:url value='/board/patchnoteView?boardNo=${patch.boardNo}'/>'">
+                        <fmt:formatDate value="${patch.postDate}" pattern="yyyy.MM.dd"/> 
+                        [${patch.gameCode == 'LOL' ? '롤' : (patch.gameCode == 'OW' ? '오버워치' : '배틀그라운드')}]
+                    </div>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
 			</div>
 		</aside>
 
@@ -122,7 +134,24 @@
 			<div class="side-card">
 				<h3>공지사항<button class="btn-mini" style="background:#fff">
                 <a href="<c:url value = '/board/notice'/>">목록</a></button></h3>
-				<div class="list-item">${title}</div>
+				<c:choose>
+            <c:when test="${empty noticeList}">
+                <div class="list-item" style="color: #94a3b8;">공지사항이 없습니다.</div>
+            </c:when>
+            <c:otherwise>
+                <c:forEach var="notice" items="${noticeList}">
+                    <%-- 클릭 시 해당 공지사항 상세보기로 이동 --%>
+                    <div class="list-item" style="cursor:pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" 
+                         title="${notice.boardTitle}"
+                         onclick="location.href='<c:url value='/board/noticeView?boardNo=${notice.boardNo}'/>'">
+                        <span style="color: #64748b; font-size: 13px; margin-right: 5px;">
+                            <fmt:formatDate value="${notice.postDate}" pattern="MM.dd"/>
+                        </span>
+                        ${notice.boardTitle}
+                    </div>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
 			</div>
 		</aside>
 	</div>

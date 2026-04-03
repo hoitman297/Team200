@@ -285,4 +285,14 @@ public class BoardDaoImpl implements BoardDao {
 	public int selectNoticeCount(Map<String, Object> paramMap) {
 		return session.selectOne("board.selectNoticeCount", paramMap);
 	}
+	
+	@Override
+    public List<BoardExt> selectMainPatchNotes() {
+        return session.selectList("board.selectMainPatchNotes");
+    }
+
+    @Override
+    public List<BoardExt> selectMainNotices() {
+        return session.selectList("board.selectMainNotices");
+    }
 }

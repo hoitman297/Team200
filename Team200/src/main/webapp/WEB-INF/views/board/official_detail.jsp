@@ -78,9 +78,12 @@
                     
                     <%-- ✨ 제목 앞에 게임 태그 붙여주기 --%>
                     <h1 class="post-title">
+                    <%-- ✨ 2. 제목 옆 태그 수정: 카테고리가 '패치노트'인 경우에만 렌더링! --%>
+                    <c:if test="${board.categoryName == '패치노트'}">
                         <span style="color: ${tagColor}; margin-right: 5px;">${gameTag}</span>
-                        ${board.boardTitle}
-                    </h1>
+                    </c:if>
+                    ${board.boardTitle}
+                </h1>
                     
                     <div class="post-info">
                         <span>글쓴이: <b>${board.userName}</b></span>
@@ -115,7 +118,7 @@
         <aside class="side-right"></aside>
     </div>
     
-    <footer>© 2026 LOG.GG ${gameName} 서비스. 모든 권리 보유.</footer>
+    <footer>© 2026 LOG.GG 서비스. 모든 권리 보유.</footer>
 
     <%-- 복잡한 AJAX, 시큐리티 스크립트 모두 삭제됨! (읽기 전용이므로 필요 없음) --%>
 </body>

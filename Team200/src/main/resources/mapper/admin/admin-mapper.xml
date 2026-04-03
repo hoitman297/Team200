@@ -33,22 +33,22 @@
 		)
 	</insert>
 	
-	<select id="selectRecentNotice" resultType="notice">
+	<select id="selectRecentNotice" resultType="BoardExt">
 	    SELECT * FROM (
-	        SELECT TITLE, POST_DATE
+	        SELECT NOTICE_NO as boardNo, TITLE as boardTitle, POST_DATE as postDate
 	        FROM NOTICE
 	        ORDER BY NOTICE_NO DESC
 	    )
-	    WHERE ROWNUM = 3
+	    WHERE ROWNUM &lt;= 3
 	</select>
-	
-	<select id="selectRecentPatchnote" resultType="patchnote">
+
+	<select id="selectRecentPatchnote" resultType="BoardExt">
 	    SELECT * FROM (
-	        SELECT TITLE, POST_DATE
+	        SELECT PATCHNOTE_NO as boardNo, TITLE as boardTitle, POST_DATE as postDate, GAME_CODE as gameCode
 	        FROM PATCHNOTE
 	        ORDER BY PATCHNOTE_NO DESC
 	    )
-	    WHERE ROWNUM = 3
+	    WHERE ROWNUM &lt;= 3
 	</select>
 
 	<select id="selectInquiryList" resultType="inquiry">
@@ -105,12 +105,9 @@
 	<select id="selectReportList" resultType="Report">
 	    SELECT 
 	        MAX(RP.REPORT_NO) as reportNo,
-	        RP.USER_NO as userNo,
-	        RP.BOARD_NO as boardNo,
+	        MAX(RP.USER_NO) as userNo, RP.BOARD_NO as boardNo,
 	        RP.REPLY_NO as replyNo,
-	        MAX(RP.REPORT_COUNT) as reportCount,
-	        MAX(RP.REPORT_CONTENT) as reportContent,
-	        MAX(RP.REPORT_TYPE) as reportType,
+	        COUNT(*) as reportCount, MAX(DBMS_LOB.SUBSTR(RP.REPORT_CONTENT, 4000, 1)) as reportContent, MAX(RP.REPORT_TYPE) as reportType,
 	        MAX(RP.DONE_DATE) as doneDate,
 	        <choose>
 	            <when test="type == 'post'">
@@ -125,13 +122,11 @@
 	        <when test="type == 'post'">
 	            JOIN BOARD B ON (RP.BOARD_NO = B.BOARD_NO)
 	            WHERE RP.STATUS = 'N'
-	            GROUP BY RP.BOARD_NO, RP.REPLY_NO, RP.USER_NO, B.BOARD_TITLE
-	        </when>
+	            GROUP BY RP.BOARD_NO, RP.REPLY_NO, B.BOARD_TITLE </when>
 	        <otherwise>
 	            JOIN REPLY RE ON (RP.REPLY_NO = RE.REPLY_NO)
 	            WHERE RP.STATUS = 'N'
-	            GROUP BY RP.REPLY_NO, RP.BOARD_NO, RP.USER_NO, RE.REPLY_CONTENT
-	        </otherwise>
+	            GROUP BY RP.REPLY_NO, RP.BOARD_NO, RE.REPLY_CONTENT </otherwise>
 	    </choose>
 	    
 	    <choose>

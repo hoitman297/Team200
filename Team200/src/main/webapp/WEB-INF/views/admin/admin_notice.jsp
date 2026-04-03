@@ -20,8 +20,26 @@
                 <div class="card-header">
                     <span>게임별 패치노트</span>
                 </div>
-                <div style="font-weight: 700; color: var(--primary-navy); font-size: 14px; margin-bottom: 5px;">최신 패치 현황</div>
-                <p style="font-size: 13px; color: #64748b; margin: 0;">관리 중인 게임 리스트입니다.</p>
+                <div style="font-weight: 700; color: var(--primary-navy); font-size: 14px; margin-bottom: 10px;">최신 패치 현황</div>
+        
+		        <ul style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: #475569; line-height: 2.0;">
+		            <c:choose>
+		                <c:when test="${empty recentPatchList}">
+		                    <li>등록된 패치노트가 없습니다.</li>
+		                </c:when>
+		                <c:otherwise>
+		                    <c:forEach var="p" items="${recentPatchList}">
+		                        <%-- 제목이 길면 말줄임 처리 + 클릭 시 상세 보기 --%>
+		                        <li style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; margin-bottom: 5px;"
+		                            title="${p.boardTitle}"
+		                            onclick="location.href='<c:url value='/board/patchnoteView?boardNo=${p.boardNo}'/>'">
+		                            <strong>[${p.gameCode == 'LOL' ? '롤' : (p.gameCode == 'OW' ? '옵치' : '배그')}]</strong> 
+		                            ${p.boardTitle}
+		                        </li>
+		                    </c:forEach>
+		                </c:otherwise>
+		            </c:choose>
+		        </ul>
             </div>
         </aside>
 
@@ -43,13 +61,13 @@
 		 <form:form modelAttribute="notice" action="notice" method="POST">
                 <div class="input-group">
                     <label>공지 제목</label>
-                    <form:input path="title" type="text" class="title-input" placeholder="공지사항의 제목을 입력하세요." required/>
+                    <form:input path="title" type="text" class="title-input" placeholder="공지사항의 제목을 입력하세요." required="true"/>
                 </div>
 
                 <div class="input-group">
                     <label>본문 내용</label>
                     <div class="content-editor">
-                        <form:textarea path="noticeContent" placeholder="사용자들에게 전달할 상세 내용을 작성하세요." required/>
+                        <form:textarea path="noticeContent" placeholder="사용자들에게 전달할 상세 내용을 작성하세요." required="true"/>
                     </div>
                 </div>
 
@@ -61,18 +79,31 @@
         </main>
 
         <aside class="sidebar-right">
-            <div class="notice-card">
-                <div class="card-header" style="margin-bottom: 10px;">
-                    <span style="color: #1e293b;">최근 등록된 공지</span>
-                </div>
-                <ul class="notice-list">
-                    <li>• 공개 테스트 서버 안내</li>
-                    <li>• 웹사이트 업데이트 내역</li>
-                    <li>• 커뮤니티 이용 규칙 필독</li>
-                    <li>• 시스템 정기 점검 예고</li>
-                </ul>
-            </div>
-        </aside>
+		    <div class="notice-card">
+		        <div class="card-header" style="margin-bottom: 10px;">
+		            <span style="color: #1e293b; font-weight: bold;">최근 등록된 공지</span>
+		        </div>
+		        <ul class="notice-list" style="list-style: none; padding: 0; margin: 0; font-size: 13px; color: #475569; line-height: 2.0;">
+		            <c:choose>
+		                <c:when test="${empty recentNoticeList}">
+		                    <li>등록된 공지가 없습니다.</li>
+		                </c:when>
+		                <c:otherwise>
+		                    <c:forEach var="n" items="${recentNoticeList}">
+		                        <li style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; margin-bottom: 5px;"
+		                            title="${n.boardTitle}"
+		                            onclick="location.href='<c:url value='/board/noticeView?boardNo=${n.boardNo}'/>'">
+		                            • ${n.boardTitle}
+		                            <span style="display: block; font-size: 11px; color: #94a3b8; margin-top: 2px; margin-left: 10px;">
+		                                <fmt:formatDate value="${n.postDate}" pattern="yyyy.MM.dd"/>
+		                            </span>
+		                        </li>
+		                    </c:forEach>
+		                </c:otherwise>
+		            </c:choose>
+		        </ul>
+		    </div>
+		</aside>
     </div>
 </body>
 </html>

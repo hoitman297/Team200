@@ -33,6 +33,17 @@ public class HomeController {
 		
 		System.out.println(">>> [HomeController] 가져온 인기글 개수: " + (bestList != null ? bestList.size() : 0));
 		
+		// 2. 패치노트: 각 게임별 최신 1개씩 (총 3개)
+		List<BoardExt> patchList = boardService.selectMainPatchNotes();
+		model.addAttribute("patchList", patchList);
+
+		// 3. 공지사항: 최신순 3개
+		List<BoardExt> noticeList = boardService.selectMainNotices();
+		model.addAttribute("noticeList", noticeList);
+				
+		System.out.println("패치노트 데이터 개수: " + (patchList != null ? patchList.size() : 0));
+		System.out.println("공지사항 데이터 개수: " + (noticeList != null ? noticeList.size() : 0));
+				
 		model.addAttribute("bestList", bestList);
 		model.addAttribute("lolBest", boardService.selectBestBoards("LOL"));
 	    model.addAttribute("owBest", boardService.selectBestBoards("OW"));
@@ -85,4 +96,6 @@ public class HomeController {
 	    
 	    return viewPath;
 	}
+	
+	
 }
