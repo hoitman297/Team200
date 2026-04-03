@@ -4,10 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -41,88 +37,78 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class LolController {
-	
-	@Autowired
-    private LolDao lolDao;
-	
-	private final LolService lolService;
-	private final BoardService boardService;
-	private final ResourceLoader resourceLoader;
-	private final ServletContext application;
+    
+    // 💡 수정: @Autowired 혼용 대신 private final로 통일하여 @RequiredArgsConstructor 효과 극대화!
+    private final LolDao lolDao;
+    private final LolService lolService;
+    private final BoardService boardService;
 
-//	@GetMapping("/main")
-//	public String lol_main() {
-//		return "lol/lol_main";
-//	}
+    @GetMapping("/board/{categoryNo}")
+    // categoryNo = 자유 게시판 (N?) , 공략 게시판(S?)
+    public String lolBoard(@PathVariable("categoryNo") String categoryNo,
+            @RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model,
+            @RequestParam Map<String, Object> paramMap) {
 
-	@GetMapping("/board/{categoryNo}")
-	// categoryNo = 자유 게시판 (N?) , 공략 게시판(S?)
-	public String lolBoard(@PathVariable("categoryNo") String categoryNo,
-			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model,
-			@RequestParam Map<String, Object> paramMap) {
+        paramMap.put("categoryNo", categoryNo);
 
-		paramMap.put("categoryNo", categoryNo);
+        int boardLimit = 10;
+        int pageLimit = 10;
+        int listCount = boardService.selectListCount(paramMap);
 
-		int boardLimit = 10;
-		int pageLimit = 10;
-		int listCount = boardService.selectListCount(paramMap);
+        PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+        log.debug("pi : {}", pi);
+        paramMap.put("pi", pi);
 
-		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-		log.debug("pi : {}", pi);
-		paramMap.put("pi", pi);
+        List<Board> list = boardService.selectList(paramMap);
+        model.addAttribute("list", list);
+        model.addAttribute("pi", pi);
 
-		List<Board> list = boardService.selectList(paramMap);
-		model.addAttribute("list", list);
-		model.addAttribute("pi", pi);
+        return "/board/board_view"; // lol/board/{categoryNo}?currentPage=1
+    }
 
-		return "/board/board_view"; // lol/board/{categoryNo}?currentPage=1
-		// 아직 수정중
-	}
+    // 💡 수정: @RequestMapping 대신 명시적인 @GetMapping으로 통일!
+    @GetMapping("/hero_main")
+    public String lol_hero(Model model) {
+        // 1. DB에서 챔피언 리스트 가져오기
+        List<ChampionVO> champList = lolService.selectAllChampions();
 
-	@RequestMapping("/hero_main")
-	public String lol_hero(Model model) {
-		// 1. DB에서 챔피언 리스트 가져오기
-		List<ChampionVO> champList = lolService.selectAllChampions();
+        // 2. JSP로 데이터 전달
+        model.addAttribute("champList", champList);
 
-		// 2. JSP로 데이터 전달
-		model.addAttribute("champList", champList);
+        // 3. 롤 페이지(JSP) 리턴
+        return "lol/lol_hero_main";
+    }
 
-		// 3. 롤 페이지(JSP) 리턴
-		return "lol/lol_hero_main";
-	}
+    @GetMapping("/hero_main/hero_info")
+    public String lol_hero_info(@RequestParam("champNo") int champNo, Model model) {
+        // 1. 서비스 호출하여 챔피언 1명의 상세 정보 가져오기
+        ChampionVO champ = lolService.getChampDeta(champNo);
 
-	// LolController.java 수정 제안
-	@GetMapping("/hero_main/hero_info")
-	public String lol_hero_info(@RequestParam("champNo") int champNo, Model model) {
-		// 1. 서비스 호출하여 챔피언 1명의 상세 정보 가져오기
-		ChampionVO champ = lolService.getChampDeta(champNo);
+        // 2. 모델에 담기
+        model.addAttribute("champ", champ);
 
-		// 2. 모델에 담기
-		model.addAttribute("champ", champ);
+        return "lol/lol_hero_info";
+    }
 
-		return "lol/lol_hero_info";
-	}
+    @GetMapping("/item") // 주소창에 /lol/item 이라고 쳤을 때 실행됩니다.
+    public String lolItemPage(Model model) {
 
-	@GetMapping("/item") // 주소창에 /lol/item 이라고 쳤을 때 실행됩니다. (주소는 맞게 수정해 주세요!)
-	public String lolItemPage(Model model) {
+        // 💡 수정: System.out.println 대신 @Slf4j의 log.info 사용!
+        log.info("=== 아이템 페이지 요청 들어옴 ===");
 
-		System.out.println("=== 아이템 페이지 요청 들어옴 ===");
+        // 1. DAO를 통해 DB에 있는 아이템 목록을 전부 가져옵니다.
+        List<LolItemVO> itemList = lolDao.selectAllItems();
 
-		// 1. DAO를 통해 DB에 있는 아이템 목록을 전부 가져옵니다.
-		List<LolItemVO> itemList = lolDao.selectAllItems();
+        log.info("가져온 아이템 개수: {}개", itemList.size());
 
-		System.out.println("가져온 아이템 개수: " + itemList.size() + "개");
+        // 2. 가져온 리스트를 "itemList"라는 이름표를 붙여서 JSP로 보냅니다.
+        model.addAttribute("itemList", itemList);
 
-		// 2. 가져온 리스트를 "itemList"라는 이름표를 붙여서 JSP로 보냅니다.
-		// (JSP에서 <c:forEach items="${itemList}"> 로 기다리고 있는 바로 그 이름입니다!)
-		model.addAttribute("itemList", itemList);
+        // 3. 아이템 화면 JSP 파일의 경로를 적어줍니다.
+        return "lol/lol_item_info";
+    }
 
-		// 3. 아이템 화면 JSP 파일의 경로를 적어줍니다.
-		// (WEB-INF/views/lol/item.jsp 파일을 띄워준다고 가정)
-		return "lol/lol_item_info";
-	}
-
-	@GetMapping("/rune")
+    @GetMapping("/rune")
     public String lol_rune(Model model) {
         log.info("=== 룬 페이지 요청 들어옴 ===");
         
@@ -148,12 +134,12 @@ public class LolController {
         return talentList;
     }
 
-	@GetMapping("/box")
-	public String lol_box() {
-		return "lol/box";
-	}
+    @GetMapping("/box")
+    public String lol_box() {
+        return "lol/box";
+    }
 
-	// ==========================================================
+    // ==========================================================
     // ✨ [신규 추가] 챔피언 정보 페이지 전용 댓글 기능
     // ==========================================================
 
