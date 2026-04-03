@@ -105,13 +105,14 @@
                     </c:if>
                 </div>
 
-                <%-- ✨ 액션 버튼 (공감, 신고 빼고 오직 "목록으로"만 남김) --%>
                 <div class="post-action" style="justify-content: center;">
-                    <%-- 목록으로 돌아갈 때 파라미터가 'all'인지 특정 게임인지 알기 위해 history.back() 사용 권장 --%>
-                    <button class="btn-action" onclick="history.back();" style="width: 150px;">목록으로</button>
-                </div>
+				    <button class="btn-action" 
+				            onclick="location.href='${pageContext.request.contextPath}/board/${isNotice ? 'notice_list' : 'patchnote_all'}'" 
+				            style="width: 150px;">
+				        목록으로
+				    </button>
+				</div>
 
-                <%-- 댓글 영역 (comment-section) 통째로 삭제됨! --%>
             </article>
         </main>
         

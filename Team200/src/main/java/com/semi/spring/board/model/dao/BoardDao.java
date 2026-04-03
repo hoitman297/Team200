@@ -111,6 +111,8 @@ public interface BoardDao {
 	public List<BoardExt> selectMainPatchNotes();
 
 	public List<BoardExt> selectMainNotices();
+
+	public List<BoardExt> selectPatchnoteListForSide(Map<String, Object> paramMap);
 	
 	
 }
