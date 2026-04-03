@@ -692,7 +692,7 @@
         AND B.BOARD_CD = 'Y' 
         ORDER BY B.BOARD_NO DESC
     )
-    WHERE ROWNUM &lt;= 2
+    WHERE ROWNUM &lt;= 4
 	</select>
 	<!--  -->
 	
