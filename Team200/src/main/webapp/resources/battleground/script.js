@@ -5,7 +5,7 @@ $(document).ready(function() {
     let currentPage = 0;
     const rowsPerPage = 8; 
     let visibleRows = [];
-    let activeCategory = ""; // 현재 선택된 카테고리 기억
+    let activeCategory = ""; // 이제 글자가 아니라 카테고리 '번호'를 저장합니다.
 
     function updateTablePaging() {
         const start = currentPage * rowsPerPage;
@@ -31,11 +31,11 @@ $(document).ready(function() {
 
         $('.item-row').each(function() {
             // JSP에서 세팅해둔 data 속성 가져오기
-            const itemType = ($(this).data('type') || "").toLowerCase(); 
+            const itemCategory = $(this).data('category') ? $(this).data('category').toString() : ""; 
             const itemName = ($(this).data('name') || "").toLowerCase();
 
-            // 1. 카테고리 일치 여부 (선택 안됐으면 무조건 통과)
-            let isCategoryMatch = (activeCategory === "") || itemType.includes(activeCategory.toLowerCase());
+            // 1. 카테고리 번호 일치 여부 (선택 안됐으면 무조건 통과)
+            let isCategoryMatch = (activeCategory === "") || (itemCategory === activeCategory);
             
             // 2. 검색어 일치 여부
             let isSearchMatch = itemName.includes(searchTerm);
@@ -59,12 +59,13 @@ $(document).ready(function() {
         e.stopPropagation(); // 다른 스크립트와의 충돌 차단
         
         const $this = $(this);
-        const categoryName = $this.find('span').text().trim();
+        // ✨ 이름 대신 data-category 번호를 가져옵니다. ✨
+        const categoryNo = $this.data('category').toString(); 
         
         $('.category-btn').removeClass('active');
 
         // 이미 켜진 버튼을 또 누름 -> 해제(모두보기)로 전환
-        if (activeCategory === categoryName) {
+        if (activeCategory === categoryNo) {
             activeCategory = ""; 
             $('#itemSearchInput').val(''); // 검색어 초기화
             applyCombinedFilters(); 
@@ -72,7 +73,7 @@ $(document).ready(function() {
         }
 
         // 새로운 카테고리 선택 시
-        activeCategory = categoryName; 
+        activeCategory = categoryNo; 
         $this.addClass('active'); 
         
         $('#itemSearchInput').val(''); // 카테고리 이동 시 검색창 깔끔하게 비우기
