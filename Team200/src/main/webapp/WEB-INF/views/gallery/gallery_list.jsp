@@ -2,20 +2,21 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%-- 1. 변수 설정: 주소창의 gameCode 값을 읽어옴 (컨트롤러 파라미터명과 일치) --%>
-<c:set var="currentGame" value="${empty param.gameCode ? 'all' : param.gameCode}" />
+<%-- 1. 변수 설정: 일단 주소창에서 넘어온 값을 그대로 받습니다 --%>
+<c:set var="rawCode" value="${param.gameCode}" />
 
-<%-- 2. 사이드바용 gameId 설정: 전체(all)일 때는 기본으로 'battleground'를 보여주도록 세팅 --%>
+<%-- 2. 튼튼한 안전장치: 우리가 아는 코드(BG, LOL, OW, all)가 아니면 무조건 'all'로 강제 고정! --%>
+<c:set var="currentGame" value="all" />
+<c:if test="${rawCode == 'BG' or rawCode == 'LOL' or rawCode == 'OW' or rawCode == 'all'}">
+    <c:set var="currentGame" value="${rawCode}" />
+</c:if>
+
+<%-- 3. 사이드바용 gameId 설정 --%>
 <c:set var="gameId" value="${currentGame == 'all' ? 'battleground' : currentGame}" />
 
-<%-- 3. 푸터나 헤더에 표시할 게임 이름 매칭 --%>
+<%-- 4. 푸터나 헤더에 표시할 게임 이름 매칭 (공백 에러 방지를 위해 한 줄로 밀착!) --%>
 <c:set var="displayGameName">
-    <c:choose>
-        <c:when test="${currentGame == 'BG'}">배틀그라운드</c:when>
-        <c:when test="${currentGame == 'LOL'}">리그 오브 레전드</c:when>
-        <c:when test="${currentGame == 'OW'}">오버워치</c:when>
-        <c:otherwise>전체</c:otherwise>
-    </c:choose>
+    <c:choose><c:when test="${currentGame == 'BG'}">배틀그라운드</c:when><c:when test="${currentGame == 'LOL'}">리그 오브 레전드</c:when><c:when test="${currentGame == 'OW'}">오버워치</c:when><c:otherwise>전체</c:otherwise></c:choose>
 </c:set>
 
 <!DOCTYPE html>
@@ -29,10 +30,10 @@
     <script src="${pageContext.request.contextPath}/resources/main/script.js" defer></script>
     <title>LOG.GG - 갤러리</title>
 
-    <%-- ✨ 추가된 부분: 파라미터 없이 접속 시 자동으로 '전체' 탭으로 이동시킵니다 ✨ --%>
-    <c:if test="${empty param.gameCode}">
+    <%-- URL 파라미터가 비어있거나 이상한 글자면 올바른 '전체' 탭 주소로 새로고침 --%>
+    <c:if test="${param.gameCode != currentGame}">
         <script>
-            location.replace("${pageContext.request.contextPath}/gallery/list?gameCode=all");
+            location.replace("${pageContext.request.contextPath}/gallery/list?gameCode=${currentGame}");
         </script>
     </c:if>
 </head>
@@ -52,7 +53,6 @@
             <div class="gallery-container">
                 <div class="gallery-header">
                     <h2>갤러리</h2>
-                    <%-- 글쓰기 버튼 (현재 보고 있는 탭의 게임 코드를 물고 감) --%>
                     <a href="<c:url value='/gallery/write?gameCode=${currentGame}' />">
                         <button class="btn-write">글쓰기</button>
                     </a>
@@ -68,31 +68,24 @@
 
                 <%-- 갤러리 바둑판 영역 --%>
                 <div class="gallery-grid">
-                    <c:choose>
-                        <c:when test="${empty list}">
+                    <c:choose><c:when test="${empty list}">
                             <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: #94a3b8;">
                                 아직 등록된 사진이 없습니다. 멋진 사진을 가장 먼저 공유해주세요! 📸
                             </div>
-                        </c:when>
-                        <c:otherwise>
+                        </c:when><c:otherwise>
                             <c:forEach var="board" items="${list}">
-                                <%-- 카드 클릭 시 상세 페이지로 이동 --%>
                                 <a href="<c:url value='/board/view?boardNo=${board.boardNo}'/>" class="gallery-item" style="text-decoration: none; color: inherit; display: block;">
                                     
-                                    <%-- 썸네일 --%>
+                                    <%-- 썸네일 (공백 에러 방지를 위해 태그 밀착!) --%>
                                     <div class="thumb-box" style="width: 100%; height: 200px; overflow: hidden; background: #f1f5f9; border-radius: 8px 8px 0 0;">
-                                        <c:choose>
-                                            <c:when test="${not empty board.thumbnail}">
+                                        <c:choose><c:when test="${not empty board.thumbnail}">
                                                 <img src="<c:url value='/resources/upload/board/${board.thumbnail}'/>" alt="썸네일" style="width: 100%; height: 100%; object-fit: cover;">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <%-- 이미지가 없는 글일 경우의 기본 썸네일 --%>
+                                            </c:when><c:otherwise>
                                                 <img src="<c:url value='/resources/images/no_image.png'/>" alt="no-image" style="width: 100%; height: 100%; object-fit: contain; padding: 20px;">
-                                            </c:otherwise>
-                                        </c:choose>
+                                            </c:otherwise></c:choose>
                                     </div>
                                     
-                                    <%-- 글 정보 (제목, 작성자, 하트/댓글 수) --%>
+                                    <%-- 글 정보 --%>
                                     <div class="info-box" style="padding: 15px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; background: white;">
                                         <div style="font-weight: bold; font-size: 15px; color: #1e293b; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                             ${board.boardTitle}
@@ -105,23 +98,19 @@
                                     
                                 </a>
                             </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
+                        </c:otherwise></c:choose>
                 </div>
 
                 <%-- 페이징 영역 --%>
                 <div class="pagination" style="margin-top: 30px; text-align: center;">
-                    <%-- 이전 버튼 (1페이지가 아닐 때만 노출) --%>
                     <c:if test="${pi.currentPage > 1}">
                         <a href="<c:url value='/gallery/list?gameCode=${currentGame}&cp=${pi.currentPage - 1}'/>" class="page-link">&lt;</a>
                     </c:if>
 
-                    <%-- 페이지 번호 반복 --%>
                     <c:forEach var="p" begin="${pi.startPage}" end="${pi.endPage}">
                         <a href="<c:url value='/gallery/list?gameCode=${currentGame}&cp=${p}'/>" class="page-link ${pi.currentPage == p ? 'active' : ''}">${p}</a>
                     </c:forEach>
 
-                    <%-- 다음 버튼 (마지막 페이지가 아닐 때만 노출) --%>
                     <c:if test="${pi.currentPage < pi.maxPage}">
                         <a href="<c:url value='/gallery/list?gameCode=${currentGame}&cp=${pi.currentPage + 1}'/>" class="page-link">&gt;</a>
                     </c:if>
