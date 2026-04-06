@@ -3,6 +3,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<!-- 혹시 몰라서 넣는 제이쿼리 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- alertify -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <!-- alertify css -->

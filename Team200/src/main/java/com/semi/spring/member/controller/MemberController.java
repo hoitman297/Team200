@@ -386,11 +386,11 @@ public class MemberController {
 		if(loginUser != null) {
 			// 인증된 사용자 정보를 session에 보관
 			model.addAttribute("loginUser",loginUser);
+			mv.setViewName("redirect:/");
 		}else{
 			ra.addFlashAttribute("alertMsg","로그인 실패");
+			mv.setViewName("redirect:/member/login?error"); // ⭐ 실패 시 로그인 페이지로 다시 리다이렉트!
 		}
-		mv.setViewName("redirect:/"); // 메인페이지로 리다이렉트
-		
 		return mv;
 	}
 	
