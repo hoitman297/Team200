@@ -42,9 +42,9 @@
 
             <div class="item-card">
                 <div class="item-categories">
-                    <%-- ✨ a 태그(페이지 이동) 제거 및 div 로 변경 ✨ --%>
+                    <%-- ✨ JS 처리를 위해 data-category 속성 추가 및 스타일 수정 ✨ --%>
                     <c:forEach var="cat" items="${categoryList}">
-                        <div class="category-btn" style="text-decoration: none;">
+                        <div class="category-btn" data-category="${cat.categoryNo}" style="text-decoration: none; cursor: pointer;">
                             <div class="category-icon"></div>
                             <span>${cat.categoryName}</span>
                         </div>
@@ -72,13 +72,13 @@
                             <c:choose>
                                 <c:when test="${empty itemList}">
                                     <tr>
-                                        <td colspan="4" style="padding: 100px 0; color: #94a3b8; text-align: center;">등록된 아이템 정보가 없습니다.</td>
+                                        <td colspan="3" style="padding: 100px 0; color: #94a3b8; text-align: center;">등록된 아이템 정보가 없습니다.</td>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="item" items="${itemList}">
-                                        <%-- ✨ JS가 카테고리를 필터링할 수 있도록 data-type 속성 추가 ✨ --%>
-                                        <tr class="item-row" data-info="${item.itemInfo}" data-name="${item.itemName}" data-type="${item.itemType}">
+                                        <%-- ✨ data-category 속성 추가 완료 ✨ --%>
+                                        <tr class="item-row" data-category="${item.categoryNo}" data-info="${item.itemInfo}" data-name="${item.itemName}" data-type="${item.itemType}">
                                             <td>
                                                 <div class="item-img-placeholder" style="background: none; border: none;">
                                                     <img src="${item.itemImg}" alt="${item.itemName}" onerror="this.src='${pageContext.request.contextPath}/resources/img/default_item.png'" style="width: 64px; height: 64px; border-radius: 5px; object-fit: contain;">
