@@ -291,6 +291,11 @@
                 0 as replyCount,
                 '공지사항' as categoryName
             FROM NOTICE
+            <where>
+                <if test="keyword != null and keyword != ''">
+                    (TITLE LIKE '%' || #{keyword} || '%' OR NOTICE_CONTENT LIKE '%' || #{keyword} || '%')
+                </if>
+            </where>
             ORDER BY NOTICE_NO DESC
         ) A
     )
@@ -345,36 +350,44 @@
 
 	<!-- 패치 -->
 	<select id="selectPatchnoteCount" resultType="_int">
-	    SELECT COUNT(*) 
-	    FROM PATCHNOTE 
-	    <if test="gameCode != 'ALL'">
-	        WHERE GAME_CODE = #{gameCode}
-	    </if>
+    SELECT COUNT(*) 
+    FROM PATCHNOTE 
+    <where>
+        <if test="gameCode != 'ALL'">
+            GAME_CODE = #{gameCode}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (TITLE LIKE '%' || #{keyword} || '%' OR PATCHNOTE_CONTENT LIKE '%' || #{keyword} || '%')
+        </if>
+    </where>
 	</select>
 	
 	<select id="selectPatchnoteList" resultType="BoardExt">
-	    SELECT * FROM (
-	        SELECT ROWNUM AS RNUM, A.* FROM (
-	            SELECT 
-	                PATCHNOTE_NO as boardNo,
-	                TITLE as boardTitle,
-	                '관리자' as userName,
-	                POST_DATE as postDate,
-	                0 as likeCount,
-	                0 as replyCount,
-	                '패치노트' as categoryName,
-	                
-	                GAME_CODE as gameCode,
-	                READ_COUNT as readCount
-	                
-	            FROM PATCHNOTE
-	            <if test="gameCode != 'ALL'">
-	                WHERE GAME_CODE = #{gameCode}
-	            </if>
-	            ORDER BY PATCHNOTE_NO DESC
-	        ) A
-	    )
-	    WHERE RNUM BETWEEN #{offset} AND #{limit}
+    SELECT * FROM (
+        SELECT ROWNUM AS RNUM, A.* FROM (
+            SELECT 
+                PATCHNOTE_NO as boardNo,
+                TITLE as boardTitle,
+                '관리자' as userName,
+                POST_DATE as postDate,
+                0 as likeCount,
+                0 as replyCount,
+                '패치노트' as categoryName,
+                GAME_CODE as gameCode,
+                READ_COUNT as readCount
+            FROM PATCHNOTE
+            <where>
+                <if test="gameCode != 'ALL'">
+                    GAME_CODE = #{gameCode}
+                </if>
+                <if test="keyword != null and keyword != ''">
+                    AND (TITLE LIKE '%' || #{keyword} || '%' OR PATCHNOTE_CONTENT LIKE '%' || #{keyword} || '%')
+                </if>
+            </where>
+            ORDER BY PATCHNOTE_NO DESC
+        ) A
+    )
+    WHERE RNUM BETWEEN #{offset} AND #{limit}
 	</select>
 	
 	<select id="selectPatchnoteDetail" resultType="BoardExt">
