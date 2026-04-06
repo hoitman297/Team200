@@ -615,6 +615,9 @@ public class BoardController {
         model.addAttribute("pi", pi);
         model.addAttribute("gameId", gameCode.toLowerCase()); // JSP 분기용 소문자 원본
         
+        model.addAttribute("searchType", "board");
+        model.addAttribute("boardTitle", "패치노트");
+        
         // ✨ 우리가 만든 단 1개의 '통합 패치노트 JSP'로 이동!
         return "board/patchnote_main"; 
     }
@@ -754,6 +757,8 @@ public class BoardController {
         model.addAttribute("boardTitle", "공지사항"); // 상단 제목용
         model.addAttribute("gameName", "공지사항");  // 사이드바/헤더용
         model.addAttribute("isNotice", "true");      // 📌 중요: 패치노트의 isPatchnote 처럼 쓰일 깃발!
+        
+        model.addAttribute("searchType", "board");
         
         // 5. 공지사항 전용 목록 JSP로 이동! (패치노트 JSP를 복붙해서 만드시면 됩니다)
         return "board/notice_main"; 
